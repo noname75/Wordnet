@@ -68,9 +68,12 @@ def profile(username):
 
 
 
-@app.route('/packfilling/<packId>', methods=['GET', 'POST'])
+@app.route('/pack/<packId>', methods=['GET', 'POST'])
 def packfilling(packId):
 
+
+
+    np.random.choice(, 3, replace=False, p=[0.1, 0, 0.3, 0.6, 0])
     form = ResponseForm(request.form)
     error = None
     if request.method == 'POST' and form.validate():
