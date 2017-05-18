@@ -1,9 +1,9 @@
-from flask import request, redirect, url_for, abort, render_template, flash, session
-from blog.forms import *
-from passlib.hash import bcrypt
-from blog.models.db_config import *
+from flask import Blueprint, render_template
+
+from blog import app
 
 
+index_page = Blueprint('index', __name__, template_folder='templates')
 @app.route('/')
 def index():
     return render_template('index.html')

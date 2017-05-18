@@ -1,9 +1,12 @@
 from wtforms.validators import ValidationError
 from wtforms import Form, TextField, PasswordField, validators
-from wtforms.fields.core import SelectField
-from blog.models.db_config import *
-from passlib.hash import bcrypt
 
+from blog.models.db_config import *
+
+
+def existUsername(form, field):
+    if User(username=field.data).getUser():
+        raise ValidationError('کاربری با این نام کاربری وجود دارد.')
 
 class RegistrationForm(Form):
     firstname = TextField('نام', [validators.Length(min=3, max=25, message='نام باید حداقل ۳ کاراکتر و حداکثر ۲۵ کاراکتر باشد.')])
@@ -14,7 +17,3 @@ class RegistrationForm(Form):
     confirm = PasswordField('تکرار رمز عبور' , [validators.EqualTo('password', message='تکرار رمز عبور صحیح نیست.')])
 
 
-
-def existUsername(form, field):
-    if User(username=field.data).getUser():
-        raise ValidationError('کاربری با این نام کاربری وجود دارد.')

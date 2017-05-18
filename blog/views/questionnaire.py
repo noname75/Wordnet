@@ -1,22 +1,26 @@
-from flask import request, redirect, url_for, abort, render_template, flash, session
-from blog.forms import *
-from passlib.hash import bcrypt
+from flask import request, render_template, Blueprint
+
 from blog.models.db_config import *
+from blog import app
 
-@app.route('/pack/<packId>', methods=['GET', 'POST'])
+
+questionnaire_page = Blueprint('questionnaire_page', __name__, template_folder='templates')
+
+
+@app.route('/questionnaire/<packId>', methods=['GET', 'POST'])
 def packfilling(packId):
+    phraseId_freq = getUnseenPhraseListWithFreq(packId)
+    phraseId = np.random.choice(phraseId.keys(), 1, p=normalize(phraseId_freq.values()))
+    phrase = Phrase(phraseId).getPhrase()
 
-
-
-    # np.random.choice(, 3, replace=False, p=[0.1, 0, 0.3, 0.6, 0])
-    form = ResponseForm(request.form)
+    form = QuestionnaireForm(request.form)
     error = None
+
     if request.method == 'POST' and form.validate():
 #         pack().addResponse(form.response.name, form.response.data,form.response)
         print(form.response.data)
-    
-        
-    return render_template('questionnaire.html', error=error, form=form,stimulus=stimulus)
+
+    return render_template('questionnaire.html', error=error, form=form, pharse=phrase)
 
 
 def getUnseenPhraseListWithFreq(packId):
@@ -33,3 +37,6 @@ def getUnseenPhraseListWithFreq(packId):
     return phraseId_freq
 
 
+def normalize(list):
+    list = [1 / (member + 1) for member in list]
+    return [member / list.sum() for member in list]

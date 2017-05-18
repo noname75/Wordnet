@@ -1,9 +1,9 @@
-from flask import request, redirect, url_for, abort, render_template, flash, session
-from blog.forms import *
-from passlib.hash import bcrypt
-from blog.models.db_config import *
+from flask import Blueprint, redirect, flash, session, url_for
+
+from blog import app
 
 
+logout_page = Blueprint('logout_page', __name__, template_folder='templates')
 @app.route('/logout', methods=['GET'])
 def logout():
     session.pop('username', None)

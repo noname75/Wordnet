@@ -12,4 +12,4 @@ class ResponseInPack(db.Model):
         return db.session.query(ResponseInPack).filter_by(pack_id=packId).all()
 
     def getResponseCount_byPhraseId(phraseId):
-        return db.session.query(func.count(ResponseInPack.phrase2_id)).filter_by(phrase1_id=phraseId).first()
+        return db.session.query(func.count(ResponseInPack.phrase2_id)).filter_by(phrase1_id=phraseId).scalar()

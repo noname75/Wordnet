@@ -1,10 +1,9 @@
-from flask import request, redirect, url_for, abort, render_template, flash, session
-from blog.forms import *
-from passlib.hash import bcrypt
-from blog.models.db_config import *
+from flask import render_template, Blueprint
+
+from blog import app
 
 
+test_page = Blueprint('test_page', __name__, template_folder='templates')
 @app.route('/test')
 def test():
-    print(getUnseenPhraseListWithFreq(5))
     return render_template('index.html')
