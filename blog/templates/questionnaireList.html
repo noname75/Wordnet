@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+
+
+{% block body %}
+<div class="container-fluid container-fixed-lg">
+    <div class="row">
+        <div class="col-md-8">
+            <!-- START PANEL -->
+            <div class="panel panel-transparent">
+                <div class="panel-heading">
+                    <div class="panel-title">لیست پرسش‌نامه‌ها
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>عنوان</th>
+                                <th>توضیحات</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for questionnaire in questionnaireList %}
+                            <tr>
+                                <td class="v-align-middle bold"><a href="{{ urlfor }}" data-toggle="tab">{{
+                                    questionnaire.subject }}</a></td>
+                                <td>{{ questionnaire.moreInfo }}</td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!-- END PANEL -->
+        </div>
+    </div>
+</div>
+{% endblock %}
