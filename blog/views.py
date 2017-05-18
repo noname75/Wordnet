@@ -7,7 +7,7 @@ from passlib.hash import bcrypt
 
 @app.route('/test')
 def test():
-    getUnseenPhraseList(6)
+    getUnseenPhraseList(4)
     return render_template('index.html')
 
 
