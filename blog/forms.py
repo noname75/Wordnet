@@ -1,7 +1,7 @@
 from wtforms.validators import ValidationError
 from wtforms import Form, TextField, PasswordField, validators
 from wtforms.fields.core import SelectField
-from blog.models import *
+from blog.models.db_config import *
 from passlib.hash import bcrypt
 
 def existUsername(form, field):

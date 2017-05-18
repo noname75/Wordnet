@@ -1,19 +1,19 @@
-from flask import request, redirect, url_for, abort, render_template, flash,session
-from blog.models import *
+from flask import request, redirect, url_for, abort, render_template, flash, session
 from blog.forms import *
-import random
 from passlib.hash import bcrypt
+from blog.models.db_config import *
 
 
 @app.route('/test')
 def test():
-    getUnseenPhraseList(4)
+    getUnseenPhraseList(5)
     return render_template('index.html')
 
 
 @app.route('/')
 def index():
     return render_template('index.html')
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -24,7 +24,7 @@ def login():
         if User(username).getUser():
             if bcrypt.verify(password, User(username).getUser().password):
                 session['username'] = username
-                flash(message=username + ' عزیز! به سایت خوش آمدید.',category='success')
+                flash(message=username + ' عزیز! به سایت خوش آمدید.', category='success')
             else:
                 error = 'رمز عبور صحیح نیست.'
                 flash(message='ورود ناموفق', category='warning')
@@ -63,16 +63,13 @@ def register():
 
 @app.route('/profile/<username>', methods=['GET'])
 def profile(username):
-    user = User(username)
+    user = User(username).getUser()
     return render_template('profile.html', user=user)
 
 
 
 @app.route('/packfilling/<packId>', methods=['GET', 'POST'])
 def packfilling(packId):
-
-
-
 
     form = ResponseForm(request.form)
     error = None
@@ -85,3 +82,18 @@ def packfilling(packId):
 
 
 
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
+
+
+def getUnseenPhraseList(packId):
+    pack = Pack(packId).getPack()
+    phraseList_byQuestionnaire = [phrase.phrase_id for phrase in PhraseInQuestionnaire.getPhraseList_byQuestionnaireId(pack.questionnaire_id)]
+    packList = Pack.getPackList_byUserId(pack.user_id)
+    phraseIdList_byUser = []
+    for pack in packList:
+        phraseIdList_byUser.extend([response.phrase1_id for response in ResponseInPack.getResponseList_byPackId(pack.id)])
+    unseenPhraseIdList = [item for item in phraseList_byQuestionnaire if item not in phraseIdList_byUser]
+    for phraseId in unseenPhraseIdList:
+        print(phraseId, ResponseInPack.getResponseCount_byPhraseId(phraseId))
