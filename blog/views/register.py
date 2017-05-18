@@ -6,7 +6,7 @@ from blog.models.db_config import *
 from blog import app
 
 
-register_page = Blueprint('register_page', __name__, template_folder='templates')
+register_page = Blueprint('register', __name__, template_folder='templates')
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegistrationForm(request.form)

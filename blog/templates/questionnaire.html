@@ -14,12 +14,10 @@
 			<div class="col-sm-6 col-md-4 col-md-offset-4">
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						<strong>پرسش‌نامه</strong>
 					</div>
 					<div class="panel-body" div style="color:#083C32">
-                        <h1>{{ stimulus }}</h1>
-
-                        <form method=post action="{{ url_for('questionnaire', packid=packId) }}">
+                        <div align="center">{{ stimulus }}</div>
+                        <form method=post action="{{ url_for('questionnaire',packId=packId) }}">
                             <dl>
                                 {{ render_field(form.response) }}
                             </dl>

@@ -2,19 +2,19 @@ import random
 
 from flask import request, render_template, Blueprint
 
-from blog.models.db_config import *
 from blog import app
 from blog.forms.QuestionnaireForm import QuestionnaireForm
 
 
-questionnaire_page = Blueprint('questionnaire_page', __name__, template_folder='templates')
+questionnaire_page = Blueprint('questionnaire', __name__, template_folder='templates')
 
 
 @app.route('/questionnaire/<packId>', methods=['GET', 'POST'])
-def packfilling(packId):
+def questionnaire(packId):
     phraseId_freq = getUnseenPhraseListWithFreq(packId)
-    phraseId = random.choice(phraseId_freq.keys(), 1, p=normalize(phraseId_freq.values()))
-    phrase = Phrase(phraseId).getPhrase()
+    phraseId = random.choice(list(phraseId_freq.keys()))
+    # phraseId = np.random.choice(phraseId_freq.keys(), 1, p=normalize(phraseId_freq.values()))
+    stimulus = Phrase(phraseId).getPhrase().content
 
     form = QuestionnaireForm(request.form)
     error = None
@@ -23,7 +23,7 @@ def packfilling(packId):
 #         pack().addResponse(form.response.name, form.response.data,form.response)
         print(form.response.data)
 
-    return render_template('questionnaire.html', error=error, form=form, stimulus=phrase)
+    return render_template('questionnaire.html', error=error, form=form, stimulus=stimulus, packId=packId)
 
 
 def getUnseenPhraseListWithFreq(packId):

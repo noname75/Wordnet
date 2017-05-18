@@ -23,7 +23,8 @@
                             <tbody>
                             {% for questionnaire in questionnaireList %}
                             <tr>
-                                <td class="v-align-middle bold"><a href="{{ urlfor }}" data-toggle="tab">{{
+                                <td class="v-align-middle bold"><a
+                                        href="{{ url_for('addPack',questionnaireId=questionnaire.id,questionnaireType=questionnaireType) }}">{{
                                     questionnaire.subject }}</a></td>
                                 <td>{{ questionnaire.moreInfo }}</td>
                             </tr>

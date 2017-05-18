@@ -7,7 +7,7 @@ class Phrase(db.Model):
     picture_id = db.Column(db.ForeignKey(Picture.id))
 
     def __init__(self, phraseId):
-        self.id = pharseId
+        self.id = phraseId
 
     def getPhrase(self):
         return db.session.query(Phrase).filter_by(id=self.id).first()
