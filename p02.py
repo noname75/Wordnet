@@ -1,5 +1,6 @@
-from blog import app
 import os
+
+from blog import app
 
 
 app.secret_key = os.urandom(24)
