@@ -7,7 +7,7 @@ from passlib.hash import bcrypt
 
 @app.route('/test')
 def test():
-    getUnseenPhraseList(1)
+    getUnseenPhraseList(6)
     return render_template('index.html')
 
 
@@ -64,7 +64,7 @@ def register():
 @app.route('/profile/<username>', methods=['GET'])
 def profile(username):
     user = User(username)
-    return render_template('profile.html',user=user)
+    return render_template('profile.html', user=user)
 
 
 
