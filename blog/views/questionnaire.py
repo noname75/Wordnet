@@ -1,7 +1,10 @@
+import random
+
 from flask import request, render_template, Blueprint
 
 from blog.models.db_config import *
 from blog import app
+from blog.forms.QuestionnaireForm import QuestionnaireForm
 
 
 questionnaire_page = Blueprint('questionnaire_page', __name__, template_folder='templates')
@@ -10,7 +13,7 @@ questionnaire_page = Blueprint('questionnaire_page', __name__, template_folder='
 @app.route('/questionnaire/<packId>', methods=['GET', 'POST'])
 def packfilling(packId):
     phraseId_freq = getUnseenPhraseListWithFreq(packId)
-    phraseId = np.random.choice(phraseId.keys(), 1, p=normalize(phraseId_freq.values()))
+    phraseId = random.choice(phraseId_freq.keys(), 1, p=normalize(phraseId_freq.values()))
     phrase = Phrase(phraseId).getPhrase()
 
     form = QuestionnaireForm(request.form)
@@ -20,7 +23,7 @@ def packfilling(packId):
 #         pack().addResponse(form.response.name, form.response.data,form.response)
         print(form.response.data)
 
-    return render_template('questionnaire.html', error=error, form=form, pharse=phrase)
+    return render_template('questionnaire.html', error=error, form=form, stimulus=phrase)
 
 
 def getUnseenPhraseListWithFreq(packId):
@@ -37,6 +40,7 @@ def getUnseenPhraseListWithFreq(packId):
     return phraseId_freq
 
 
-def normalize(list):
-    list = [1 / (member + 1) for member in list]
-    return [member / list.sum() for member in list]
+def normalize(freq_list):
+    inverse_freq_list = [1 / (member + 1) for member in freq_list]
+    normalized_inverse_freq_list = [member / sum(inverse_freq_list) for member in inverse_freq_list]
+    return normalized_inverse_freq_list

@@ -14,7 +14,7 @@ class Pack(db.Model):
         self.id = packId
 
     def getPack(self):
-        return db.session.query(Pack).filter_by(id=self.id).first_or_404()
+        return db.session.query(Pack).filter_by(id=self.id).first()
 
     def getPackList_byUserId(userId):
         return db.session.query(Pack).filter_by(user_id=userId).all()

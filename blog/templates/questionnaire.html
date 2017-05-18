@@ -17,7 +17,9 @@
 						<strong>پرسش‌نامه</strong>
 					</div>
 					<div class="panel-body" div style="color:#083C32">
-                        <form method=post action="{{ url_for('questionnaire', packid=1) }}" >
+                        <h1>{{ stimulus }}</h1>
+
+                        <form method=post action="{{ url_for('questionnaire', packid=packId) }}">
                             <dl>
                                 {{ render_field(form.response) }}
                             </dl>
