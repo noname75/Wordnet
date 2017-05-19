@@ -1,13 +1,14 @@
 from flask import render_template, Blueprint
-
 from blog.models.db_config import *
 from blog import app
+from flask_login import login_required
 
 
 questionnaireList_page = Blueprint('questionnaireList', __name__, template_folder='templates')
 
 
 @app.route('/questionnaireList/<questionnaireType>')
+@login_required
 def questionnaireList(questionnaireType):
     questionnaireList = Questionnaire.getQuestionnaireList(questionnaireType)
 

@@ -10,6 +10,7 @@ addPack_page = Blueprint('addPack', __name__)
 
 
 @app.route("/addPack/<questionnaireId>/<questionnaireType>")
+@login_required
 def addPack(questionnaireId, questionnaireType):
 
     isPictorial = 'pic' in questionnaireType
