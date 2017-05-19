@@ -1,8 +1,6 @@
 from wtforms.validators import ValidationError
 from wtforms import Form, TextField, PasswordField, validators
-
 from blog.models.db_config import *
-
 
 def existUsername(form, field):
     if User(username=field.data).getUser():

@@ -16,14 +16,12 @@ class User(db.Model):
     nativeLanguage = db.Column(db.Enum('فارسی', 'سایر زبان‌ها'))
     major = db.Column(db.Unicode(100))
 
-
     def __init__(self, username, password=None, firstname=None, lastname=None, email=None):
         self.username = username
         self.password = password
         self.firstname = firstname
         self.lastname = lastname
         self.email = email
-
 
     def addUser(self):
         db.session.add(self)

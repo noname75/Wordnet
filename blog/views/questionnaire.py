@@ -2,13 +2,12 @@ from blog.models.db_config import *
 from flask import request, render_template, Blueprint
 from blog import app
 from blog.forms.QuestionnaireForm import QuestionnaireForm
-from flask_login import login_required
+from blog.views.permission_config import user
 
 questionnaire_page = Blueprint('questionnaire', __name__, template_folder='templates')
 
-
 @app.route('/questionnaire/<packId>', methods=['GET', 'POST'])
-@login_required
+@user.require(http_exception=403)
 def questionnaire(packId):
     form = QuestionnaireForm(request.form)
     error = None

@@ -1,12 +1,12 @@
 from flask import request, render_template, flash, Blueprint
 from passlib.hash import bcrypt
-
 from blog.forms.RegisterationForm import RegistrationForm
 from blog.models.db_config import *
 from blog import app
 
-
 register_page = Blueprint('register', __name__, template_folder='templates')
+
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegistrationForm(request.form)

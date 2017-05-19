@@ -4,13 +4,12 @@ from blog.models.db_config import *
 from flask import Blueprint, redirect, url_for, session
 from blog import app
 from blog import config
-from flask_login import login_required
+from blog.views.permission_config import user
 
-addPack_page = Blueprint('addPack', __name__)
-
+addPack_page = Blueprint('addPack', __name__, template_folder='templates')
 
 @app.route("/addPack/<questionnaireId>/<questionnaireType>")
-@login_required
+@user.require(http_exception=403)
 def addPack(questionnaireId, questionnaireType):
 
     isPictorial = 'pic' in questionnaireType

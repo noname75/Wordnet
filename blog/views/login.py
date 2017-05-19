@@ -1,21 +1,23 @@
 from flask import request, render_template, flash, session, Blueprint, redirect
 from passlib.hash import bcrypt
-
 from blog.models.db_config import *
 from blog import app
-
+from flask.ext.principal import Identity, identity_changed
 
 login_page = Blueprint('login', __name__, template_folder='templates')
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     error = None
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        if User(username).getUser():
-            if bcrypt.verify(password, User(username).getUser().password):
-                session['username'] = username
+        user = User(username).getUser()
+        if user:
+            if bcrypt.verify(password, user.password):
+                session['username'] = user.username
                 flash(message=username + ' عزیز! به سایت خوش آمدید.', category='success')
+                identity_changed.send(app, identity=Identity(id=user.id, auth_type=user.role))
                 return redirect('/')
             else:
                 error = 'رمز عبور صحیح نیست.'
