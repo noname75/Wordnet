@@ -28,7 +28,7 @@ def questionnaire(packId):
 
 def getUnseenPhraseListWithFreq(packId):
     phraseId_freq = {}
-    pack = Pack(packId).getPack()
+    pack = Pack(packId=packId).getPack()
     phraseList_byQuestionnaire = [phrase.phrase_id for phrase in PhraseInQuestionnaire.getPhraseList_byQuestionnaireId(pack.questionnaire_id)]
     packList = Pack.getPackList_byUserId(pack.user_id)
     phraseIdList_byUser = []

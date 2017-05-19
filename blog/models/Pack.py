@@ -10,9 +10,9 @@ class Pack(db.Model):
     user_id = db.Column(db.ForeignKey(User.id))
     questionnaire_id = db.Column(db.ForeignKey(Questionnaire.id))
 
-    def __init__(self, packId=None, questionnaire_id=None, user_id=None, startTime=None, isPictorial=None,
+    def __init__(self, pack_id=None, questionnaire_id=None, user_id=None, startTime=None, isPictorial=None,
                  isChosen=None):
-        self.id = packId
+        self.id = pack_id
         self.questionnaire_id = questionnaire_id
         self.user_id = user_id
         self.startTime = startTime

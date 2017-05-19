@@ -1,5 +1,4 @@
 from sqlalchemy import func
-
 from blog.models.db_config import *
 
 
