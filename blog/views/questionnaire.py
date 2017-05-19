@@ -13,30 +13,29 @@ questionnaire_page = Blueprint('questionnaire', __name__, template_folder='templ
 @app.route('/questionnaire/<packId>', methods=['GET', 'POST'])
 @user.require(http_exception=403)
 def questionnaire(packId):
+    try:
 
-    form = QuestionnaireForm(request.form)
-    error = None
+        pack = Pack(pack_id=packId).getPack()
+        if User(user_id=pack.user_id).username != session['username']:
+            redirect('authorisation_failed')
 
-    pack = Pack(pack_id=packId).getPack()
-    if not pack:
-        redirect('page_not_found')
-    if User(user_id=pack.user_id).username != session['username']:
-        redirect('authorisation_failed')
+        packResponseCount = ResponseInPack.getResponseList_byPackId(pack.id).__len__()
+        if packResponseCount >= config.STIMULUS_COUNT:
+            pack.setFinishTime(time.strftime('%Y-%m-%d %H:%M:%S'))
+            flash(message='پرسشنامه با موفقیت تکمیل شد. ممنون از مشارکت شما.', category='success')
+            return redirect('/')
 
-    packResponseCount = ResponseInPack.getResponseList_byPackId(pack.id).__len__()
+        unseenPhraseIdList = getUnseenPhraseIdList(pack.id)
+        if unseenPhraseIdList.__len__() == 0:
+            raise AssertionError()
 
-    if packResponseCount >= config.STIMULUS_COUNT:
-        pack.setFinishTime(time.strftime('%Y-%m-%d %H:%M:%S'))
-        flash(message='پرسشنامه با موفقیت تکمیل شد. ممنون از مشارکت شما.', category='success')
-        return redirect('/')
+        form = QuestionnaireForm(request.form)
+        stimulus = Phrase(phrase_id=random.choice(unseenPhraseIdList)).getPhrase().content
 
-    unseenPhraseIdList = getUnseenPhraseIdList(pack.id)
-    stimulusId = random.choice(unseenPhraseIdList)
-    # stimulusList = np.random.choice(phraseId_freq.keys(), 10, p=normalize(phraseId_freq.values()))
-    stimulus = Phrase(phrase_id=stimulusId).getPhrase().content
+        return render_template('questionnaire.html', form=form, stimulus=stimulus, packId=packId)
 
-
-    return render_template('questionnaire.html', error=error, form=form, stimulus=stimulus, packId=packId)
+    except Exception:
+        return redirect('page_not_found')
 
 
 def getUnseenPhraseIdList(packId):

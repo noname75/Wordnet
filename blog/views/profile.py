@@ -4,6 +4,8 @@ from blog import app
 from blog.views.permission_config import user
 
 profile_page = Blueprint('profile', __name__, template_folder='templates')
+
+
 @app.route('/profile/<username>', methods=['GET'])
 @user.require(http_exception=403)
 def profile(username):

@@ -6,7 +6,6 @@ from blog.views.permission_config import user
 
 addResponse_page = Blueprint('addResponse', __name__, template_folder='templates')
 
-
 @app.route('/addResponse/<packId>/<stimulus>', methods=['GET', 'POST'])
 @user.require(http_exception=403)
 def addResponse(packId, stimulus):

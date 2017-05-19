@@ -11,9 +11,12 @@ addPack_page = Blueprint('addPack', __name__, template_folder='templates')
 @app.route("/addPack/<questionnaireId>/<questionnaireType>")
 @user.require(http_exception=403)
 def addPack(questionnaireId, questionnaireType):
-    questionnaire = Questionnaire(questionnaireId).getQuestionnaire()
+    try:
+        questionnaire = Questionnaire(questionnaireId).getQuestionnaire()
 
-    if questionnaire.isActive:
+        if not questionnaire.isActive:
+            raise AssertionError()
+
         if questionnaireType == '00':
             isPictorial = 0
             isChosen = 0
@@ -21,29 +24,27 @@ def addPack(questionnaireId, questionnaireType):
             isPictorial = 0
             isChosen = 1
             if not questionnaire.isChosen:
-                redirect('page_not_found')
+                raise AssertionError()
         elif questionnaireType == '10':
             isPictorial = 1
             isChosen = 0
             if not questionnaire.isPictorial:
-                redirect('page_not_found')
+                raise AssertionError()
         elif questionnaireType == '11':
             isPictorial = 1
             isChosen = 1
             if not questionnaire.isChosen or not questionnaire.isPictorial:
-                redirect('page_not_found')
-    else:
-        redirect('page_not_found')
+                raise AssertionError()
 
-    if not questionnaire:
+        pack = Pack(
+            questionnaire_id=questionnaireId,
+            user_id=User(session['username']).getUser().id,
+            startTime=time.strftime('%Y-%m-%d %H:%M:%S'),
+            isPictorial=isPictorial,
+            isChosen=isChosen)
+        pack.addPack()
+
+        return redirect(url_for('questionnaire', packId=pack.id))
+
+    except Exception:
         return redirect('page_not_found')
-
-    pack = Pack(
-        questionnaire_id=questionnaireId,
-        user_id=User(session['username']).getUser().id,
-        startTime=time.strftime('%Y-%m-%d %H:%M:%S'),
-        isPictorial=isPictorial,
-        isChosen=isChosen)
-    pack.addPack()
-
-    return redirect(url_for('questionnaire', packId=pack.id))

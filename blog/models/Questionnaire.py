@@ -27,3 +27,9 @@ class Questionnaire(db.Model):
 
     def getQuestionnaire(self):
         return db.session.query(Questionnaire).filter_by(id=self.id).first()
+
+    def setStimulusCount(self, stimulusCount):
+        self.stimulusCount = stimulusCount
+
+    def setUserResponseCount(self, userResponseCount):
+        self.userResponseCount = userResponseCount
