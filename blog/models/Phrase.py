@@ -6,8 +6,18 @@ class Phrase(db.Model):
     content = db.Column(db.Unicode(200), unique=True)
     picture_id = db.Column(db.ForeignKey(Picture.id))
 
-    def __init__(self, phrase_id):
+    def __init__(self, phrase_id=None, content=None):
         self.id = phrase_id
+        self.content = content
 
     def getPhrase(self):
         return db.session.query(Phrase).filter_by(id=self.id).first()
+
+    def getPhrase_byContent(self):
+        return db.session.query(Phrase).filter_by(content=self.content).first()
+
+    def addPhrase(self):
+        db.session.add(self)
+        db.session.flush()
+        db.session.commit()
+        return self
