@@ -18,7 +18,7 @@
 					</div>
 					<div class="panel-body" div style="color:#083C32">
                         <div align="center">{{ stimulus }}</div>
-                        <form method=post action="{{ url_for('questionnaire',packId=packId) }}">
+                        <form method=post action="{{ url_for('addResponse',packId=packId, stimulus=stimulus) }}">
                             <dl>
                                 {{ render_field(form.response) }}
                             </dl>

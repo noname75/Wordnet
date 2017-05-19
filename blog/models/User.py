@@ -16,7 +16,8 @@ class User(db.Model):
     nativeLanguage = db.Column(db.Enum('فارسی', 'سایر زبان‌ها'))
     major = db.Column(db.Unicode(100))
 
-    def __init__(self, username, password=None, firstname=None, lastname=None, email=None):
+    def __init__(self, user_id=None, username=None, password=None, firstname=None, lastname=None, email=None):
+        self.id = user_id
         self.username = username
         self.password = password
         self.firstname = firstname
@@ -28,4 +29,7 @@ class User(db.Model):
         db.session.commit()
 
     def getUser(self):
-        return db.session.query(User).filter_by(username=self.username).first()
+        if self.username:
+            return db.session.query(User).filter_by(username=self.username).first()
+        elif self.id:
+            return db.session.query(User).filter_by(username=self.id).first()

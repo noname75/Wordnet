@@ -29,3 +29,8 @@ class Pack(db.Model):
         db.session.add(self)
         db.session.flush()
         db.session.commit()
+        return self
+
+    def setFinishTime(self, finishTime):
+        self.finishTime = finishTime
+        db.session.commit()

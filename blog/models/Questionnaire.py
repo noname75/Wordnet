@@ -10,11 +10,20 @@ class Questionnaire(db.Model):
     moreInfo = db.Column(db.Unicode(1000))
 
     def getQuestionnaireList(questionnaireType):
-        if questionnaireType == 'tex-des':
+        if questionnaireType == '00':
             return db.session.query(Questionnaire).filter_by(isActive=True).all()
-        elif questionnaireType == 'pic-des':
+        elif questionnaireType == '01':
             return db.session.query(Questionnaire).filter_by(isActive=True, isPictorial=True).all()
-        elif questionnaireType == 'tex-cho':
+        elif questionnaireType == '10':
             return db.session.query(Questionnaire).filter_by(isActive=True, isChosen=True).all()
-        elif questionnaireType == 'pic-cho':
+        elif questionnaireType == '11':
             return db.session.query(Questionnaire).filter_by(isActive=True, isPictorial=True, isChosen=True).all()
+        else:
+            return None
+
+
+    def __init__(self, questionnaire_id):
+        self.id = questionnaire_id
+
+    def getQuestionnaire(self):
+        return db.session.query(Questionnaire).filter_by(id=self.id).first()
