@@ -5,5 +5,5 @@ class PhraseInQuestionnaire(db.Model):
     questionnaire_id = db.Column(db.ForeignKey(Questionnaire.id), primary_key=True)
     phrase_id = db.Column(db.ForeignKey(Phrase.id), primary_key=True)
 
-    def getPhraseList_byQuestionnaireId(questionnaireId):
-        return db.session.query(PhraseInQuestionnaire).filter_by(questionnaire_id=questionnaireId).all()
+    def getPhraseList_byQuestionnaireId(questionnaire_id):
+        return db.session.query(PhraseInQuestionnaire).filter_by(questionnaire_id=questionnaire_id).all()

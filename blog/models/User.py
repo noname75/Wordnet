@@ -5,6 +5,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.Unicode(100), unique=True)
     password = db.Column(db.Unicode(60))
+    role = db.Column(db.Enum('admin', 'user'))
     firstname = db.Column(db.Unicode(100))
     lastname = db.Column(db.Unicode(100))
     email = db.Column(db.Unicode(200))
@@ -14,6 +15,7 @@ class User(db.Model):
     degree = db.Column(db.Enum('کارشناسی ارشد و دکتری', 'کارشناسی', 'فوق دیپلم', 'دیپلم', 'زیر دیپلم'))
     nativeLanguage = db.Column(db.Enum('فارسی', 'سایر زبان‌ها'))
     major = db.Column(db.Unicode(100))
+
 
     def __init__(self, username, password=None, firstname=None, lastname=None, email=None):
         self.username = username

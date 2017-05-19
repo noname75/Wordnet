@@ -16,7 +16,7 @@ def login():
             if bcrypt.verify(password, User(username).getUser().password):
                 session['username'] = username
                 flash(message=username + ' عزیز! به سایت خوش آمدید.', category='success')
-                return redirect(request.referrer)
+                return redirect('/')
             else:
                 error = 'رمز عبور صحیح نیست.'
                 flash(message='ورود ناموفق', category='warning')
