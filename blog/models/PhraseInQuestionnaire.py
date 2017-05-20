@@ -7,3 +7,13 @@ class PhraseInQuestionnaire(db.Model):
 
     def getPhraseList_byQuestionnaireId(questionnaire_id):
         return db.session.query(PhraseInQuestionnaire).filter_by(questionnaire_id=questionnaire_id).all()
+
+    def __init__(self, questionnarire_id, phrase_id):
+        self.questionnaire_id = questionnarire_id
+        self.phrase_id = phrase_id
+
+    def addPhraseInQuestionnaire(self):
+        if db.session.query(PhraseInQuestionnaire).filter_by(questionnaire_id=self.questionnaire_id,
+                                                             phrase_id=self.phrase_id).first():
+            db.session.add(self)
+            db.session.commit

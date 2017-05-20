@@ -1,4 +1,4 @@
-from flask import request, render_template, flash, Blueprint
+from flask import request, render_template, flash, Blueprint, redirect, url_for
 from passlib.hash import bcrypt
 from blog.forms.RegisterationForm import RegistrationForm
 from blog.models.db_config import *
@@ -20,6 +20,6 @@ def register():
             email=form.email.data
         ).addUser()
         flash(message='ثبت نام شما انجام شد.', category='success')
-        return render_template("index.html")
+        return redirect(url_for('index'))
 
     return render_template('register.html', error=error, form=form)

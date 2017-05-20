@@ -4,7 +4,7 @@
 {% block body %}
 <div class="container-fluid container-fixed-lg">
     <div class="row">
-        <div class="col-xs-6 col-md-4"></div>
+        <div class="col-xs-6 col-md-3"></div>
         <div class="col-xs-6 col-md-4">
             <!-- START PANEL -->
             <div class="panel panel-transparent">
@@ -23,10 +23,8 @@
                             </thead>
                             <tbody>
                             {% for questionnaire in questionnaireList %}
-                            <tr>
-                                <td class="v-align-middle bold"><a
-                                        href="{{ url_for('addPack',questionnaireId=questionnaire.id,questionnaireType=questionnaireType) }}">{{
-                                    questionnaire.subject }}</a></td>
+                            <tr onclick="AddPack('{{ questionnaire.id }}')">
+                                <td class="v-align-middle bold">{{ questionnaire.subject }}</td>
                                 <td>{{ questionnaire.moreInfo }}</td>
                             </tr>
                             {% endfor %}
@@ -39,4 +37,24 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+
+{% block js %}
+<script type="text/javascript">
+    function AddPack(questionnaireId) {
+        $.ajax({
+            type: "POST",
+            url: '/addPack',
+            data: JSON.stringify({
+                questionnaireType: '{{ questionnaireType }}',
+                questionnaireId: questionnaireId
+            }),
+            contentType: 'application/json;charset=UTF-8',
+            success: function (result) {
+                window.location = result;
+            }
+        });
+    }
+</script>
 {% endblock %}

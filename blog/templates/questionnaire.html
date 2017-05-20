@@ -11,23 +11,130 @@
 {% block body %}
     <div class="container">
 		<div class="row">
-            <div class="col-xs-6 col-md-4"></div>
+            <div class="col-xs-6 col-md-3"></div>
             <div class="col-xs-6 col-md-4">
 				<div class="panel panel-default">
 					<div class="panel-heading">
 					</div>
-					<div class="panel-body" div style="color:#083C32">
-                        <div align="center">{{ stimulus }}</div>
-                        <form method=post action="{{ url_for('addResponse',packId=packId, stimulus=stimulus) }}">
-                            <dl>
-                                {{ render_field(form.response) }}
-                            </dl>
-                            <p><input type=submit class="btn btn-success btn-block" style="background-color: #18bc9c" value=تایید>
+                    <div class="panel-body" style="color:#083C32">
+                        <form id="questionnaireForm" onsubmit="return false;">
+                            <div class="row" style=" text-align: center">
+                                <h3 id="Stimulus"></h3>
+                            </div>
+                            <br><br>
+                            <input type=text id="Response" onchange="submitButtonControl()" class="form-control"
+                                   onkeyup="nospaces(this)" autocomplete="off">
+                            <br>
+                            <input id="bttnsubmit" type=submit class="btn btn-success btn-block"
+                                   onclick="AddResponse(document.getElementById('Response').value)" value='ثبت پاسخ'>
+                            <br>
+
+                            <div class="row">
+                                <div class="col-xs-4 col-md-6">
+                                    <input id="bttnskip" type=submit class="btn btn-warning btn-block"
+                                           onclick="AddResponse('')" value='واژه‌ی بعدی'>
+                                </div>
+                                <div class="col-xs-4 col-md-6">
+                                    <input id="bttnexit" type=submit class="btn btn  btn-complete btn-block"
+                                           onclick="endQuestionnaire()" value='پایان پاسخ‌گویی'>
+                                </div>
+                            </div>
                         </form>
 					</div>
                 </div>
 			</div>
 		</div>
 	</div>
+{% endblock %}
+
+
+{% block js %}
+<script type="text/javascript">
+
+    getStimulus();
+
+    $(document).ready(function () {
+        $('#bttnsubmit').prop('disabled', true);
+        $('#Response').keyup(function () {
+            $('#bttnsubmit').prop('disabled', this.value == "" ? true : false);
+        })
+    });
+
+    function AddResponse(responseListStr) {
+        var stimulus = document.getElementById("Stimulus").textContent;
+        var packId = '{{ packId }}';
+        var responseList = responseListStr.split('/');
+        for (count = 0; count < responseList.length; count++) {
+            var response = responseList[count];
+            $.ajax({
+                type: "POST",
+                url: '/addResponse',
+                data: JSON.stringify(
+                        {
+                            stimulus: stimulus,
+                            response: response,
+                            packId: packId
+                        }
+                ),
+                contentType: 'application/json;charset=UTF-8',
+                success: function (result) {
+                }
+            });
+        }
+        document.getElementById("Response").value = '';
+        getStimulus();
+
+    }
+
+    function getStimulus() {
+        $.ajax({
+            type: "POST",
+            url: '/getStimulus',
+            data: JSON.stringify(
+                    {
+                        packId: '{{ packId }}'
+                    }
+            ),
+            contentType: 'application/json;charset=UTF-8',
+            success: function (result) {
+                if (result == '/') {
+                    window.location = result;
+                } else {
+                    document.getElementById("Stimulus").textContent = result;
+                }
+            }
+        });
+        $(document).ready(function () {
+            $('#bttnsubmit').attr('disabled', 'disabled');
+            $('input[type="text"]').keyup(function () {
+                if ($(this).val() != '') {
+                    $('input[type="submit"]').removeAttr('disabled');
+                }
+            });
+        });
+    }
+
+    function endQuestionnaire() {
+        $.ajax({
+            type: "POST",
+            url: '/endQuestionnaire',
+            data: JSON.stringify(
+                    {
+                        packId: '{{ packId }}'
+                    }
+            ),
+            contentType: 'application/json;charset=UTF-8',
+            success: function (result) {
+                window.location = result;
+            }
+        });
+    }
+
+    function nospaces(t) {
+        if (t.value.match(/\s/g)) {
+            t.value = t.value.replace(/^\s+|\s+$/gm, '');
+        }
+    }
+</script>
 {% endblock %}
 

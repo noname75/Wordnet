@@ -1,4 +1,4 @@
-from sqlalchemy import func
+from sqlalchemy import func, desc
 from blog.models.db_config import *
 
 
@@ -16,18 +16,29 @@ class ResponseInPack(db.Model):
     def getResponseCount_byPhraseId(phrase_id):
         return db.session.query(func.count(ResponseInPack.phrase2_id)).filter_by(phrase1_id=phrase_id).scalar()
 
-    def __init__(self, pack_id, phrase1_id, phrase2_id=None, duration=None):
+    def __init__(self, pack_id, phrase1_id=None, phrase2_id=None, duration=None):
         self.pack_id = pack_id
         self.phrase1_id = phrase1_id
         self.phrase2_id = phrase2_id
         self.duration = duration
 
     def addResponseInPack(self):
-        maxNumber = db.session.query(func.max(ResponseInPack.number)).filter_by(phrase1_id=self.phrase1_id,
-                                                                                pack_id=self.pack_id).scalar()
-        if maxNumber:
-            self.number = maxNumber + 1
-        db.session.add(self)
+        lastSamePhrase1_id = db.session.query(ResponseInPack).filter_by(phrase1_id=self.phrase1_id,
+                                                                        pack_id=self.pack_id).order_by(
+            desc(ResponseInPack.number)).first()
+        if lastSamePhrase1_id:
+            if not lastSamePhrase1_id.phrase2_id:
+                lastSamePhrase1_id.duration = self.duration
+                lastSamePhrase1_id.phrase2_id = self.phrase2_id
+            else:
+                self.number = lastSamePhrase1_id.number + 1
+                db.session.add(self)
+        else:
+            db.session.add(self)
         db.session.commit()
 
         return self
+
+
+    def unansweredPhraseId(self):
+        return db.session.query(ResponseInPack.phrase1_id).filter_by(pack_id=self.pack_id, phrase2_id=None).first()

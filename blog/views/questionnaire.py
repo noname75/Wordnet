@@ -1,7 +1,6 @@
 from blog.models.db_config import *
-from flask import request, render_template, Blueprint, session, redirect, flash
+from flask import request, render_template, Blueprint, session, redirect, flash, jsonify, url_for
 from blog import app
-from blog.forms.QuestionnaireForm import QuestionnaireForm
 from blog.views.permission_config import user
 import random
 from blog import config
@@ -10,32 +9,65 @@ import time
 
 questionnaire_page = Blueprint('questionnaire', __name__, template_folder='templates')
 
-@app.route('/questionnaire/<packId>', methods=['GET', 'POST'])
+
+@app.route('/questionnaire/<packId>', methods=['GET'])
 @user.require(http_exception=403)
 def questionnaire(packId):
-    try:
+    pack = Pack(pack_id=packId).getPack()
 
-        pack = Pack(pack_id=packId).getPack()
-        if User(user_id=pack.user_id).username != session['username']:
-            redirect('authorisation_failed')
+    if pack.user_id != User(username=session['username']).getUser().id:
+        return redirect('authorisation_failed')
 
-        packResponseCount = ResponseInPack.getResponseList_byPackId(pack.id).__len__()
-        if packResponseCount >= config.STIMULUS_COUNT:
-            pack.setFinishTime(time.strftime('%Y-%m-%d %H:%M:%S'))
-            flash(message='پرسشنامه با موفقیت تکمیل شد. ممنون از مشارکت شما.', category='success')
-            return redirect('/')
+    return render_template('questionnaire.html', packId=packId)
 
+
+@app.route('/addResponse', methods=['POST'])
+@user.require(http_exception=403)
+def addResponse():
+    stimulus = request.json['stimulus']
+    response = request.json['response']
+    packId = request.json['packId']
+
+    response = Phrase(content=response).addIfNotExists()
+
+    ResponseInPack(pack_id=packId,
+                   phrase1_id=Phrase(content=stimulus).getPhrase_byContent().id,
+                   phrase2_id=response.id,
+                   duration=10).addResponseInPack()
+    return ''
+
+
+@app.route('/getStimulus', methods=['POST'])
+@user.require(http_exception=403)
+def getStimulus():
+    packId = request.json['packId']
+    pack = Pack(pack_id=packId).getPack()
+
+    unansweredPhraseId = ResponseInPack(pack_id=pack.id).unansweredPhraseId()
+    if not unansweredPhraseId:
         unseenPhraseIdList = getUnseenPhraseIdList(pack.id)
         if unseenPhraseIdList.__len__() == 0:
-            raise AssertionError()
+            pack.setFinishTime(time.strftime('%Y-%m-%d %H:%M:%S'))
+            flash(message='شما به تمامی سوالات پرسشن‌نامه پاسخ دادید. ممنون از مشارکت شما.', category='success')
+            return url_for('index')
+        stimulusId = random.choice(unseenPhraseIdList)
+        ResponseInPack(pack_id=pack.id, phrase1_id=stimulusId).addResponseInPack()
+    else:
+        stimulusId = unansweredPhraseId[0]
 
-        form = QuestionnaireForm(request.form)
-        stimulus = Phrase(phrase_id=random.choice(unseenPhraseIdList)).getPhrase().content
+    stimulus = Phrase(phrase_id=stimulusId).getPhrase().content
+    return stimulus
 
-        return render_template('questionnaire.html', form=form, stimulus=stimulus, packId=packId)
 
-    except Exception:
-        return redirect('page_not_found')
+@app.route('/endQuestionnaire', methods=['POST'])
+@user.require(http_exception=403)
+def endQuestionnaire():
+    packId = request.json['packId']
+    pack = Pack(pack_id=packId).getPack()
+
+    pack.setFinishTime(time.strftime('%Y-%m-%d %H:%M:%S'))
+    flash(message='پرسشنامه با موفقیت تکمیل شد. ممنون از مشارکت شما.', category='success')
+    return url_for('index')
 
 
 def getUnseenPhraseIdList(packId):
@@ -49,3 +81,4 @@ def getUnseenPhraseIdList(packId):
             [response.phrase1_id for response in ResponseInPack.getResponseList_byPackId(pack.id)])
     unseenPhraseIdList = [item for item in phraseList_byQuestionnaire if item not in phraseIdList_byUser]
     return unseenPhraseIdList
+

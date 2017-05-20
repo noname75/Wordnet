@@ -21,3 +21,11 @@ class Phrase(db.Model):
         db.session.flush()
         db.session.commit()
         return self
+
+    def addIfNotExists(self):
+        last = self.getPhrase_byContent()
+        if not last:
+            self.addPhrase()
+            return self
+        else:
+            return last

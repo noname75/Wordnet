@@ -22,14 +22,31 @@ class Questionnaire(db.Model):
             return None
 
 
-    def __init__(self, questionnaire_id):
+    def __init__(self, questionnaire_id=None, moreInfo=None, subject=None, isActive=False, isPictorial=False,
+                 isChosen=False):
         self.id = questionnaire_id
+        self.subject = subject
+        self.isActive = isActive
+        self.isPictorial = isPictorial
+        self.isChosen = isChosen
+        self.moreInfo = moreInfo
 
     def getQuestionnaire(self):
-        return db.session.query(Questionnaire).filter_by(id=self.id).first()
+        if self.id:
+            return db.session.query(Questionnaire).filter_by(id=self.id).first()
+        elif self.subject:
+            return db.session.query(Questionnaire).filter_by(subject=self.subject).first()
 
     def setStimulusCount(self, stimulusCount):
         self.stimulusCount = stimulusCount
 
     def setUserResponseCount(self, userResponseCount):
         self.userResponseCount = userResponseCount
+
+
+    def addQuestionnaire(self):
+        db.session.add(self)
+        db.session.flush()
+        db.session.commit()
+
+        return self
