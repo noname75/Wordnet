@@ -1,4 +1,4 @@
-from flask import render_template, Blueprint, request, flash, redirect
+from flask import render_template, Blueprint, request, flash, redirect, url_for
 from blog.models.db_config import *
 from blog import app
 from blog.views.permission_config import admin
@@ -22,6 +22,7 @@ def addQuestionnaire():
         stimuliList = form.stimuli.data.split('\n')
 
         for s in stimuliList:
+            print(s)
             stimulus = Phrase(content=s).addIfNotExists()
             PhraseInQuestionnaire(
                 phrase_id=stimulus.id,

@@ -7,5 +7,6 @@ logout_page = Blueprint('logout', __name__, template_folder='templates')
 @app.route('/logout', methods=['GET'])
 def logout():
     session.pop('username', None)
+    session.pop('admin', None)
     identity_changed.send(app, identity=AnonymousIdentity())
     return redirect(url_for('index'))

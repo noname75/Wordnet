@@ -21,17 +21,19 @@
         <div class="col-xs-6 col-md-4">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <strong> ثبت پرسش‌نامه جدید</strong>
+                    <p style="text-align: center">
+                        <strong> ثبت پرسش‌نامه جدید</strong>
+                    </p>
                 </div>
                 <div class="panel-body" div style="color:#083C32">
                     <form method=post action="/addQuestionnaire">
-                        <dl>
+                        <dl style="font-family: BYekan">
                             {{ render_field(form.subject) }}
                             {{ render_field(form.moreInfo) }}
                             {{ render_field(form.stimuli) }}
                         </dl>
-                        <p><input type=submit class="btn btn-success btn-block" style="background-color: #18bc9c"
-                                  value=تایید>
+                        <p><input type=submit class="btn btn-success btn-block" style="font-family: BYekan" value=تایید>
+                        </p>
                     </form>
                 </div>
             </div>

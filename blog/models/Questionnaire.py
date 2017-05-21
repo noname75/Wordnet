@@ -22,7 +22,7 @@ class Questionnaire(db.Model):
             return None
 
 
-    def __init__(self, questionnaire_id=None, moreInfo=None, subject=None, isActive=False, isPictorial=False,
+    def __init__(self, questionnaire_id=None, moreInfo=None, subject=None, isActive=True, isPictorial=False,
                  isChosen=False):
         self.id = questionnaire_id
         self.subject = subject

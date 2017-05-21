@@ -140,11 +140,13 @@
                   <div class="bar-inner">
                       <ul>
                           <li style="font-family: BYekan">
-                              <a href="{{ url_for('index') }}"><span class="bold">خانه</span></a>
+                              <a href="{{ url_for('index') }}"><i class="fs-10 pg-home"></i><span
+                                      class="bold"> خانه</span></a>
                           </li>
                           <li style="font-family: BYekan">
-                              <a href="#"><span class="bold">پرسش‌نامه‌ها</span><span class="arrow"></span></a>
-                              <ul class="classic col-sm-1" style="margin-right: 80px">
+                              <a href="#"><i class="fs-10 pg-menu"></i><span class="bold"> پرسش‌نامه‌ها</span><span
+                                      class="arrow"></span></a>
+                              <ul class="classic col-xs-1" style="margin-right: 80px">
                                   <li>
                                       <a href="{{ url_for('questionnaireList',questionnaireType='00') }}">واژه‌ای توصیفی
                     <span class="description">
@@ -171,6 +173,12 @@
                                   </li>
                               </ul>
                           </li>
+                          {% if session.admin %}
+                          <li style="font-family: BYekan">
+                              <a href="{{ url_for('addQuestionnaire') }}"><i class="fs-10 pg-plus"></i><span
+                                      class="bold"> افزودن پرسش‌نامه</span></a>
+                          </li>
+                          {% endif %}
                       </ul>
                   </div>
           </div>

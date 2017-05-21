@@ -13,7 +13,7 @@ class PhraseInQuestionnaire(db.Model):
         self.phrase_id = phrase_id
 
     def addPhraseInQuestionnaire(self):
-        if db.session.query(PhraseInQuestionnaire).filter_by(questionnaire_id=self.questionnaire_id,
+        if not db.session.query(PhraseInQuestionnaire).filter_by(questionnaire_id=self.questionnaire_id,
                                                              phrase_id=self.phrase_id).first():
             db.session.add(self)
-            db.session.commit
+            db.session.commit()

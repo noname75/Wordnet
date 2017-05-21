@@ -16,6 +16,8 @@ def login():
         if user:
             if bcrypt.verify(password, user.password):
                 session['username'] = user.username
+                if user.role == 'admin':
+                    session['admin'] = True
                 identity_changed.send(app, identity=Identity(id=user.id, auth_type=user.role))
                 return redirect('/')
             else:

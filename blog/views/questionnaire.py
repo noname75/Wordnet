@@ -10,7 +10,7 @@ import time
 questionnaire_page = Blueprint('questionnaire', __name__, template_folder='templates')
 
 
-@app.route('/questionnaire/<packId>', methods=['GET'])
+@app.route('/questionnaire/<int:packId>', methods=['GET'])
 @user.require(http_exception=403)
 def questionnaire(packId):
     pack = Pack(pack_id=packId).getPack()
