@@ -8,5 +8,4 @@ logout_page = Blueprint('logout', __name__, template_folder='templates')
 def logout():
     session.pop('username', None)
     identity_changed.send(app, identity=AnonymousIdentity())
-    flash('خروج از سایت انجام شد.', category='success')
     return redirect(url_for('index'))

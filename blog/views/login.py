@@ -16,7 +16,6 @@ def login():
         if user:
             if bcrypt.verify(password, user.password):
                 session['username'] = user.username
-                flash(message=username + ' عزیز! به سایت خوش آمدید.', category='success')
                 identity_changed.send(app, identity=Identity(id=user.id, auth_type=user.role))
                 return redirect('/')
             else:

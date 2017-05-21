@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html>
   <head>
+      <style>
+          @font-face {
+              font-family: 'BYekan';
+              src: url('../static/pages/fonts/BYekan.eot');
+              src: local('b BYekan'), url('../static/pages/fonts/BYekan.woff') format('woff'), url('../static/pages/fonts/BYekan.ttf') format('truetype'), url('BYekan.svg') format('svg');
+              font-weight: normal;
+              font-style: normal;
+          }
+      </style>
     <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
     <meta charset="utf-8" />
     <title>تارواژه</title>
@@ -23,100 +32,44 @@
     <link href="../static/assets/plugins/switchery/css/switchery.min.css" rel="stylesheet" type="text/css" media="screen" />
     <link href="../static/pages/css/pages-icons.css" rel="stylesheet" type="text/css">
     <link class="main-stylesheet" href="../static/pages/css/themes/simple.rtl.css" rel="stylesheet" type="text/css" />
-    <!--[if lte IE 9]>
-	<link href="../static/assets/plugins/codrops-dialogFx/dialog.ie.css" rel="stylesheet" type="text/css" media="screen" />
-	<![endif]-->
   </head>
-  <body class="fixed-header rtl menu-behind">
-    <!-- BEGIN SIDEBPANEL-->
-    <nav class="page-sidebar" data-pages="sidebar">
-      <!-- BEGIN SIDEBAR MENU TOP TRAY CONTENT-->
-      <div class="sidebar-overlay-slide from-top" id="appMenu">
-        <div class="row">
-          <div class="col-xs-6 no-padding">
-            <a href="#" class="p-l-40"><img src="../static/assets/img/demo/social_app.svg" alt="socail">
-            </a>
-          </div>
-          <div class="col-xs-6 no-padding">
-            <a href="#" class="p-l-10"><img src="../static/assets/img/demo/email_app.svg" alt="socail">
-            </a>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-xs-6 m-t-20 no-padding">
-            <a href="#" class="p-l-40"><img src="../static/assets/img/demo/calendar_app.svg" alt="socail">
-            </a>
-          </div>
-          <div class="col-xs-6 m-t-20 no-padding">
-            <a href="#" class="p-l-10"><img src="../static/assets/img/demo/add_more.svg" alt="socail">
-            </a>
-          </div>
-        </div>
-      </div>
-      <!-- END SIDEBAR MENU TOP TRAY CONTENT-->
-      <!-- BEGIN SIDEBAR MENU HEADER-->
-      <div class="sidebar-header">
-        <img src="../static/assets/img/logo_white.png" alt="logo" class="brand" data-src="../static/assets/img/logo_white.png" data-src-retina="../static/assets/img/logo_white_2x.png" width="78" height="22">
-        <div class="sidebar-header-controls">
-          <button type="button" class="btn btn-link visible-lg-inline" data-toggle-pin="sidebar"><i class="fa fs-12"></i>
-          </button>
-        </div>
-      </div>
-      <!-- END SIDEBAR MENU HEADER-->
-      <!-- START SIDEBAR MENU -->
-      <div class="sidebar-menu">
-        <!-- BEGIN SIDEBAR MENU ITEMS-->
-        <ul class="menu-items scroll-wrapper">
-          <li class="m-t-30 ">
-            <a href="{{ url_for('index') }}" class="detailed">
-              <span class="title">خانه</span>
-              <span class="details"></span>
-            </a>
-            <span class="bg-success icon-thumbnail"><i class="pg-home"></i></span>
-          </li>
-            <li>
-                <a href="{{ url_for('questionnaireList',questionnaireType='00') }}" class="detailed">
-                    <span class="title">پرسش‌نامه‌ها</span>
-                    <span class="details"></span>
-                </a>
-                <span class="bg-success icon-thumbnail"><i class="pg-menu"></i></span>
-            </li>
-        </ul>
-        <div class="clearfix"></div>
-      </div>
-      <!-- END SIDEBAR MENU -->
-    </nav>
-    <!-- END SIDEBAR -->
-    <!-- END SIDEBPANEL-->
+  <body class="fixed-header horizontal-menu" style="font-family: BYekan">
     <!-- START PAGE-CONTAINER -->
     <div class="page-container ">
       <!-- START HEADER -->
       <div class="header ">
-        <!-- START MOBILE CONTROLS -->
+          <!-- START MOBILE CONTROLS -->
         <div class="container-fluid relative">
           <!-- LEFT SIDE -->
-          <div class="pull-left full-height visible-sm visible-xs">
-            <!-- START ACTION BAR -->
-            <div class="header-inner">
-              <a href="#" class="btn-link toggle-sidebar visible-sm-inline-block visible-xs-inline-block padding-5" data-toggle="sidebar">
-                <span class="icon-set menu-hambuger"></span>
-              </a>
-            </div>
-            <!-- END ACTION BAR -->
-          </div>
           <div class="pull-center hidden-md hidden-lg">
             <div class="header-inner">
               <div class="brand inline">
-                <img src="../static/assets/img/logo.png"  width="78" height="22">
+                  <img src="./static/assets/img/logo_2x.png" alt="logo" data-src="assets/img/logo.png"
+                       data-src-retina="assets/img/logo_2x.png" width="78" height="22">
               </div>
             </div>
+          </div>
+            <!-- RIGHT SIDE -->
+            <div class="pull-left full-height visible-sm visible-xs">
+                <!-- START ACTION BAR -->
+                <div class="header-inner">
+                    <a href="#" class="btn-link visible-xs-inline-block visible-sm-inline-block m-r-10"
+                       data-pages="horizontal-menu-toggle">
+                        <span class="pg pg-arrow_minimize"></span>
+                    </a>
+                    <a href="#" class="btn-link visible-sm-inline-block visible-xs-inline-block" data-toggle="quickview"
+                       data-toggle-element="#quickview">
+                        <span class="icon-set menu-hambuger-plus"></span>
+                    </a>
+                </div>
+                <!-- END ACTION BAR -->
           </div>
         </div>
         <!-- END MOBILE CONTROLS -->
         <div class=" pull-left sm-table hidden-xs hidden-sm">
           <div class="header-inner">
             <div class="brand inline">
-              <img src="../static/assets/img/logo_2x.png" width="78" height="22">
+                <img src="../static/assets/img/logo.png" width="78" height="22">
             </div>
           </div>
         </div>
@@ -136,8 +89,11 @@
                                  <form class="form" role="form" method=post action="{{ url_for('login') }}" accept-charset="UTF-8">
                                       {% if error %}<p class="alert alert-danger"><strong>خطا:</strong> {{ error }}{% endif %}
                                      <div class="form-group">
+                                     <br>
                                          <input  type="text" class="form-control" name="username" placeholder="نام کاربری" >
+                                     <br>
                                          <input type="password" class="form-control" name="password" placeholder="رمز ورود" >
+                                     <br>
                                          <button type="submit" class="btn btn-success btn-block">ورود</button>
                                      </div>
                                  </form>
@@ -155,8 +111,10 @@
 	                 <li>
 	                     <div class="navbar-footer">
 	                         <div class="navbar-footer-content">
-	                             <a href="{{ url_for('profile', username=session.username) }}" class="btn btn-success">پروفایل</a>
-	                             <a href="{{ url_for('logout') }}" class="btn btn-success">خروج از سایت</a>
+                                 <a style="font-family: BYekan"
+                                    href="{{ url_for('profile', username=session.username) }}" class="btn btn-block">پروفایل</a>
+                                 <a style="font-family: BYekan" href="{{ url_for('logout') }}" class="btn btn-block">خروج
+                                     از سایت</a>
 	                         </div>
 	                     </div>
 	                 </li>
@@ -170,12 +128,55 @@
       <!-- START PAGE CONTENT WRAPPER -->
       <div class="page-content-wrapper">
         <!-- START PAGE CONTENT -->
+          {% if session.username %}
           <div class="content">
-          <!-- START JUMBOTRON -->
-          <div class="jumbotron" data-pages="parallax">
+              <div class="bar">
+                  <div class="pull-left">
+                      <a href="#"
+                         class="text-black padding-10 visible-xs-inline visible-sm-inline pull-right m-t-14 m-b-14 m-r-14 on"
+                         data-pages="horizontal-menu-toggle">
+                      </a>
+                  </div>
+                  <div class="bar-inner">
+                      <ul>
+                          <li style="font-family: BYekan">
+                              <a href="{{ url_for('index') }}"><span class="bold">خانه</span></a>
+                          </li>
+                          <li style="font-family: BYekan">
+                              <a href="#"><span class="bold">پرسش‌نامه‌ها</span><span class="arrow"></span></a>
+                              <ul class="classic col-sm-1" style="margin-right: 80px">
+                                  <li>
+                                      <a href="{{ url_for('questionnaireList',questionnaireType='00') }}">واژه‌ای توصیفی
+                    <span class="description">
+                    </span>
+                                      </a>
+                                  </li>
+                                  <li>
+                                      <a href="#">واژه‌ای گزینه‌ای
+                    <span class="description">
+                    </span>
+                                      </a>
+                                  </li>
+                                  <li>
+                                      <a href="#">تصویری توصیفی
+                    <span class="description">
+                    </span>
+                                      </a>
+                                  </li>
+                                  <li>
+                                      <a href="#">تصویری توصیفی
+                        <span class="description">
+                        </span>
+                                      </a>
+                                  </li>
+                              </ul>
+                          </li>
+                      </ul>
+                  </div>
           </div>
-          <!-- END JUMBOTRON -->
+              {% endif %}
           <!-- START CONTAINER FLUID -->
+              <!-- START PAGE COVER -->
           <div class="container-fluid container-fixed-lg">
             <!-- BEGIN PlACE PAGE CONTENT HERE -->
               {%- with messages = get_flashed_messages(with_categories=true) -%}
@@ -190,13 +191,14 @@
                     </ul>
                 {%- endif -%}
               {%- endwith %}
+              <div style="margin-top: 100px; margin-left: 100px; margin-right: 100px; margin-bottom: 100px">
               {% block body %}{% endblock %}
+              </div>
             <!-- END PLACE PAGE CONTENT HERE -->
           </div>
           <!-- END CONTAINER FLUID -->
         </div>
         <!-- END PAGE CONTENT -->
-        <!-- START CONTAINER FLUID -->
         <!-- START CONTAINER FLUID -->
         <div class="container-fluid container-fixed-lg footer">
           <div class="copyright sm-text-center">
