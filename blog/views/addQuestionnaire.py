@@ -22,7 +22,6 @@ def addQuestionnaire():
         stimuliList = form.stimuli.data.split('\n')
 
         for s in stimuliList:
-            print(s)
             stimulus = Phrase(content=s).addIfNotExists()
             PhraseInQuestionnaire(
                 phrase_id=stimulus.id,

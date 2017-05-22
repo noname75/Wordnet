@@ -11,13 +11,13 @@ class Questionnaire(db.Model):
 
     def getQuestionnaireList(questionnaireType):
         if questionnaireType == '00':
-            return db.session.query(Questionnaire).filter_by(isActive=True).all()
+            return db.session.query(Questionnaire).all()
         elif questionnaireType == '01':
-            return db.session.query(Questionnaire).filter_by(isActive=True, isPictorial=True).all()
+            return db.session.query(Questionnaire).filter_by(isPictorial=True).all()
         elif questionnaireType == '10':
-            return db.session.query(Questionnaire).filter_by(isActive=True, isChosen=True).all()
+            return db.session.query(Questionnaire).filter_by(isChosen=True).all()
         elif questionnaireType == '11':
-            return db.session.query(Questionnaire).filter_by(isActive=True, isPictorial=True, isChosen=True).all()
+            return db.session.query(Questionnaire).filter_by(isPictorial=True, isChosen=True).all()
         else:
             return None
 
@@ -47,6 +47,11 @@ class Questionnaire(db.Model):
     def addQuestionnaire(self):
         db.session.add(self)
         db.session.flush()
+        db.session.commit()
+        return self
+
+    def changeActivationStatus(self):
+        self.isActive = not self.isActive
         db.session.commit()
 
         return self

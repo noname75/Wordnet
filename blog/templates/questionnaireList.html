@@ -4,8 +4,8 @@
 {% block body %}
 <div class="container-fluid container-fixed-lg">
     <div class="row">
-        <div class="col-xs-6 col-md-3"></div>
-        <div class="col-xs-6 col-md-6">
+        <div class="col-xs-6 col-md-1"></div>
+        <div class="col-xs-6 col-md-10">
             <!-- START PANEL -->
             <div class="panel panel-transparent">
                 <div class="panel-title">
@@ -21,21 +21,76 @@
                                     پرسش‌نامه</p></th>
                                 <th><p style="text-align: center; color: darkslategray; font-family: BYekan">توضیحات</p>
                                 </th>
+                                <th><p style="text-align: center; color: darkslategray; font-family: BYekan">تعداد
+                                    واژه‌ها</p></th>
+                                {% if session.admin %}
+                                <th><p style="text-align: center; color: darkslategray; font-family: BYekan">
+                                    فعال/غیرفعال</p></th>
+                                {% endif %}
                             </tr>
                             </thead>
                             <tbody>
                             {% for questionnaire in questionnaireList %}
-                            <tr onclick="AddPack('{{ questionnaire.id }}')">
+                            {% if (not questionnaire.isActive and session.admin) or questionnaire.isActive %}
+                            <tr>
+                                {% if not session.admin %}
+                                <td class="v-align-middle bold">
+                                    <button type="button" class="btn" onclick="addPack('{{ questionnaire.id }}')"
+                                            style="font-family: BYekan">
+                                        {{ questionnaire.subject }}
+                                    </button>
+                                </td>
+                                <td>{{ questionnaire.moreInfo }}</td>
+                                <td class="v-align-middle bold">{{ questionnaire.stimulusCount }}</td>
+                                {% else %}
                                 <td class="v-align-middle bold">{{ questionnaire.subject }}</td>
                                 <td>{{ questionnaire.moreInfo }}</td>
+                                <td>
+                                    <button type="button" class="btn" data-toggle="modal"
+                                            onclick="setModalContent('{{ questionnaire.id }}')" data-target="#myModal">
+                                        {{ questionnaire.stimulusCount }}
+                                    </button>
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="myModal" role="dialog">
+                                        <div class="modal-dialog">
+
+                                            <!-- Modal content-->
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close"
+                                                            data-dismiss="modal">&times;</button>
+                                                    <h4 class="modal-title" id="modalTitle"
+                                                        style="font-family: BYekan"></h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <br><br>
+
+                                                    <p id="modalBody"></p>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </td>
+
+                                {% if questionnaire.isActive %}
+                                <td><input type="checkbox" data-init-plugin="switchery" data-size="small" checked
+                                           onchange="changeActivationStatus('{{ questionnaire.id }}')"/></td>
+                                {% else %}
+                                <td><input type="checkbox" data-init-plugin="switchery" data-size="small"
+                                           onchange="changeActivationStatus('{{ questionnaire.id }}')"/></td>
+                                {% endif %}
+                                {% endif %}
                             </tr>
+                            {% endif %}
                             {% endfor %}
                             </tbody>
                         </table>
                     </div>
                 </div>
-            </div>
+                </div>
             <!-- END PANEL -->
+            </div>
         </div>
     </div>
 </div>
@@ -44,7 +99,7 @@
 
 {% block js %}
 <script type="text/javascript">
-    function AddPack(questionnaireId) {
+    function addPack(questionnaireId) {
         $.ajax({
             type: "POST",
             url: '/addPack',
@@ -58,5 +113,33 @@
             }
         });
     }
+
+    function changeActivationStatus(questionnaireId) {
+        $.ajax({
+            type: "POST",
+            url: '/changeActivationStatus',
+            data: JSON.stringify({
+                questionnaireId: questionnaireId
+            }),
+            contentType: 'application/json;charset=UTF-8',
+            success: function (result) {
+            }
+        });
+    }
+    function setModalContent(questionnaireId) {
+        $.ajax({
+            type: "POST",
+            url: '/getModalContent',
+            data: JSON.stringify({
+                questionnaireId: questionnaireId
+            }),
+            contentType: 'application/json;charset=UTF-8',
+            success: function (result) {
+                document.getElementById("modalTitle").innerHTML = result['title'];
+                document.getElementById("modalBody").innerHTML = result['body'];
+            }
+        });
+    }
+
 </script>
 {% endblock %}

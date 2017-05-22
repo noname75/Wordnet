@@ -27,13 +27,14 @@ def addResponse():
     stimulus = request.json['stimulus']
     response = request.json['response']
     packId = request.json['packId']
+    duration = request.json['duration']
 
     response = Phrase(content=response).addIfNotExists()
 
     ResponseInPack(pack_id=packId,
                    phrase1_id=Phrase(content=stimulus).getPhrase_byContent().id,
                    phrase2_id=response.id,
-                   duration=10).addResponseInPack()
+                   duration=duration).addResponseInPack()
     return ''
 
 

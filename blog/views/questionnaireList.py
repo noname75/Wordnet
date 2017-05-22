@@ -1,7 +1,7 @@
-from flask import render_template, Blueprint, redirect, request, session, url_for
+from flask import render_template, Blueprint, redirect, request, session, url_for, jsonify
 from blog.models.db_config import *
 from blog import app
-from blog.views.permission_config import user
+from blog.views.permission_config import user, admin
 import time
 
 questionnaireList_page = Blueprint('questionnaireList', __name__, template_folder='templates')
@@ -64,3 +64,25 @@ def addPack():
 
     return url_for('questionnaire', packId=pack.id)
 
+
+@app.route("/changeActivationStatus", methods=['POST'])
+@admin.require(http_exception=403)
+def changeActivationStatus():
+    questionnaireId = request.json['questionnaireId']
+
+    questionnaire = Questionnaire(questionnaireId).getQuestionnaire()
+    questionnaire.changeActivationStatus();
+
+    return ''
+
+
+@app.route("/getModalContent", methods=['POST'])
+@admin.require(http_exception=403)
+def getModalContent():
+    questionnaireId = request.json['questionnaireId']
+    questionnaire = Questionnaire(questionnaireId).getQuestionnaire()
+    title = questionnaire.subject
+    phraseInQList = PhraseInQuestionnaire.getPhraseList_byQuestionnaireId(questionnaire.id)
+    stimuliList = [Phrase(e.phrase_id).getPhrase().content for e in phraseInQList]
+    body = ', '.join(stimuliList)
+    return jsonify({"title": title, 'body': body})
