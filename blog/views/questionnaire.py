@@ -3,7 +3,6 @@ from flask import request, render_template, Blueprint, session, redirect, flash,
 from blog import app
 from blog.views.permission_config import user
 import random
-from blog import config
 import time
 
 
@@ -32,7 +31,7 @@ def addResponse():
     response = Phrase(content=response).addIfNotExists()
 
     ResponseInPack(pack_id=packId,
-                   phrase1_id=Phrase(content=stimulus).getPhrase().id,
+                   phrase1_id=Phrase(content=stimulus).getPhrase_byContent().id,
                    phrase2_id=response.id,
                    duration=duration).addResponseInPack()
     return ''

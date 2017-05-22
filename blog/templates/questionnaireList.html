@@ -34,12 +34,20 @@
                             {% if (not questionnaire.isActive and session.admin) or questionnaire.isActive %}
                             <tr>
                                 {% if not session.admin %}
+                                {% if questionnaire.isCompletedByUser %}
+                                <td class="v-align-middle bold">
+                                    <button type="button" class="btn" style="font-family: BYekan" disabled>
+                                        {{ questionnaire.subject }}
+                                    </button>
+                                </td>
+                                {% else %}
                                 <td class="v-align-middle bold">
                                     <button type="button" class="btn" onclick="addPack('{{ questionnaire.id }}')"
                                             style="font-family: BYekan">
                                         {{ questionnaire.subject }}
                                     </button>
                                 </td>
+                                {% endif %}
                                 <td>{{ questionnaire.moreInfo }}</td>
                                 <td class="v-align-middle bold">{{ questionnaire.stimulusCount }}</td>
                                 {% else %}

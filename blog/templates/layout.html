@@ -32,6 +32,7 @@
     <link href="../static/assets/plugins/switchery/css/switchery.min.css" rel="stylesheet" type="text/css" media="screen" />
     <link href="../static/pages/css/pages-icons.css" rel="stylesheet" type="text/css">
     <link class="main-stylesheet" href="../static/pages/css/themes/simple.rtl.css" rel="stylesheet" type="text/css" />
+      <script src="http://d3js.org/d3.v4.min.js" charset="utf-8"></script>
   </head>
   <body class="fixed-header horizontal-menu"
         style="font-family: BYekan;background-image: url('/static/assets/img/background2.jpg')">
@@ -91,11 +92,15 @@
                                       {% if error %}<p class="alert alert-danger"><strong>خطا:</strong> {{ error }}{% endif %}
                                      <div class="form-group">
                                      <br>
-                                         <input  type="text" class="form-control" name="username" placeholder="نام کاربری" >
+                                     <input type="text" class="form-control" name="username" style="font-family: BYekan"
+                                            placeholder="نام کاربری">
                                      <br>
-                                         <input type="password" class="form-control" name="password" placeholder="رمز ورود" >
+                                     <input type="password" class="form-control" name="password"
+                                            style="font-family: BYekan" placeholder="رمز ورود">
                                      <br>
-                                         <button type="submit" class="btn btn-success btn-block">ورود</button>
+                                     <button type="submit" class="btn btn-success btn-block"
+                                             style="font-family: BYekan">ورود
+                                     </button>
                                      </div>
                                  </form>
                              </li>
@@ -145,9 +150,13 @@
                                       class="bold"> خانه</span></a>
                           </li>
                           <li style="font-family: BYekan">
+                              <a href="{{ url_for('graph') }}"><i class="fs-10 pg-charts"></i><span
+                                      class="bold"> نمایش گراف</span></a>
+                          </li>
+                          <li style="font-family: BYekan">
                               <a href="#"><i class="fs-10 pg-menu"></i><span class="bold"> پرسش‌نامه‌ها</span><span
                                       class="arrow"></span></a>
-                              <ul class="classic col-xs-1" style="margin-right: 80px">
+                              <ul class="classic col-xs-1" style="margin-right: 190px">
                                   <li>
                                       <a href="{{ url_for('questionnaireList',questionnaireType='00') }}">واژه-توصیفی
                     <span class="description">
@@ -200,7 +209,7 @@
                     </ul>
                 {%- endif -%}
               {%- endwith %}
-              <div style="margin-top: 100px; margin-left: 100px; margin-right: 100px; margin-bottom: 100px">
+              <div style="margin-top: 30px; margin-left: 100px; margin-right: 100px; margin-bottom: 100px">
               {% block body %}{% endblock %}
               </div>
             <!-- END PLACE PAGE CONTENT HERE -->
@@ -209,20 +218,20 @@
         </div>
         <!-- END PAGE CONTENT -->
         <!-- START CONTAINER FLUID -->
-        <div class="container-fluid container-fixed-lg footer">
-          <div class="copyright sm-text-center">
-            <p class="small no-margin pull-left sm-pull-reset">
-              <span class="hint-text">Copyright &copy; 2014 </span>
-              <span class="font-montserrat">REVOX</span>.
-              <span class="hint-text">All rights reserved. </span>
-              <span class="sm-block"><a href="#" class="m-l-10 m-r-10">Terms of use</a> | <a href="#" class="m-l-10">Privacy Policy</a></span>
-            </p>
-            <p class="small no-margin pull-right sm-pull-reset">
-              <a href="#">Hand-crafted</a> <span class="hint-text">&amp; Made with Love ®</span>
-            </p>
-            <div class="clearfix"></div>
-          </div>
-        </div>
+          <!--<div class="container-fluid container-fixed-lg footer">-->
+          <!--<div class="copyright sm-text-center">-->
+          <!--<p class="small no-margin pull-left sm-pull-reset">-->
+          <!--<span class="hint-text">Copyright &copy; 2014 </span>-->
+          <!--<span class="font-montserrat">REVOX</span>.-->
+          <!--<span class="hint-text">All rights reserved. </span>-->
+          <!--<span class="sm-block"><a href="#" class="m-l-10 m-r-10">Terms of use</a> | <a href="#" class="m-l-10">Privacy Policy</a></span>-->
+          <!--</p>-->
+          <!--<p class="small no-margin pull-right sm-pull-reset">-->
+          <!--<a href="#">Hand-crafted</a> <span class="hint-text">&amp; Made with Love ®</span>-->
+          <!--</p>-->
+          <!--<div class="clearfix"></div>-->
+          <!--</div>-->
+          <!--</div>-->
         <!-- END COPYRIGHT -->
       </div>
       <!-- END PAGE CONTENT WRAPPER -->

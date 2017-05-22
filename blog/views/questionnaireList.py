@@ -11,10 +11,13 @@ questionnaireList_page = Blueprint('questionnaireList', __name__, template_folde
 @user.require(http_exception=403)
 def questionnaireList(questionnaireType):
     try:
+        user = User(username=session['username']).getUser()
         questionnaireList = Questionnaire.getQuestionnaireList(questionnaireType)
         for questionnnaire in questionnaireList:
             questionnnaire.setStimulusCount(
                 PhraseInQuestionnaire.getPhraseList_byQuestionnaireId(questionnnaire.id).__len__())
+            questionnnaire.isCompletedByUser = isCompletedByUser(questionnnaire.id, user.id)
+
         return render_template('questionnaireList.html',
                                questionnaireList=questionnaireList,
                                questionnaireType=questionnaireType)
@@ -86,3 +89,18 @@ def getModalContent():
     stimuliList = [Phrase(e.phrase_id).getPhrase().content for e in phraseInQList]
     body = ', '.join(stimuliList)
     return jsonify({"title": title, 'body': body})
+
+
+def isCompletedByUser(questionnaire_id, user_id):
+    phraseList_byQuestionnaire = [phrase.phrase_id for phrase in
+                                  PhraseInQuestionnaire.getPhraseList_byQuestionnaireId(questionnaire_id)]
+    packList = Pack.getPackList_byUserId(user_id)
+    phraseIdList_byUser = []
+    for pack in packList:
+        phraseIdList_byUser.extend(
+            [response.phrase1_id for response in ResponseInPack.getResponseList_byPackId(pack.id)])
+    unseenPhraseIdList = [item for item in phraseList_byQuestionnaire if item not in phraseIdList_byUser]
+    if unseenPhraseIdList.__len__() == 0:
+        return True
+    else:
+        return False

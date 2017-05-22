@@ -11,9 +11,9 @@ class Phrase(db.Model):
         self.content = content
 
     def getPhrase(self):
-        if self.id:
-            return db.session.query(Phrase).filter_by(id=self.id).first()
-        elif self.content:
+        return db.session.query(Phrase).filter_by(id=self.id).first()
+
+    def getPhrase_byContent(self):
             return db.session.query(Phrase).filter_by(content=self.content).first()
 
     def addPhrase(self):
@@ -23,7 +23,7 @@ class Phrase(db.Model):
         return self
 
     def addIfNotExists(self):
-        last = self.getPhrase()
+        last = self.getPhrase_byContent()
         if not last:
             self.addPhrase()
             return self

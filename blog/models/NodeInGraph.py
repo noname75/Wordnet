@@ -5,3 +5,7 @@ class NodeInGraph(db.Model):
     weight = db.Column(db.Float)
     phrase_id = db.Column(db.ForeignKey(Phrase.id), primary_key=True)
     graph_id = db.Column(db.ForeignKey(Graph.id), primary_key=True)
+
+
+    def getNodes_byGraphId(self, graph_id):
+        return db.session.query(NodeInGraph.phrase_id).filter_by(graph_id=graph_id).all()
