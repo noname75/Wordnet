@@ -32,7 +32,7 @@ def addResponse():
     response = Phrase(content=response).addIfNotExists()
 
     ResponseInPack(pack_id=packId,
-                   phrase1_id=Phrase(content=stimulus).getPhrase_byContent().id,
+                   phrase1_id=Phrase(content=stimulus).getPhrase().id,
                    phrase2_id=response.id,
                    duration=duration).addResponseInPack()
     return ''

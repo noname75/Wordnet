@@ -71,7 +71,7 @@ def changeActivationStatus():
     questionnaireId = request.json['questionnaireId']
 
     questionnaire = Questionnaire(questionnaireId).getQuestionnaire()
-    questionnaire.changeActivationStatus();
+    questionnaire.changeActivationStatus()
 
     return ''
 
