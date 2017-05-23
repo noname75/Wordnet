@@ -28,7 +28,7 @@
                             <br>
                             <input style="font-family: BYekan" id="bttnsubmit" type=submit
                                    class="btn btn-success btn-block"
-                                   onclick="AddResponse(document.getElementById('Response').value)" value='ثبت پاسخ'>
+                                   onclick="addResponse(document.getElementById('Response').value)" value='ثبت پاسخ'>
                             <br>
 
                             <div class="row">
@@ -40,7 +40,7 @@
                                 <div class="col-xs-4 col-md-2"></div>
                                 <div class="col-xs-4 col-md-5">
                                     <input style="font-family: BYekan" id="bttnskip" type=submit class="btn btn-block"
-                                           onclick="AddResponse('')" value='واژه‌ی بعدی'>
+                                           onclick="addResponse('')" value='واژه‌ی بعدی'>
                                 </div>
                             </div>
                         </form>
@@ -64,7 +64,7 @@
         })
     });
 
-    function AddResponse(responseListStr) {
+    function addResponse(responseListStr) {
         var stimulus = document.getElementById("Stimulus").textContent;
         var packId = '{{ packId }}';
         var responseList = responseListStr.split('/');

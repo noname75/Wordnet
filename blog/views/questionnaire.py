@@ -48,7 +48,7 @@ def getStimulus():
         unseenPhraseIdList = getUnseenPhraseIdList(pack.id)
         if unseenPhraseIdList.__len__() == 0:
             pack.setFinishTime(time.strftime('%Y-%m-%d %H:%M:%S'))
-            flash(message='شما به تمامی سوالات پرسشن‌نامه پاسخ دادید. ممنون از مشارکت شما.', category='success')
+            flash(message='شما به تمامی سوالات پرسش‌نامه پاسخ دادید.', category='success')
             return url_for('index')
         stimulusId = random.choice(unseenPhraseIdList)
         ResponseInPack(pack_id=pack.id, phrase1_id=stimulusId).addResponseInPack()
