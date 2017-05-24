@@ -61,6 +61,7 @@ def getGraph():
     dic_node = {}
     for i in final_node:
         dic_node['name'] = i
+        dic_node['content'] = Phrase(phrase_id=i).getPhrase().content
         dic_node['group'] = 1
         list_node.append(dic_node.copy())
 

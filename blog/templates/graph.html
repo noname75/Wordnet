@@ -12,6 +12,11 @@
         stroke: #fff;
         stroke-width: 1.5px;
     }
+
+    .node text {
+        pointer-events: none;
+        font: 20px sans-serif;
+    }
 </style>
 {% endblock %}
 
@@ -21,7 +26,6 @@
         <div class="col-md-1">
         </div>
         <div class="col-md-2">
-            <p id="test"></p>
             <div class="form-group">
                 <button style="font-family: BYekan; height: 55px" class="btn"
                         onclick="getGraph()" type="submit">
@@ -126,6 +130,7 @@
                             nodeIdList: nodeIdList
                         }
                 ), function (error, graph) {
+
                     var link = svg.append("g")
                             .attr("class", "links")
                             .selectAll("line")
@@ -143,18 +148,23 @@
                             .attr("fill", function (d) {
                                 return color(d.group);
                             })
+                            .html(function (d) {
+                                return d.content
+                            })
                             .call(d3.drag()
                                     .on("start", dragstarted)
                                     .on("drag", dragged)
                                     .on("end", dragended));
-                    node.append("title")
-                            .text(function (d) {
-                                return d.name;
+
+                    var texts = svg.selectAll("text.label")
+                            .data(graph.nodes)
+                            .enter().append("text")
+                            .attr("class", "label")
+                            .attr("fill", "black")
+                            .html(function (d) {
+                                return d.content;
                             });
-                    link.append("title")
-                            .text(function (d) {
-                                return d.source.name + " → " + d.target.name + "\n" + d.weight + " mi"
-                            });
+
                     simulation
                             .nodes(graph.nodes)
                             .on("tick", ticked);
@@ -180,6 +190,10 @@
                                 })
                                 .attr("cy", function (d) {
                                     return d.y;
+                                });
+                        texts
+                                .attr("transform", function (d) {
+                                    return "translate(" + (d.x - 5) + "," + (d.y - 5) + ")";
                                 });
                     }
                 });
