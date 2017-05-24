@@ -1,5 +1,5 @@
 from blog.models.db_config import *
-from flask import render_template, Blueprint
+from flask import render_template, Blueprint, request, jsonify
 from blog import app
 from blog.views.permission_config import user
 import json
@@ -20,9 +20,26 @@ def graph():
                            tagAndResponseGraphList=tagAndResponseGraphList)
 
 
-@app.route('/showGraph/<graphId>')
+@app.route('/getNodes', methods=['POST'])
 @user.require(http_exception=403)
-def show_graph(graphId):
+def getNodes():
+    graphId = request.json['graphId']
+    nodeList = []
+    for nodeInGraph in NodeInGraph().getNodes_byGraphId(graphId):
+        nodeList.append({
+            'content': Phrase(nodeInGraph.phrase_id).getPhrase().content,
+            'id': nodeInGraph.phrase_id
+        })
+    return jsonify({'nodeList': nodeList})
+
+
+@app.route('/getGraph', methods=['POST'])
+@user.require(http_exception=403)
+def getGraph():
+    graphId = request.json['graphId']
+    nodeIdList = request.json['nodeIdList']
+    print('graphId', graphId)
+    print('nodeIdList', nodeIdList)
     node = NodeInGraph().getNodes_byGraphId(graph_id=graphId)
     source, dest, weight = EdgeInGraph().getEdges_byGraphId(graph_id=graphId)
 

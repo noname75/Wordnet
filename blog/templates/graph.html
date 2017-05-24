@@ -21,9 +21,10 @@
         <div class="col-md-1">
         </div>
         <div class="col-md-2">
+            <p id="test"></p>
             <div class="form-group">
                 <button style="font-family: BYekan; height: 55px" class="btn"
-                        onclick="setGraph(document.getElementById('graph'))" type="submit">
+                        onclick="getGraph()" type="submit">
                     نمایش گراف
                 </button>
             </div>
@@ -32,14 +33,15 @@
             <div style="font-family: BYekan;height: 55px"
                  class="form-group form-group-default form-group-default-select2">
                 <label class="" style="font-family: BYekan">انتخاب واژه‌ها</label>
-                <select id="nodeList" style="font-family: BYekan" onabort="واژه یافت نشد." class="full-width"
+                <select id="nodeIdList" style="font-family: BYekan" class="full-width"
                         data-init-plugin="select2" multiple></select>
             </div>
         </div>
         <div class="col-md-3">
             <div class="form-group form-group-default form-group-default-select2">
                 <label class="" style="font-family: BYekan">انتخاب منبع گراف</label>
-                <select id="graphId" class="full-width" data-init-plugin="select2">
+                <select id="graphId" class="full-width" data-init-plugin="select2" onchange="setNodeList()">
+                    <option style="display:none">
                     {% if tagGraphList %}
                     <optgroup label="تگ‌های اینستاگرام">
                         {% for graph in tagGraphList %}
@@ -63,119 +65,141 @@
                     {% endif %}
                 </select>
             </div>
+            </form>
         </div>
     </div>
 </div>
 
+
 {% block js %}
 <script type="text/javascript">
-
-
-    function setNodeList(nodeList) {
-        var select = document.getElementById("nodeList");
-        for (i = 0; i < nodeList.length; i++) {
-            $("#nodeList").append(new Option(optList[i].content, optList[i].id));
-        }
+    function setNodeList() {
+        $.ajax({
+            type: "POST",
+            url: '/getNodes',
+            data: JSON.stringify(
+                    {
+                        graphId: document.getElementById('graphId').value
+                    }
+            ),
+            contentType: 'application/json;charset=UTF-8',
+            success: function (result) {
+                var nodeInListElement = document.getElementById("nodeIdList");
+                for (i = nodeInListElement.options.length - 1; i >= 0; i--) {
+                    nodeInListElement.options[i].selected = false;
+                    nodeInListElement.options[i] = null;
+                }
+                var nodeList = result['nodeList'];
+                for (i = 0; i < nodeList.length; i++) {
+                    $("#nodeIdList").append(new Option(nodeList[i]['content'], nodeList[i]['id']));
+                }
+            }
+        });
     }
 </script>
 <svg width="960" height="600"></svg>
 <script>
-    var svg = d3.select("svg"),
-            width = +svg.attr("width"),
-            height = +svg.attr("height");
 
-    var color = d3.scaleOrdinal(d3.schemeCategory20);
+    function getGraph() {
 
-    var simulation = d3.forceSimulation()
-            .force("link", d3.forceLink().id(function (d) {
-                return d.name;
-            }))
-            .force("charge", d3.forceManyBody())
-            .force("center", d3.forceCenter(width / 2, height / 2));
-
-    d3.json('/showGraph/' + document.getElementById('graphId').value, function (error, graph) {
-
-        var link = svg.append("g")
-                .attr("class", "links")
-                .selectAll("line")
-                .data(graph.links)
-                .enter().append("line")
-                .attr("stroke-width", function (d) {
-                    return Math.sqrt(d.weight);
-                });
-        var node = svg.append("g")
-                .attr("class", "nodes")
-                .selectAll("circle")
-                .data(graph.nodes)
-                .enter().append("circle")
-                .attr("r", 5)
-                .attr("fill", function (d) {
-                    return color(d.group);
-                })
-                .call(d3.drag()
-                        .on("start", dragstarted)
-                        .on("drag", dragged)
-                        .on("end", dragended));
-
-        node.append("title")
-                .text(function (d) {
+        var svg = d3.select("svg"),
+                width = +svg.attr("width"),
+                height = +svg.attr("height");
+        var color = d3.scaleOrdinal(d3.schemeCategory20);
+        var simulation = d3.forceSimulation()
+                .force("link", d3.forceLink().id(function (d) {
                     return d.name;
+                }))
+                .force("charge", d3.forceManyBody())
+                .force("center", d3.forceCenter(width / 2, height / 2));
+
+
+        var nodeIdList = $('#nodeIdList').val();
+        var graphId = document.getElementById("graphId").value;
+        d3.selectAll("svg > *").remove();
+        d3.json('/getGraph')
+                .header("Content-Type", "application/json;charset=UTF-8")
+                .post(
+                JSON.stringify(
+                        {
+                            graphId: graphId,
+                            nodeIdList: nodeIdList
+                        }
+                ), function (error, graph) {
+                    var link = svg.append("g")
+                            .attr("class", "links")
+                            .selectAll("line")
+                            .data(graph.links)
+                            .enter().append("line")
+                            .attr("stroke-width", function (d) {
+                                return Math.sqrt(d.weight);
+                            });
+                    var node = svg.append("g")
+                            .attr("class", "nodes")
+                            .selectAll("circle")
+                            .data(graph.nodes)
+                            .enter().append("circle")
+                            .attr("r", 5)
+                            .attr("fill", function (d) {
+                                return color(d.group);
+                            })
+                            .call(d3.drag()
+                                    .on("start", dragstarted)
+                                    .on("drag", dragged)
+                                    .on("end", dragended));
+                    node.append("title")
+                            .text(function (d) {
+                                return d.name;
+                            });
+                    link.append("title")
+                            .text(function (d) {
+                                return d.source.name + " → " + d.target.name + "\n" + d.weight + " mi"
+                            });
+                    simulation
+                            .nodes(graph.nodes)
+                            .on("tick", ticked);
+                    simulation.force("link")
+                            .links(graph.links);
+                    function ticked() {
+                        link
+                                .attr("x1", function (d) {
+                                    return d.source.x;
+                                })
+                                .attr("y1", function (d) {
+                                    return d.source.y;
+                                })
+                                .attr("x2", function (d) {
+                                    return d.target.x;
+                                })
+                                .attr("y2", function (d) {
+                                    return d.target.y;
+                                });
+                        node
+                                .attr("cx", function (d) {
+                                    return d.x;
+                                })
+                                .attr("cy", function (d) {
+                                    return d.y;
+                                });
+                    }
                 });
-
-        link.append("title")
-                .text(function (d) {
-                    return d.source.name + " → " + d.target.name + "\n" + d.weight + " mi"
-                });
-
-        simulation
-                .nodes(graph.nodes)
-                .on("tick", ticked);
-
-        simulation.force("link")
-                .links(graph.links);
-
-        function ticked() {
-            link
-                    .attr("x1", function (d) {
-                        return d.source.x;
-                    })
-                    .attr("y1", function (d) {
-                        return d.source.y;
-                    })
-                    .attr("x2", function (d) {
-                        return d.target.x;
-                    })
-                    .attr("y2", function (d) {
-                        return d.target.y;
-                    });
-
-            node
-                    .attr("cx", function (d) {
-                        return d.x;
-                    })
-                    .attr("cy", function (d) {
-                        return d.y;
-                    });
+        function dragstarted(d) {
+            if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+            d.fx = d.x;
+            d.fy = d.y;
         }
-    });
 
-    function dragstarted(d) {
-        if (!d3.event.active) simulation.alphaTarget(0.3).restart();
-        d.fx = d.x;
-        d.fy = d.y;
+        function dragged(d) {
+            d.fx = d3.event.x;
+            d.fy = d3.event.y;
+        }
+
+        function dragended(d) {
+            if (!d3.event.active) simulation.alphaTarget(0);
+            d.fx = null;
+            d.fy = null;
+        }
     }
-
-    function dragged(d) {
-        d.fx = d3.event.x;
-        d.fy = d3.event.y;
-    }
-
-    function dragended(d) {
-        if (!d3.event.active) simulation.alphaTarget(0);
-        d.fx = null;
-        d.fy = null;
-    }
-
 </script>
 {% endblock %}
 
