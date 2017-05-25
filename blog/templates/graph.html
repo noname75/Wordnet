@@ -15,7 +15,12 @@
 
     .node text {
         pointer-events: none;
-        font: 20px sans-serif;
+        font: 20px 'BYekan';
+    }
+
+    svg text {
+        text-anchor: middle;
+        direction: rtl
     }
 </style>
 {% endblock %}
@@ -26,6 +31,7 @@
         <div class="col-md-1">
         </div>
         <div class="col-md-2">
+            <p id="test"></p>
             <div class="form-group">
                 <button style="font-family: BYekan; height: 55px" class="btn"
                         onclick="getGraph()" type="submit">
@@ -103,7 +109,6 @@
 </script>
 <svg width="960" height="600"></svg>
 <script>
-
     function getGraph() {
 
         var svg = d3.select("svg"),
@@ -144,12 +149,9 @@
                             .selectAll("circle")
                             .data(graph.nodes)
                             .enter().append("circle")
-                            .attr("r", 5)
+                            .attr("r", 8)
                             .attr("fill", function (d) {
                                 return color(d.group);
-                            })
-                            .html(function (d) {
-                                return d.content
                             })
                             .call(d3.drag()
                                     .on("start", dragstarted)
@@ -163,6 +165,17 @@
                             .attr("fill", "black")
                             .html(function (d) {
                                 return d.content;
+                            });
+
+                    node.append("svg:text")
+                            .text(function (d) {
+                                return d.content;
+                            })
+                            .attr("x", function (d) {
+                                return d.x;
+                            })
+                            .attr("y", function (d) {
+                                return d.y;
                             });
 
                     simulation
@@ -193,7 +206,7 @@
                                 });
                         texts
                                 .attr("transform", function (d) {
-                                    return "translate(" + (d.x - 5) + "," + (d.y - 5) + ")";
+                                    return "translate(" + (d.x - 2) + "," + (d.y - 10) + ")";
                                 });
                     }
                 });

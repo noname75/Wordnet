@@ -8,8 +8,7 @@ class EdgeInGraph(db.Model):
     graph_id = db.Column(db.ForeignKey(Graph.id), primary_key=True)
 
     def getEdges_byGraphId(self, graph_id):
-        source = db.session.query(EdgeInGraph.phrase1_id).filter_by(graph_id=graph_id).all()
-        dest = db.session.query(EdgeInGraph.phrase2_id).filter_by(graph_id=graph_id).all()
-        weight = db.session.query(EdgeInGraph.weight).filter_by(graph_id=graph_id).all()
+        return db.session.query(EdgeInGraph).filter_by(graph_id=graph_id).all()
 
-        return source, dest, weight
+    def getEdges_byGraphId(self, graph_id):
+        return db.session.query(EdgeInGraph).filter_by(graph_id=graph_id).all()

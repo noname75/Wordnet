@@ -38,24 +38,26 @@ def getNodes():
 def getGraph():
     graphId = request.json['graphId']
     nodeIdList = request.json['nodeIdList']
-    print('graphId', graphId)
-    print('nodeIdList', nodeIdList)
-    node = NodeInGraph().getNodes_byGraphId(graph_id=graphId)
-    source, dest, weight = EdgeInGraph().getEdges_byGraphId(graph_id=graphId)
+
+    nodeInGraphList = NodeInGraph().getNodes_byGraphId(graph_id=graphId)
+    edgeInGraphList = EdgeInGraph().getEdges_byGraphId(graph_id=graphId)
+
+    return getGraphFile(nodeInGraphList, edgeInGraphList)
+
+
+def getGraphFile(nodeInGraphList, edgeInGraphList):
 
     final_source = []
     final_dest = []
     final_weight = []
     final_node = []
 
-    for itm in source:
-        final_source.append(itm[0])
-    for itm in dest:
-        final_dest.append(itm[0])
-    for itm in weight:
-        final_weight.append(itm[0])
-    for itm in node:
-        final_node.append(itm[0])
+    for edge in edgeInGraphList:
+        final_source.append(edge.phrase1_id)
+        final_dest.append(edge.phrase2_id)
+        final_weight.append(edge.weight)
+    for node in nodeInGraphList:
+        final_node.append(node.phrase_id)
 
     list_node = []
     dic_node = {}
@@ -77,8 +79,6 @@ def getGraph():
     final_dic['nodes'] = list_node
     final_dic['links'] = list_edge
 
-    graph_file = json.dumps(final_dic, ensure_ascii=False)
+    graphFile = json.dumps(final_dic)
 
-    print(graph_file)
-
-    return graph_file
+    return graphFile

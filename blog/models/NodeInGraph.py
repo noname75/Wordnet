@@ -8,4 +8,4 @@ class NodeInGraph(db.Model):
 
 
     def getNodes_byGraphId(self, graph_id):
-        return db.session.query(NodeInGraph.phrase_id).filter_by(graph_id=graph_id).all()
+        return db.session.query(NodeInGraph).filter_by(graph_id=graph_id).all()
