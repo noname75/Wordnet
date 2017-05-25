@@ -37,27 +37,25 @@ def getNodes():
 @user.require(http_exception=403)
 def getGraph():
     graphId = request.json['graphId']
-    nodeIdList = request.json['nodeIdList']
+    nodeIdList = [int(id) for id in request.json['nodeIdList']]
 
-    nodeInGraphList = NodeInGraph().getNodes_byGraphId(graph_id=graphId)
-    edgeInGraphList = EdgeInGraph().getEdges_byGraphId(graph_id=graphId)
+    edgeInGraphList = EdgeInGraph().getEgoNet_byGraphId(graph_id=graphId, nodeIdList=nodeIdList)
 
-    return getGraphFile(nodeInGraphList, edgeInGraphList)
+    return getGraphFile(edgeInGraphList)
 
 
-def getGraphFile(nodeInGraphList, edgeInGraphList):
+def getGraphFile(edgeInGraphList):
 
     final_source = []
     final_dest = []
     final_weight = []
-    final_node = []
 
     for edge in edgeInGraphList:
         final_source.append(edge.phrase1_id)
         final_dest.append(edge.phrase2_id)
         final_weight.append(edge.weight)
-    for node in nodeInGraphList:
-        final_node.append(node.phrase_id)
+
+    final_node = list(set(final_source) | set(final_dest))
 
     list_node = []
     dic_node = {}
