@@ -52,7 +52,7 @@
     </div>
     <div class="row">
         <div class="col-md-10">
-            <div id="panel" style="width:880px;height:500px; background-color: white"></div>
+            <div id="panel" style="width:880px; height:500px; background-color: white; letter-spacing: 0;"></div>
         </div>
     </div>
 </div>
@@ -101,18 +101,29 @@
 
                     var G = new jsnx.DiGraph();
                     for (i = 0; i < graph.nodes.length; i++) {
-                        G.addNode(graph.nodes[i].name, {label: graph.nodes[i].content});
-                        console.log(graph.nodes[i].content);
+                        G.addNode(graph.nodes[i].name, {label: graph.nodes[i].content, color: graph.nodes[i].color});
                     }
                     for (i = 0; i < graph.links.length; i++) {
                         G.addEdge(graph.links[i].source, graph.links[i].target, {weight: graph.links[i].weight});
                     }
                     jsnx.draw(G, {
                         element: '#panel',
+                        layoutAttr: {
+                            linkDistance: 150
+                        },
                         weighted: true,
                         withLabels: true,
                         labels: 'label',
-                        nodeStyle: {fill: 'white'},
+                        nodeStyle: {
+                            fill: function (d) {
+                                return d.data.color;
+                            }, r: 20
+                        },
+                        edgeStyle: {
+                            width: function (d) {
+                                return d.data.weight;
+                            }
+                        },
                         labelStyle: {fill: 'black'},
                         stickyDrag: true
                     });
