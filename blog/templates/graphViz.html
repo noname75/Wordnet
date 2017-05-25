@@ -3,7 +3,7 @@
 {% block body %}
 <div class="container" style="position: fixed;">
     <div class="row">
-        <div class="col-md-2">
+        <div class="col-md-1">
             <div class="form-group">
                 <button style="font-family: BYekan; height: 55px" class="btn"
                         onclick="getGraph()" type="submit">
@@ -11,12 +11,12 @@
                 </button>
             </div>
         </div>
-        <div class="col-md-5">
+        <div class="col-md-4">
             <div style="font-family: BYekan;height: 55px"
                  class="form-group form-group-default form-group-default-select2">
-                <label class="" style="font-family: BYekan">انتخاب واژه‌ها</label>
-                <select id="nodeIdList" style="font-family: BYekan" class="full-width"
-                        data-init-plugin="select2" multiple></select>
+                <label style="font-family: BYekan">انتخاب واژه‌ها</label>
+                <select id="nodeIdList" style="font-family: BYekan" class="full-width" data-init-plugin="select2"
+                        multiple></select>
             </div>
         </div>
         <div class="col-md-3">
@@ -58,8 +58,16 @@
 </div>
 
 {% endblock %}
+
+
 {% block js %}
 <script type="text/javascript">
+
+    $(document).ready(function () {
+        $("#nodeIdList").select2({
+            minimumInputLength: 2
+        });
+    });
 
     function setNodeList() {
         $.ajax({
@@ -72,6 +80,7 @@
             ),
             contentType: 'application/json;charset=UTF-8',
             success: function (result) {
+
                 var nodeInListElement = document.getElementById("nodeIdList");
                 for (i = nodeInListElement.options.length - 1; i >= 0; i--) {
                     nodeInListElement.options[i].selected = false;
@@ -119,8 +128,8 @@
                                 return d.data.color;
                             }, r: 20
                         },
-                        edgeStyle: {
-                            width: function (d) {
+                        edgeAttr: {
+                            weight: function (d) {
                                 return d.data.weight;
                             }
                         },
