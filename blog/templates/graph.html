@@ -6,16 +6,10 @@
         stroke: #999;
         stroke-opacity: 0.6;
     }
-
     .nodes circle {
         fill: green;
         stroke: gray;
         stroke-width: 1.5px;
-    }
-
-    .node text {
-        pointer-events: none;
-        font: 20px 'BYekan';
     }
 </style>
 {% endblock %}
@@ -80,7 +74,6 @@
 {% endblock %}
 {% block js %}
 <script type="text/javascript">
-
     var svg = d3.select("svg"),
             width = +svg.attr("width"),
             height = +svg.attr("height");
@@ -88,7 +81,6 @@
             .attr("width", "100%")
             .attr("height", "100%")
             .attr("fill", "white");
-
     var color = d3.scaleOrdinal(d3.schemeCategory20);
     var simulation = d3.forceSimulation()
             .force("link", d3.forceLink().id(function (d) {
@@ -96,7 +88,6 @@
             }))
             .force("charge", d3.forceManyBody())
             .force("center", d3.forceCenter(width / 2, height / 2));
-
     function setNodeList() {
         $.ajax({
             type: "POST",
@@ -120,9 +111,7 @@
             }
         });
     }
-
     function getGraph() {
-
         var nodeIdList = $('#nodeIdList').val();
         var graphId = document.getElementById("graphId").value;
         d3.selectAll("svg > *").remove();
@@ -142,7 +131,6 @@
                             nodeIdList: nodeIdList
                         }
                 ), function (error, graph) {
-
                     var link = svg.append("g")
                             .attr("class", "links")
                             .selectAll("line")
@@ -164,7 +152,6 @@
                                     .on("start", dragstarted)
                                     .on("drag", dragged)
                                     .on("end", dragended));
-
                     var texts = svg.selectAll("text.label")
                             .data(graph.nodes)
                             .enter().append("text")
@@ -173,7 +160,6 @@
                             .html(function (d) {
                                 return d.content;
                             });
-
                     node.append("svg:text")
                             .text(function (d) {
                                 return d.content;
@@ -184,7 +170,6 @@
                             .attr("y", function (d) {
                                 return d.y;
                             });
-
                     simulation
                             .nodes(graph.nodes)
                             .on("tick", ticked);
@@ -213,7 +198,7 @@
                                 });
                         texts
                                 .attr("transform", function (d) {
-                                    return "translate(" + (d.x + 2) + "," + (d.y - 10) + ")";
+                                    return "translate(" + (d.x + 5) + "," + (d.y - 13) + ")";
                                 });
                     }
                 });
@@ -222,12 +207,10 @@
             d.fx = d.x;
             d.fy = d.y;
         }
-
         function dragged(d) {
             d.fx = d3.event.x;
             d.fy = d3.event.y;
         }
-
         function dragended(d) {
             if (!d3.event.active) simulation.alphaTarget(0);
             d.fx = null;
@@ -236,4 +219,3 @@
     }
 </script>
 {% endblock %}
-

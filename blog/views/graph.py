@@ -36,15 +36,23 @@ def getNodes():
 @app.route('/getGraph', methods=['POST'])
 @user.require(http_exception=403)
 def getGraph():
+
     graphId = request.json['graphId']
     nodeIdList = [int(id) for id in request.json['nodeIdList']]
 
+
     edgeInGraphList = EdgeInGraph().getEgoNet_byGraphId(graph_id=graphId, nodeIdList=nodeIdList)
 
-    return getGraphFile(edgeInGraphList)
+    nodeInGraphIdList = set()
+    for edge in edgeInGraphList:
+        nodeInGraphIdList.add(edge.phrase1_id)
+        nodeInGraphIdList.add(edge.phrase2_id)
+    nodeInGraphList = NodeInGraph().getNodes_byNodeIdList(graph_id=graphId, nodeInGraphIdList=nodeInGraphIdList)
+
+    return getGraphFile(nodeInGraphList, edgeInGraphList)
 
 
-def getGraphFile(edgeInGraphList):
+def getGraphFile(nodeInGraphList, edgeInGraphList):
 
     final_source = []
     final_dest = []
@@ -55,13 +63,14 @@ def getGraphFile(edgeInGraphList):
         final_dest.append(edge.phrase2_id)
         final_weight.append(edge.weight)
 
-    final_node = list(set(final_source) | set(final_dest))
-
     list_node = []
     dic_node = {}
-    for i in final_node:
-        dic_node['name'] = i
-        dic_node['content'] = Phrase(phrase_id=i).getPhrase().content
+    for node in nodeInGraphList:
+        dic_node['name'] = node.phrase_id
+        dic_node['content'] = Phrase(phrase_id=node.phrase_id).getPhrase().content
+        dic_node['size'] = node.weight
+        dic_node['type'] = "circle"
+        dic_node['score'] = node.weight
         dic_node['group'] = 1
         list_node.append(dic_node.copy())
 
@@ -79,4 +88,5 @@ def getGraphFile(edgeInGraphList):
 
     graphFile = json.dumps(final_dic)
 
+    print(graphFile)
     return graphFile

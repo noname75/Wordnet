@@ -9,3 +9,7 @@ class NodeInGraph(db.Model):
 
     def getNodes_byGraphId(self, graph_id):
         return db.session.query(NodeInGraph).filter_by(graph_id=graph_id).all()
+
+    def getNodes_byNodeIdList(self, graph_id, nodeInGraphIdList):
+        return db.session.query(NodeInGraph).filter_by(graph_id=graph_id).filter(
+            NodeInGraph.phrase_id.in_(nodeInGraphIdList))
