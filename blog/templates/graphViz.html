@@ -1,0 +1,124 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<div class="container" style="position: fixed;">
+    <div class="row">
+        <div class="col-md-2">
+            <div class="form-group">
+                <button style="font-family: BYekan; height: 55px" class="btn"
+                        onclick="getGraph()" type="submit">
+                    نمایش گراف
+                </button>
+            </div>
+        </div>
+        <div class="col-md-5">
+            <div style="font-family: BYekan;height: 55px"
+                 class="form-group form-group-default form-group-default-select2">
+                <label class="" style="font-family: BYekan">انتخاب واژه‌ها</label>
+                <select id="nodeIdList" style="font-family: BYekan" class="full-width"
+                        data-init-plugin="select2" multiple></select>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group form-group-default form-group-default-select2">
+                <label class="" style="font-family: BYekan">انتخاب منبع گراف</label>
+                <select id="graphId" class="full-width" data-init-plugin="select2" onchange="setNodeList()">
+                    <option style="display:none">
+                        {% if tagGraphList %}
+                        <optgroup label="تگ‌های اینستاگرام">
+                            {% for graph in tagGraphList %}
+                            <option value="{{ graph.id }}">{{ graph.name }}</option>
+                            {% endfor %}
+                        </optgroup>
+                        {% endif %}
+                        {% if responseGraphList %}
+                        <optgroup label="پاسخ‌های کاربران">
+                            {% for graph in responseGraphList %}
+                            <option value="{{ graph.id }}">{{ graph.name }}</option>
+                            {% endfor %}
+                        </optgroup>
+                        {% endif %}
+                        {% if tagAndResponseGraphList %}
+                        <optgroup label="تگ‌های اینستاگرام + پاسخ‌های کاربران">
+                            {% for graph in tagAndResponseGraphList %}
+                            <option value="{{ graph.id }}">{{ graph.name }}</option>
+                            {% endfor %}
+                        </optgroup>
+                        {% endif %}
+                </select>
+            </div>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-10">
+            <div id="panel" style="width:880px;height:500px; background-color: white"></div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+{% block js %}
+<script type="text/javascript">
+
+    function setNodeList() {
+        $.ajax({
+            type: "POST",
+            url: '/getNodes',
+            data: JSON.stringify(
+                    {
+                        graphId: document.getElementById('graphId').value
+                    }
+            ),
+            contentType: 'application/json;charset=UTF-8',
+            success: function (result) {
+                var nodeInListElement = document.getElementById("nodeIdList");
+                for (i = nodeInListElement.options.length - 1; i >= 0; i--) {
+                    nodeInListElement.options[i].selected = false;
+                    nodeInListElement.options[i] = null;
+                }
+                var nodeList = result['nodeList'];
+                for (i = 0; i < nodeList.length; i++) {
+                    $("#nodeIdList").append(new Option(nodeList[i]['content'], nodeList[i]['id']));
+                }
+            }
+        });
+    }
+    function getGraph() {
+        var nodeIdList = $('#nodeIdList').val();
+        var graphId = document.getElementById("graphId").value;
+
+
+        d3.json('/getGraph')
+                .header("Content-Type", "application/json;charset=UTF-8")
+                .post(
+                JSON.stringify(
+                        {
+                            graphId: graphId,
+                            nodeIdList: nodeIdList
+                        }
+                ), function (error, graph) {
+
+                    var G = new jsnx.DiGraph();
+                    for (i = 0; i < graph.nodes.length; i++) {
+                        G.addNode(graph.nodes[i].name, {label: graph.nodes[i].content});
+                        console.log(graph.nodes[i].content);
+                    }
+                    for (i = 0; i < graph.links.length; i++) {
+                        G.addEdge(graph.links[i].source, graph.links[i].target, {weight: graph.links[i].weight});
+                    }
+                    jsnx.draw(G, {
+                        element: '#panel',
+                        weighted: true,
+                        withLabels: true,
+                        labels: 'label',
+                        nodeStyle: {fill: 'white'},
+                        labelStyle: {fill: 'black'},
+                        stickyDrag: true
+                    });
+
+                });
+    }
+
+</script>
+{% endblock %}
