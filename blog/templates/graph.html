@@ -11,6 +11,11 @@
         stroke: gray;
         stroke-width: 1.5px;
     }
+
+    .node text {
+        pointer-events: none;
+        font: 20px 'BYekan';
+    }
 </style>
 {% endblock %}
 
@@ -74,6 +79,7 @@
 {% endblock %}
 {% block js %}
 <script type="text/javascript">
+
     var svg = d3.select("svg"),
             width = +svg.attr("width"),
             height = +svg.attr("height");
@@ -118,6 +124,7 @@
         var svg = d3.select("svg"),
                 width = +svg.attr("width"),
                 height = +svg.attr("height");
+
         svg.append("rect")
                 .attr("width", "100%")
                 .attr("height", "100%")
@@ -131,6 +138,7 @@
                             nodeIdList: nodeIdList
                         }
                 ), function (error, graph) {
+
                     var link = svg.append("g")
                             .attr("class", "links")
                             .selectAll("line")
@@ -198,10 +206,11 @@
                                 });
                         texts
                                 .attr("transform", function (d) {
-                                    return "translate(" + (d.x + 5) + "," + (d.y - 13) + ")";
+                                    return "translate(" + (d.x + 2) + "," + (d.y - 10) + ")";
                                 });
                     }
                 });
+
         function dragstarted(d) {
             if (!d3.event.active) simulation.alphaTarget(0.3).restart();
             d.fx = d.x;

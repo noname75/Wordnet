@@ -23,3 +23,44 @@ app.register_blueprint(register_page)
 app.register_blueprint(questionnaire_page)
 app.register_blueprint(questionnaireList_page)
 app.register_blueprint(graph_page)
+
+
+# from blog.models.db_config import *
+#
+# with open('edges_di_10_0_0.4.txt', 'r', encoding='utf-8-sig') as file:
+# for line in file:
+#         edge = line[:-2].split(' ')
+#         source = edge[0]
+#         target = edge[1]
+#         weight = float(edge[2])
+#
+#         print(source, target)
+#         source = Phrase(content=source).addIfNotExists()
+#         target = Phrase(content=target).addIfNotExists()
+#
+#         node = NodeInGraph(
+#             graph_id=2,
+#             phrase_id=source.id,
+#             weight=1
+#         )
+#         if not db.session.query(NodeInGraph).filter_by(graph_id=node.graph_id,phrase_id=node.phrase_id).first():
+#             db.session.add(node)
+#             db.session.commit()
+#         node = NodeInGraph(
+#             graph_id=2,
+#             phrase_id=target.id,
+#             weight=1
+#         )
+#         if not db.session.query(NodeInGraph).filter_by(graph_id=node.graph_id,phrase_id=node.phrase_id).first():
+#             db.session.add(node)
+#             db.session.commit()
+#
+#         edge = EdgeInGraph(
+#             graph_id=2,
+#             phrase1_id=source.id,
+#             phrase2_id=target.id,
+#             weight=weight
+#         )
+#         if not db.session.query(EdgeInGraph).filter_by(graph_id=edge.graph_id,phrase1_id=edge.phrase1_id,phrase2_id=edge.phrase2_id).first():
+#             db.session.add(edge)
+#             db.session.commit()

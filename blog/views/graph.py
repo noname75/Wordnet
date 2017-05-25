@@ -3,6 +3,7 @@ from flask import render_template, Blueprint, request, jsonify
 from blog import app
 from blog.views.permission_config import user
 import json
+from codecs import unicode_escape_encode
 
 graph_page = Blueprint('graph', __name__, template_folder='templates')
 
@@ -14,7 +15,7 @@ def graph():
     responseGraphList = Graph().getGraphList_bySource('responses')
     tagAndResponseGraphList = Graph().getGraphList_bySource('tagsAndResponses')
 
-    return render_template('graph.html',
+    return render_template('graphViz.html',
                            tagGraphList=tagGraphList,
                            responseGraphList=responseGraphList,
                            tagAndResponseGraphList=tagAndResponseGraphList)
@@ -49,6 +50,8 @@ def getGraph():
         nodeInGraphIdList.add(edge.phrase2_id)
     nodeInGraphList = NodeInGraph().getNodes_byNodeIdList(graph_id=graphId, nodeInGraphIdList=nodeInGraphIdList)
 
+    print(nodeInGraphIdList)
+
     return getGraphFile(nodeInGraphList, edgeInGraphList)
 
 
@@ -68,9 +71,9 @@ def getGraphFile(nodeInGraphList, edgeInGraphList):
     for node in nodeInGraphList:
         dic_node['name'] = node.phrase_id
         dic_node['content'] = Phrase(phrase_id=node.phrase_id).getPhrase().content
-        dic_node['size'] = node.weight
-        dic_node['type'] = "circle"
-        dic_node['score'] = node.weight
+        # dic_node['size'] = node.weight
+        # dic_node['type'] = "circle"
+        # dic_node['score'] = node.weight
         dic_node['group'] = 1
         list_node.append(dic_node.copy())
 
@@ -89,4 +92,5 @@ def getGraphFile(nodeInGraphList, edgeInGraphList):
     graphFile = json.dumps(final_dic)
 
     print(graphFile)
+
     return graphFile
