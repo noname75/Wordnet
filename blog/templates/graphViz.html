@@ -3,13 +3,16 @@
 {% block body %}
 <div class="container" style="position: fixed;">
     <div class="row">
-        <div class="col-md-1">
+        <div class="col-md-2">
             <div class="form-group">
                 <button style="font-family: BYekan; height: 55px" class="btn"
                         onclick="getGraph()" type="submit">
                     نمایش گراف
                 </button>
             </div>
+        </div>
+        <div class="col-md-2">
+            <input id="level" type="range" min="1" max="5" step="1" value="1"/>
         </div>
         <div class="col-md-4">
             <div style="font-family: BYekan;height: 55px"
@@ -19,7 +22,7 @@
                         multiple></select>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <div class="form-group form-group-default form-group-default-select2">
                 <label class="" style="font-family: BYekan">انتخاب منبع گراف</label>
                 <select id="graphId" class="full-width" data-init-plugin="select2" onchange="setNodeList()">
@@ -52,7 +55,8 @@
     </div>
     <div class="row">
         <div class="col-md-10">
-            <div id="panel" style="width:880px; height:500px; background-color: white; letter-spacing: 0;"></div>
+            <div id="panel"
+                 style="width:880px; height:500px; background-color: white; letter-spacing: 0;font-family: BRoya;"></div>
         </div>
     </div>
 </div>
@@ -65,7 +69,7 @@
 
     $(document).ready(function () {
         $("#nodeIdList").select2({
-            minimumInputLength: 2
+            minimumInputLength: 1
         });
     });
 
@@ -96,7 +100,7 @@
     function getGraph() {
         var nodeIdList = $('#nodeIdList').val();
         var graphId = document.getElementById("graphId").value;
-
+        var level = document.getElementById("level").value;
 
         d3.json('/getGraph')
                 .header("Content-Type", "application/json;charset=UTF-8")
@@ -104,7 +108,8 @@
                 JSON.stringify(
                         {
                             graphId: graphId,
-                            nodeIdList: nodeIdList
+                            nodeIdList: nodeIdList,
+                            level: level
                         }
                 ), function (error, graph) {
 
@@ -118,7 +123,7 @@
                     jsnx.draw(G, {
                         element: '#panel',
                         layoutAttr: {
-                            linkDistance: 150
+                            linkDistance: 75
                         },
                         weighted: true,
                         withLabels: true,
@@ -126,12 +131,17 @@
                         nodeStyle: {
                             fill: function (d) {
                                 return d.data.color;
-                            }, r: 20
+                            },
+                            r: 9,
+                            "stroke-width": 0
                         },
                         edgeAttr: {
                             weight: function (d) {
                                 return d.data.weight;
                             }
+                        },
+                        edgeStyle: {
+                            fill: "gray"
                         },
                         labelStyle: {fill: 'black'},
                         stickyDrag: true

@@ -40,13 +40,16 @@ def getGraph():
 
     graphId = request.json['graphId']
     nodeIdList = [int(id) for id in request.json['nodeIdList']]
+    level = int(request.json['level'])
 
-    edgeInGraphList = EdgeInGraph().getEgoNet_byGraphId(graph_id=graphId, nodeIdList=nodeIdList)
+    edgeInGraphList = []
+    nodeInGraphIdList = set(nodeIdList)
+    for i in range(level):
+        edgeInGraphList.extend(EdgeInGraph().getEgoNet_byGraphId(graph_id=graphId, nodeIdList=nodeInGraphIdList))
+        for edge in edgeInGraphList:
+            nodeInGraphIdList.add(edge.phrase1_id)
+            nodeInGraphIdList.add(edge.phrase2_id)
 
-    nodeInGraphIdList = set()
-    for edge in edgeInGraphList:
-        nodeInGraphIdList.add(edge.phrase1_id)
-        nodeInGraphIdList.add(edge.phrase2_id)
     nodeInGraphList = NodeInGraph().getNodes_byNodeIdList(graph_id=graphId, nodeInGraphIdList=nodeInGraphIdList)
 
     return getGraphFile(nodeInGraphList, edgeInGraphList, nodeIdList)
