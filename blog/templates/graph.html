@@ -5,11 +5,11 @@
     .links line {
         stroke: #999;
         stroke-opacity: 0.6;
-        stroke-width: 2px;
     }
 
     .nodes circle {
-        stroke: #fff;
+        fill: green;
+        stroke: gray;
         stroke-width: 1.5px;
     }
 
@@ -17,19 +17,12 @@
         pointer-events: none;
         font: 20px 'BYekan';
     }
-
-    svg text {
-        text-anchor: middle;
-        direction: rtl
-    }
 </style>
 {% endblock %}
 
 {% block body %}
 <div class="container" style="position: fixed;">
     <div class="row">
-        <div class="col-md-1">
-        </div>
         <div class="col-md-2">
             <div class="form-group">
                 <button style="font-family: BYekan; height: 55px" class="btn"
@@ -77,11 +70,33 @@
             </form>
         </div>
     </div>
+    <div class="row">
+        <div class="col-md-10">
+            <svg width="880" height="500"></svg>
+        </div>
+    </div>
 </div>
 
-
+{% endblock %}
 {% block js %}
 <script type="text/javascript">
+
+    var svg = d3.select("svg"),
+            width = +svg.attr("width"),
+            height = +svg.attr("height");
+    svg.append("rect")
+            .attr("width", "100%")
+            .attr("height", "100%")
+            .attr("fill", "white");
+
+    var color = d3.scaleOrdinal(d3.schemeCategory20);
+    var simulation = d3.forceSimulation()
+            .force("link", d3.forceLink().id(function (d) {
+                return d.name;
+            }))
+            .force("charge", d3.forceManyBody())
+            .force("center", d3.forceCenter(width / 2, height / 2));
+
     function setNodeList() {
         $.ajax({
             type: "POST",
@@ -105,26 +120,19 @@
             }
         });
     }
-</script>
-<svg width="960" height="600"></svg>
-<script>
+
     function getGraph() {
-
-        var svg = d3.select("svg"),
-                width = +svg.attr("width"),
-                height = +svg.attr("height");
-        var color = d3.scaleOrdinal(d3.schemeCategory20);
-        var simulation = d3.forceSimulation()
-                .force("link", d3.forceLink().id(function (d) {
-                    return d.name;
-                }))
-                .force("charge", d3.forceManyBody())
-                .force("center", d3.forceCenter(width / 2, height / 2));
-
 
         var nodeIdList = $('#nodeIdList').val();
         var graphId = document.getElementById("graphId").value;
         d3.selectAll("svg > *").remove();
+        var svg = d3.select("svg"),
+                width = +svg.attr("width"),
+                height = +svg.attr("height");
+        svg.append("rect")
+                .attr("width", "100%")
+                .attr("height", "100%")
+                .attr("fill", "white");
         d3.json('/getGraph')
                 .header("Content-Type", "application/json;charset=UTF-8")
                 .post(
@@ -161,7 +169,7 @@
                             .data(graph.nodes)
                             .enter().append("text")
                             .attr("class", "label")
-                            .attr("fill", "black")
+                            .attr("fill", "darkslategray")
                             .html(function (d) {
                                 return d.content;
                             });
@@ -205,7 +213,7 @@
                                 });
                         texts
                                 .attr("transform", function (d) {
-                                    return "translate(" + (d.x - 2) + "," + (d.y - 10) + ")";
+                                    return "translate(" + (d.x + 2) + "," + (d.y - 10) + ")";
                                 });
                     }
                 });
@@ -229,4 +237,3 @@
 </script>
 {% endblock %}
 
-{% endblock %}
