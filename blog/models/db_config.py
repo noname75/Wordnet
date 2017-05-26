@@ -10,7 +10,6 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
 from blog.models.User import User
-from blog.models.Picture import Picture
 from blog.models.Phrase import Phrase
 from blog.models.Dictionary import Dictionary
 from blog.models.Graph import Graph
@@ -27,5 +26,5 @@ from blog.models.NodeInGraph import NodeInGraph
 from blog.models.PhraseInDictionary import PhraseInDictionary
 from blog.models.PhraseInQuestionnaire import PhraseInQuestionnaire
 from blog.models.PossibleResponse import PossibleResponse
-
+from blog.models.PictureForPhrase import PictureForPhrase
 

@@ -12,7 +12,7 @@ from blog.views.register import register_page
 from blog.views.questionnaireList import questionnaireList_page
 from blog.views.addQuestionnaire import addQuestionnaire_page
 from blog.views.graph import graph_page
-
+from blog.views.editQuestionnaire import editQuestionnaire_page
 
 app.register_blueprint(errorhandler_page)
 app.register_blueprint(index_page)
@@ -23,6 +23,7 @@ app.register_blueprint(register_page)
 app.register_blueprint(questionnaire_page)
 app.register_blueprint(questionnaireList_page)
 app.register_blueprint(graph_page)
+app.register_blueprint(editQuestionnaire_page)
 
 
 # from blog.models.db_config import *

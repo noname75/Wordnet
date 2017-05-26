@@ -4,7 +4,6 @@ class Phrase(db.Model):
     __tablename__ = 'phrase'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     content = db.Column(db.Unicode(200), unique=True)
-    picture_id = db.Column(db.ForeignKey(Picture.id))
 
     def __init__(self, phrase_id=None, content=None):
         self.id = phrase_id

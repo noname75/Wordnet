@@ -3,16 +3,21 @@
 {% block body %}
 <div class="container" style="position: fixed;">
     <div class="row">
-        <div class="col-md-2">
+        <div class="col-md-3">
             <div class="form-group">
                 <button style="font-family: BYekan; height: 55px" class="btn"
                         onclick="getGraph()" type="submit">
-                    نمایش گراف
+                    افزودن همسایه‌ها
+                </button>
+                <button style="font-family: BYekan; height: 55px" class="btn"
+                        onclick="resetGraph()" type="submit">
+                    بازنشانی گراف
                 </button>
             </div>
         </div>
-        <div class="col-md-2">
-            <input id="level" type="range" min="1" max="5" step="1" value="1"/>
+        <div class="col-md-1" style="background-color: white">
+            <p id="levelLabel" style="font-size: 12px"></p>
+            <input id="level" type="range" min="1" max="5" step="1" value="1" onchange="setLevel()"/>
         </div>
         <div class="col-md-4">
             <div style="font-family: BYekan;height: 55px"
@@ -24,7 +29,7 @@
         </div>
         <div class="col-md-2">
             <div class="form-group form-group-default form-group-default-select2">
-                <label class="" style="font-family: BYekan">انتخاب منبع گراف</label>
+                <label style="font-family: BYekan">انتخاب منبع گراف</label>
                 <select id="graphId" class="full-width" data-init-plugin="select2" onchange="setNodeList()">
                     <option style="display:none">
                         {% if tagGraphList %}
@@ -56,7 +61,7 @@
     <div class="row">
         <div class="col-md-10">
             <div id="panel"
-                 style="width:880px; height:500px; background-color: white; letter-spacing: 0;font-family: BRoya;"></div>
+                 style="width:930px; height:500px; background-color: white; letter-spacing: 0; font-family: BKoodakBold;"></div>
         </div>
     </div>
 </div>
@@ -67,11 +72,49 @@
 {% block js %}
 <script type="text/javascript">
 
+    setLevel();
+
+    var draw_config = {
+        element: '#panel',
+        layoutAttr: {
+            linkDistance: 75
+        },
+        weighted: true,
+        withLabels: true,
+        labels: 'label',
+        nodeStyle: {
+            fill: function (d) {
+                return d.data.color;
+            },
+            r: 9,
+            "stroke-width": 0
+        },
+        edgeAttr: {
+            weight: function (d) {
+                return d.data.weight;
+            }
+        },
+        edgeStyle: {
+            fill: "gray"
+        },
+        labelStyle: {fill: 'black'},
+        stickyDrag: true
+    };
+
+
+    var G = new jsnx.DiGraph();
+    jsnx.draw(G, draw_config, true);
+
+
     $(document).ready(function () {
         $("#nodeIdList").select2({
             minimumInputLength: 1
         });
     });
+
+    function setLevel() {
+        document.getElementById("levelLabel").innerHTML = ' سطح جستجو: ' + document.getElementById("level").value;
+    }
 
     function setNodeList() {
         $.ajax({
@@ -113,41 +156,34 @@
                         }
                 ), function (error, graph) {
 
-                    var G = new jsnx.DiGraph();
+                    for (j = 0; j < nodeIdList.length; j++) {
+                        var nodeName = parseInt(nodeIdList[j]);
+                        if (G.hasNode(nodeName)) {
+                            console.log(G.node.get(nodeName).color);
+                            if (G.node.get(nodeName).color.localeCompare('pink')) {
+                                G.removeNode(nodeName);
+                            }
+                        }
+                    }
                     for (i = 0; i < graph.nodes.length; i++) {
-                        G.addNode(graph.nodes[i].name, {label: graph.nodes[i].content, color: graph.nodes[i].color});
+                        if (!G.hasNode(graph.nodes[i].name)) {
+                            G.addNode(graph.nodes[i].name, {
+                                label: graph.nodes[i].content,
+                                color: graph.nodes[i].color
+                            });
+                        }
                     }
                     for (i = 0; i < graph.links.length; i++) {
-                        G.addEdge(graph.links[i].source, graph.links[i].target, {weight: graph.links[i].weight});
+                        if (!G.hasEdge(graph.links[i].source, graph.links[i].target)) {
+                            G.addEdge(graph.links[i].source, graph.links[i].target, {weight: graph.links[i].weight});
+                        }
                     }
-                    jsnx.draw(G, {
-                        element: '#panel',
-                        layoutAttr: {
-                            linkDistance: 75
-                        },
-                        weighted: true,
-                        withLabels: true,
-                        labels: 'label',
-                        nodeStyle: {
-                            fill: function (d) {
-                                return d.data.color;
-                            },
-                            r: 9,
-                            "stroke-width": 0
-                        },
-                        edgeAttr: {
-                            weight: function (d) {
-                                return d.data.weight;
-                            }
-                        },
-                        edgeStyle: {
-                            fill: "gray"
-                        },
-                        labelStyle: {fill: 'black'},
-                        stickyDrag: true
-                    });
 
                 });
+    }
+
+    function resetGraph() {
+        G.removeNodesFrom(G.nodes());
     }
 
 </script>

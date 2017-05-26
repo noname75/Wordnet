@@ -92,6 +92,6 @@ def getGraphFile(nodeInGraphList, edgeInGraphList, nodeIdList):
 
     graphFile = json.dumps(final_dic)
 
-    print(graphFile)
+    # print(graphFile)
 
     return graphFile
