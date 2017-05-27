@@ -241,27 +241,15 @@
                                       class="arrow"></span></a>
                               <ul class="classic col-xs-1" style="margin-right: 190px">
                                   <li>
-                                      <a href="{{ url_for('questionnaireList',questionnaireType='00') }}">واژه-توصیفی
-                    <span class="description">
-                    </span>
+                                      <a href="{{ url_for('questionnaireList',isChosen=0) }}">توصیفی
+                                        <span class="description">
+                                        </span>
                                       </a>
                                   </li>
                                   <li>
-                                      <a href="#">واژه-انتخابی
-                    <span class="description">
-                    </span>
-                                      </a>
-                                  </li>
-                                  <li>
-                                      <a href="#">تصویر-توصیفی
-                    <span class="description">
-                    </span>
-                                      </a>
-                                  </li>
-                                  <li>
-                                      <a href="#">تصویر-انتخابی
-                        <span class="description">
-                        </span>
+                                      <a href="{{ url_for('questionnaireList',isChosen=1) }}">انتخابی
+                                        <span class="description">
+                                        </span>
                                       </a>
                                   </li>
                               </ul>

@@ -21,9 +21,9 @@
                                     پرسش‌نامه</p></th>
                                 <th><p style="text-align: center; color: darkslategray; font-family: BYekan">توضیحات</p>
                                 </th>
+                                {% if session.admin %}
                                 <th><p style="text-align: center; color: darkslategray; font-family: BYekan">تعداد
                                     واژه‌ها</p></th>
-                                {% if session.admin %}
                                 <th><p style="text-align: center; color: darkslategray; font-family: BYekan">
                                     فعال/غیرفعال</p></th>
                                 {% endif %}
@@ -42,26 +42,59 @@
                                 </td>
                                 {% else %}
                                 <td class="v-align-middle bold">
-                                    <button type="button" class="btn" onclick="addPack('{{ questionnaire.id }}')"
+                                    <button type="button" class="btn" data-toggle="modal"
+                                            data-target="#questionnaireOptions"
                                             style="font-family: BYekan">
                                         {{ questionnaire.subject }}
                                     </button>
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="questionnaireOptions" role="dialog">
+                                        <div class="modal-dialog">
+                                            <!-- Modal content-->
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close"
+                                                            data-dismiss="modal">&times;</button>
+                                                    <h4 class="modal-title" id="modalTitle"
+                                                        style="font-family: BYekan"></h4>
+                                                </div>
+                                                <div class="modal-body"
+                                                     style="color: darkslategray; font-family: BYekan">
+                                                    <br><br>
+
+                                                    <p>در این قسمت شما واژه‌های مختلف را مشاهده می‌کنید و می‌توانید برای
+                                                        هر کدام اولین کلمه‌ای که به ذهنتان می‌رسد را ثبت کنید.</p>
+                                                    <button type="button"
+                                                            onclick="addPack('{{ questionnaire.id }}',false)">شروع
+                                                        پرسش‌نامه‌ی اسمی
+                                                    </button>
+                                                    {% if questionnaire.isPictorial %}
+                                                    <p>در این قسمت شما تصاویر مختلف را مشاهده می‌کندی و می‌توانید برای
+                                                        هر کدام اولین کلمه‌ای که به ذهنتان می‌رسد را ثبت کنید.</p>
+                                                    <button type="button"
+                                                            onclick="addPack('{{ questionnaire.id }}',true)">شروع
+                                                        پرسش‌نامه‌ی اسمی
+                                                    </button>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </td>
                                 {% endif %}
                                 <td>{{ questionnaire.moreInfo }}</td>
-                                <td class="v-align-middle bold">{{ questionnaire.stimulusCount }}</td>
                                 {% else %}
                                 <td class="v-align-middle bold">{{ questionnaire.subject }}</td>
                                 <td>{{ questionnaire.moreInfo }}</td>
                                 <td>
                                     <button type="button" class="btn" data-toggle="modal"
-                                            onclick="setModalContent('{{ questionnaire.id }}')" data-target="#myModal">
+                                            onclick="setQuestionnaieInfoOnModal('{{ questionnaire.id }}')"
+                                            data-target="#questionnaieInfoModal">
                                         {{ questionnaire.stimulusCount }}
                                     </button>
                                     <!-- Modal -->
-                                    <div class="modal fade" id="myModal" role="dialog">
+                                    <div class="modal fade" id="questionnaieInfoModal" role="dialog">
                                         <div class="modal-dialog">
-
                                             <!-- Modal content-->
                                             <div class="modal-content">
                                                 <div class="modal-header">
@@ -122,12 +155,13 @@
 
 {% block js %}
 <script type="text/javascript">
-    function addPack(questionnaireId) {
+    function addPack(questionnaireId, isPictorial) {
         $.ajax({
             type: "POST",
             url: '/addPack',
             data: JSON.stringify({
-                questionnaireType: '{{ questionnaireType }}',
+                isChosen: '{{ isChosen }}',
+                isPictorial: isPictorial,
                 questionnaireId: questionnaireId
             }),
             contentType: 'application/json;charset=UTF-8',
@@ -149,7 +183,7 @@
             }
         });
     }
-    function setModalContent(questionnaireId) {
+    function setQuestionnaieInfoOnModal(questionnaireId) {
         $.ajax({
             type: "POST",
             url: '/getModalContent',

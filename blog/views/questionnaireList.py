@@ -7,20 +7,19 @@ import time
 questionnaireList_page = Blueprint('questionnaireList', __name__, template_folder='templates')
 
 
-@app.route('/questionnaireList/<questionnaireType>', methods=['GET'])
+@app.route('/questionnaireList/<int:isChosen>', methods=['GET'])
 @user.require(http_exception=403)
-def questionnaireList(questionnaireType):
+def questionnaireList(isChosen):
     try:
         user = User(username=session['username']).getUser()
-        questionnaireList = Questionnaire.getQuestionnaireList(questionnaireType)
+        questionnaireList = Questionnaire.getQuestionnaireList(isChosen)
         for questionnnaire in questionnaireList:
-            questionnnaire.setStimulusCount(
-                PhraseInQuestionnaire.getPhraseList_byQuestionnaireId(questionnnaire.id).__len__())
+            questionnnaire.stimulusCount = PhraseInQuestionnaire.getPhraseList_byQuestionnaireId(
+                questionnnaire.id).__len__()
             questionnnaire.isCompletedByUser = isCompletedByUser(questionnnaire.id, user.id)
-
         return render_template('questionnaireList.html',
                                questionnaireList=questionnaireList,
-                               questionnaireType=questionnaireType)
+                               isChosen=isChosen)
 
     except Exception:
         return redirect('page_not_found')
@@ -30,31 +29,14 @@ def questionnaireList(questionnaireType):
 @user.require(http_exception=403)
 def addPack():
     questionnaireId = request.json['questionnaireId']
-    questionnaireType = request.json['questionnaireType']
+    isChosen = bool(int(request.json['isChosen']))
+    isPictorial = request.json['isPictorial']
 
     questionnaire = Questionnaire(questionnaireId).getQuestionnaire()
 
-    if not questionnaire.isActive:
+    if not questionnaire.isActive or not questionnaire.isChosen == isChosen or (
+        isPictorial and not questionnaire.isPictorial):
         raise AssertionError()
-
-    if questionnaireType == '00':
-        isPictorial = 0
-        isChosen = 0
-    elif questionnaireType == '01':
-        isPictorial = 0
-        isChosen = 1
-        if not questionnaire.isChosen:
-            raise AssertionError()
-    elif questionnaireType == '10':
-        isPictorial = 1
-        isChosen = 0
-        if not questionnaire.isPictorial:
-            raise AssertionError()
-    elif questionnaireType == '11':
-        isPictorial = 1
-        isChosen = 1
-        if not questionnaire.isChosen or not questionnaire.isPictorial:
-            raise AssertionError()
 
     pack = Pack(
         questionnaire_id=questionnaireId,
