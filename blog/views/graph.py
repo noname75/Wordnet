@@ -31,6 +31,9 @@ def getNodes():
             'content': Phrase(nodeInGraph.phrase_id).getPhrase().content,
             'id': nodeInGraph.phrase_id
         })
+
+    nodeList = sorted(nodeList, key=lambda k: k['content'].__len__())
+
     return jsonify({'nodeList': nodeList})
 
 
