@@ -8,10 +8,15 @@ class PictureForPhrase(db.Model):
     picture = db.Column(db.VARBINARY, nullable=False)
 
 
-    def __init__(self, phrase_id, questionnaire_id):
+    def __init__(self, phrase_id, questionnaire_id, picture=None):
         self.questionnaire_id = questionnaire_id
         self.phrase_id = phrase_id
+        self.picture = picture
 
     def getPicture(self):
         return db.session.query(PictureForPhrase.picture).filter_by(phrase_id=self.phrase_id,
                                                                     questionnaire_id=self.questionnaire_id).first()
+
+    def addPictureForPhrase(self):
+        db.session.add(self)
+        db.session.commit()

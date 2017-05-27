@@ -1,5 +1,40 @@
 {% extends "layout.html" %}
 
+
+{% block header %}
+<style>
+    .uploader {
+        position: relative;
+        overflow: hidden;
+        width: 300px;
+        height: 350px;
+        background: #f3f3f3;
+        border: 2px dashed #e8e8e8;
+    }
+
+    #filePhoto {
+        position: absolute;
+        width: 300px;
+        height: 400px;
+        top: -50px;
+        left: 0;
+        z-index: 2;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    .uploader img {
+        position: absolute;
+        width: 302px;
+        height: 352px;
+        top: -1px;
+        left: -1px;
+        z-index: 1;
+        border: none;
+    }
+</style>
+{% endblock %}
+
 {% macro render_field(field) %}
 <div> {{ field.label }}<br><br>
 
@@ -16,28 +51,37 @@
 {% block body %}
 <div class="container">
     <div class="row">
-        <div class="col-xs-6 col-md-2"></div>
+        <div class="col-xs-6 col-md-3"></div>
         <div class="col-xs-6 col-md-6">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h5 style="text-align: center; font-family: BYekan">
-                        <strong>ویرایش واژه‌های پرسش‌نامه</strong>
+                        <strong>افزودن تصویر به واژه‌ها</strong>
                     </h5>
                     <br><br>
 
                     <div style="font-family: BYekan;height: 55px"
                          class="form-group form-group-default form-group-default-select2">
                         <label style="font-family: BYekan">انتخاب واژه</label>
-                        <select onchange="setPhraseInfo()" id="phraseId" style="font-family: BYekan" class="full-width"
+                        <select id="phraseIdList" style="font-family: BYekan" class="full-width"
                                 data-init-plugin="select2">
-                            <option style="display:none">
-                                {% for phrase in phraseList %}
-                            <option value="{{ phrase.phrase_id }}">{{ phrase.content }}</option>
-                            {% endfor %}
                         </select>
                     </div>
                 </div>
-                <div class="panel-body" div style="color:#083C32">
+                <div class="panel-body" style="color:#083C32;">
+                    <div class="col-md-10">
+                        <div class="uploader" onclick="$('#filePhoto').click()">
+                            برای بارگذاری تصویر اینجا کلیک کنید یا تصویر را در این قسمت قرار دهید.
+                            <img id="picture" src=""/>
+                            <input type="file" name="userprofile_picture" id="filePhoto"/>
+                        </div>
+                        <br>
+
+                        <div class="col-md-9">
+                            <input type="submit" class="btn" style="font-family: BYekan" onclick="setPicture()"
+                                   value="ثبت تصویر"/>
+                        </div>
+                    </div>
 
                 </div>
             </div>
@@ -50,8 +94,66 @@
 {% block js %}
 <script type="text/javascript">
 
+    setPhraseList();
+
     function setPhraseInfo() {
         document.getElementById("phraseid").innerHTML = document.getElementById("phraseId").value
+    }
+
+    var imageLoader = document.getElementById('filePhoto');
+    imageLoader.addEventListener('change', handleImage, false);
+
+    function handleImage(e) {
+        var reader = new FileReader();
+//            if ( (/\.(png|jpeg|jpg|gif)$/i).test(reader.name) ) {
+        reader.onload = function (event) {
+            $('.uploader img').attr('src', event.target.result);
+        };
+//        }
+        reader.readAsDataURL(e.target.files[0]);
+    }
+
+    function setPhraseList() {
+        $.ajax({
+            type: "POST",
+            url: '/getPhrases',
+            data: JSON.stringify(
+                    {
+                        questionnaire_id: '{{ questionnaire_id }}'
+                    }
+            ),
+            contentType: 'application/json;charset=UTF-8',
+            success: function (result) {
+                var phraseIdListElement = document.getElementById("phraseIdList");
+                for (i = phraseIdListElement.options.length - 1; i >= 0; i--) {
+                    phraseIdListElement.options[i].selected = false;
+                    phraseIdListElement.options[i] = null;
+                }
+                var phraseList = result['phraseList'];
+                for (i = 0; i < phraseList.length; i++) {
+                    $("#phraseIdList").append(new Option(phraseList[i]['content'], phraseList[i]['id']));
+                }
+            }
+        });
+    }
+    function setPicture() {
+        var phraseId = $('#phraseIdList').val();
+        var picture = document.getElementById('picture').src;
+        var questionnaireId = '{{ questionnaire_id }}';
+        $.ajax({
+            type: "POST",
+            url: '/setPicture',
+            data: JSON.stringify({
+                questionnaire_id: questionnaireId,
+                phrase_id: phraseId,
+                picture: picture
+            }),
+            contentType: 'application/json;charset=UTF-8',
+            success: function (result) {
+                document.getElementById('picture').src = '#';
+                setPhraseList();
+            }
+        });
     }
 </script>
 {% endblock %}

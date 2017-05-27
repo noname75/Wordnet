@@ -85,10 +85,20 @@ def getModalContent():
     questionnaireId = request.json['questionnaireId']
     questionnaire = Questionnaire(questionnaireId).getQuestionnaire()
     title = questionnaire.subject
-    phraseInQList = PhraseInQuestionnaire.getPhraseList_byQuestionnaireId(questionnaire.id)
-    stimuliList = [Phrase(e.phrase_id).getPhrase().content for e in phraseInQList]
-    body = ', '.join(stimuliList)
-    return jsonify({"title": title, 'body': body})
+    phraseInQuestionnaireList = PhraseInQuestionnaire.getPhraseList_byQuestionnaireId(questionnaire.id)
+    hasPicStimuliList = []
+    hasNotPicStimuliList = []
+    for phraseInQuestionnaire in phraseInQuestionnaireList:
+        phrase_id = phraseInQuestionnaire.phrase_id
+        content = Phrase(phrase_id).getPhrase().content
+        if PictureForPhrase(questionnaire_id=questionnaireId, phrase_id=phrase_id).getPicture():
+            hasPicStimuliList.append(content)
+        else:
+            hasNotPicStimuliList.append(content)
+
+    hasPicStr = ', '.join(hasPicStimuliList)
+    hasNotPicStr = ', '.join(hasNotPicStimuliList)
+    return jsonify({"title": title, 'hasPicStr': hasPicStr, 'hasNotPicStr': hasNotPicStr})
 
 
 def isCompletedByUser(questionnaire_id, user_id):

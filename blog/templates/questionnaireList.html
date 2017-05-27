@@ -70,21 +70,32 @@
                                                     <h4 class="modal-title" id="modalTitle"
                                                         style="font-family: BYekan"></h4>
                                                 </div>
-                                                <div class="modal-body" align="center">
+                                                <div class="modal-body"
+                                                     style="color: darkslategray; font-family: BYekan">
                                                     <br><br>
 
-                                                    <p id="modalBody"></p>
-                                                    <button type="button">
-                                                        <a href="{{ url_for('editQuestionnaire', questionnaire_id=questionnaire.id) }}">ویرایش
-                                                            پاسخ‌ها و تصاویر واژه‌ها</a>
-                                                    </button>
+                                                    <div id="hasPic" style="display: none">
+                                                        <h5 style="font-family: BYekan">واژه‌های با تصویر</h5>
+
+                                                        <p id="modalHasPic"></p>
+                                                        <button type="button">
+                                                            <a href="">مشاهده تصاویر</a>
+                                                        </button>
+                                                    </div>
+                                                    <div id="hasNotPic" style="display: none">
+                                                        <h5 style="font-family: BYekan">واژه‌های بدون تصویر</h5>
+
+                                                        <p id="modalHasNotPic"></p>
+                                                        <button type="button">
+                                                            <a href="{{ url_for('editQuestionnaire', questionnaire_id=questionnaire.id) }}">افزودن
+                                                                تصویر به واژه‌ها</a>
+                                                        </button>
+                                                    </div>
                                                 </div>
                                             </div>
-
                                         </div>
                                     </div>
                                 </td>
-
                                 {% if questionnaire.isActive %}
                                 <td><input type="checkbox" data-init-plugin="switchery" data-size="small" checked
                                            onchange="changeActivationStatus('{{ questionnaire.id }}')"/></td>
@@ -147,8 +158,19 @@
             }),
             contentType: 'application/json;charset=UTF-8',
             success: function (result) {
-                document.getElementById("modalTitle").innerHTML = result['title'];
-                document.getElementById("modalBody").innerHTML = result['body'];
+                title = result['title'];
+                hasPicStr = result['hasPicStr'];
+                hasNotPicStr = result['hasNotPicStr'];
+
+                document.getElementById("modalTitle").innerHTML = title;
+                if (hasPicStr.localeCompare('')) {
+                    document.getElementById("hasPic").style.display = 'block';
+                    document.getElementById("modalHasPic").innerHTML = hasPicStr;
+                }
+                if (hasNotPicStr.localeCompare('')) {
+                    document.getElementById("hasNotPic").style.display = 'block';
+                    document.getElementById("modalHasNotPic").innerHTML = hasNotPicStr;
+                }
             }
         });
     }
