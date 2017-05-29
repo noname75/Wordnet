@@ -28,6 +28,6 @@ def addQuestionnaire():
                 questionnarire_id=questionnaire.id).addPhraseInQuestionnaire()
 
         flash(message='پرسش‌نامه ثبت شد.', category='success')
-        return redirect(url_for('questionnaireList', questionnaireType='00'))
+        return redirect(url_for('questionnaireList', isChosen=0))
 
     return render_template('addQuestionnaire.html', error=error, form=form)

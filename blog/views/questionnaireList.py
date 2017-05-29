@@ -30,7 +30,7 @@ def questionnaireList(isChosen):
 def addPack():
     questionnaireId = request.json['questionnaireId']
     isChosen = bool(int(request.json['isChosen']))
-    isPictorial = request.json['isPictorial']
+    isPictorial = bool(int(request.json['isPictorial']))
 
     questionnaire = Questionnaire(questionnaireId).getQuestionnaire()
 

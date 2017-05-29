@@ -4,7 +4,8 @@ from blog import app
 from blog.views.permission_config import user
 import random
 import time
-
+from base64 import b64encode
+from json import dumps
 
 questionnaire_page = Blueprint('questionnaire', __name__, template_folder='templates')
 
@@ -23,7 +24,7 @@ def questionnaire(packId):
 @app.route('/addResponse', methods=['POST'])
 @user.require(http_exception=403)
 def addResponse():
-    stimulus = request.json['stimulus']
+    stimulus = request.json['stimulusId']
     response = request.json['response']
     packId = request.json['packId']
     duration = request.json['duration']
@@ -31,7 +32,7 @@ def addResponse():
     response = Phrase(content=response).addIfNotExists()
 
     ResponseInPack(pack_id=packId,
-                   phrase1_id=Phrase(content=stimulus).getPhrase_byContent().id,
+                   phrase1_id=stimulus,
                    phrase2_id=response.id,
                    duration=duration).addResponseInPack()
     return ''
@@ -55,8 +56,12 @@ def getStimulus():
     else:
         stimulusId = unansweredPhraseId[0]
 
-    stimulus = Phrase(phrase_id=stimulusId).getPhrase().content
-    return stimulus
+    if pack.isPictorial:
+        picture = PictureForPhrase(phrase_id=stimulusId, questionnaire_id=pack.questionnaire_id).getPicture()[0]
+        stimulus = picture.decode('utf-8')[1:-1]
+    else:
+        stimulus = Phrase(phrase_id=stimulusId).getPhrase().content
+    return jsonify({'stimulusId': stimulusId, 'stimulus': stimulus, 'isPictorial': pack.isPictorial})
 
 
 @app.route('/endQuestionnaire', methods=['POST'])
@@ -79,6 +84,10 @@ def getUnseenPhraseIdList(packId):
     for pack in packList:
         phraseIdList_byUser.extend(
             [response.phrase1_id for response in ResponseInPack.getResponseList_byPackId(pack.id)])
-    unseenPhraseIdList = [item for item in phraseList_byQuestionnaire if item not in phraseIdList_byUser]
+    if pack.isPictorial:
+        unseenPhraseIdList = [item for item in phraseList_byQuestionnaire if
+                              (item not in phraseIdList_byUser) and PictureForPhrase(phrase_id=item,
+                                                                                     questionnaire_id=pack.questionnaire_id).getPicture()]
+    else:
+        unseenPhraseIdList = [item for item in phraseList_byQuestionnaire if item not in phraseIdList_byUser]
     return unseenPhraseIdList
-
