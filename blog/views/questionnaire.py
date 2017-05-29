@@ -4,8 +4,6 @@ from blog import app
 from blog.views.permission_config import user
 import random
 import time
-from base64 import b64encode
-from json import dumps
 
 questionnaire_page = Blueprint('questionnaire', __name__, template_folder='templates')
 
@@ -18,7 +16,7 @@ def questionnaire(packId):
     if pack.user_id != User(username=session['username']).getUser().id:
         return redirect('authorisation_failed')
 
-    return render_template('questionnaire.html', packId=packId)
+    return render_template('questionnaire.html', packId=packId, isPictorial=pack.isPictorial)
 
 
 @app.route('/addResponse', methods=['POST'])

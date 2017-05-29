@@ -19,8 +19,11 @@
                     <div class="panel-body" style="color:#083C32">
                         <form id="questionnaireForm" onsubmit="return false;">
                             <div class="row" style=" text-align: center">
-                                <h3 style="font-family: BYekan" id="phrase"></h3>
+                                {% if isPictorial %}
                                 <img id="picture" src="" alt="picture" style="width:300px;height:300px;">
+                                {% else %}
+                                <h3 style="font-family: BYekan" id="phrase"></h3>
+                                {% endif %}
                             </div>
                             <br><br>
                             <input style="font-family: BYekan" type=text id="Response" onchange="submitButtonControl()"
@@ -58,6 +61,8 @@
     var startTime;
     var stimulusId;
     getStimulus();
+
+    $('#Response').alphanumeric();
 
     $(document).ready(function () {
         $('#bttnsubmit').prop('disabled', true);
