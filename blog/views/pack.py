@@ -27,11 +27,15 @@ def addResponse():
     packId = request.json['packId']
     duration = request.json['duration']
 
-    response = Phrase(content=response).addIfNotExists()
+    phrase2_id = None
+    if response:
+        response = Phrase(content=response).addIfNotExists()
+        phrase2_id = response.id
+
 
     ResponseInPack(pack_id=packId,
                    phrase1_id=stimulus,
-                   phrase2_id=response.id,
+                   phrase2_id=phrase2_id,
                    duration=duration).addResponseInPack()
     return ''
 
@@ -46,9 +50,7 @@ def getStimulus():
     if not unansweredPhraseId:
         unseenPhraseIdList = getUnseenPhraseIdList(pack.id)
         if unseenPhraseIdList.__len__() == 0:
-            pack.setFinishTime(time.strftime('%Y-%m-%d %H:%M:%S'))
-            flash(message='شما به تمامی سوالات پرسش‌نامه پاسخ دادید.', category='success')
-            return url_for('index')
+            return ''
         stimulusId = random.choice(unseenPhraseIdList)
         ResponseInPack(pack_id=pack.id, phrase1_id=stimulusId).addResponseInPack()
     else:
@@ -61,17 +63,6 @@ def getStimulus():
     else:
         stimulus = Phrase(phrase_id=stimulusId).getPhrase().content
     return jsonify({'stimulusId': stimulusId, 'stimulus': stimulus, 'isPictorial': pack.isPictorial})
-
-
-@app.route('/endQuestionnaire', methods=['POST'])
-@user.require(http_exception=403)
-def endQuestionnaire():
-    packId = request.json['packId']
-    pack = Pack(pack_id=packId).getPack()
-
-    pack.setFinishTime(time.strftime('%Y-%m-%d %H:%M:%S'))
-    flash(message='پرسشنامه با موفقیت تکمیل شد. ممنون از مشارکت شما.', category='success')
-    return url_for('index')
 
 
 def getUnseenPhraseIdList(packId):

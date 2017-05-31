@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+
+{% macro render_field(field) %}
+<div> {{ field.label }}<br><br>
+
+    <div>{{ field(class="form-control") }}</div>
+</div>
+{% if field.errors %}
+<ul class="errors">{% for error in field.errors %}
+    <li>{{ error }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endmacro %}
+
+
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-xs-6 col-md-4"></div>
+        <div class="col-xs-6 col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div style="font-family: BYekan; border: outset; border-radius: 5px; padding: 10px">
+                        مدت زمان پاسخ‌گویی: {{pack.duration}}<br>
+                        تعداد پاسخ‌ها: {{pack.numberOfResponses}}<br>
+                    </div>
+                </div>
+                <div class="panel-body" style="color:#083C32;">
+                    <div class="col-md-11">
+                        <button class="btn" type="button" onclick="addPack(true)"
+                                style="font-family: BYekan; width: 220px; margin: 10px">
+                            <a href="{{ url_for('questionnaireList',isChosen=false) }}">
+                                بازگشت به لیست پرسش‌نامه‌ها
+                            </a>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block js %}
+<script type="text/javascript">
+
+</script>
+{% endblock %}
+

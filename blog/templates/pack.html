@@ -17,7 +17,7 @@
 					<div class="panel-heading">
 					</div>
                     <div class="panel-body" style="color:#083C32">
-                        <form id="questionnaireForm" onsubmit="return false;">
+                        <form>
                             <div class="row" style=" text-align: center">
                                 {% if isPictorial %}
                                 <img id="picture" src="" alt="picture" style="width:300px;height:300px;">
@@ -37,14 +37,17 @@
 
                             <div class="row">
                                 <div class="col-xs-4 col-md-5">
-                                    <input style="font-family: BYekan" id="bttnexit" style="border-color: indianred"
-                                           type=submit class="btn btn-block"
-                                           onclick="endQuestionnaire()" value='پایان پاسخ‌گویی'>
+                                    <button style="font-family: BYekan" id="bttnexit" style="border-color: indianred"
+                                            class="btn btn-block">
+                                        <a href="{{ url_for('endPack',pack_id=packId) }}">پایان پاسخ‌گویی</a>
+                                    </button>
                                 </div>
                                 <div class="col-xs-4 col-md-2"></div>
                                 <div class="col-xs-4 col-md-5">
-                                    <input style="font-family: BYekan" id="bttnskip" type=submit class="btn btn-block"
-                                           onclick="addResponse('')" value='واژه‌ی بعدی'>
+                                    <button style="font-family: BYekan" id="bttnskip" type=submit class="btn btn-block"
+                                            onclick="skipStimulus()">
+                                        بعدی
+                                    </button>
                                 </div>
                             </div>
                         </form>
@@ -62,14 +65,18 @@
     var stimulusId;
     getStimulus();
 
-    $('#Response').alphanumeric();
-
     $(document).ready(function () {
         $('#bttnsubmit').prop('disabled', true);
         $('#Response').keyup(function () {
             $('#bttnsubmit').prop('disabled', this.value == "" ? true : false);
         })
     });
+
+    function nospaces(t) {
+        if (t.value.match(/\s/g)) {
+            t.value = t.value.replace(/^\s+|\s+$/gm, '');
+        }
+    }
 
     function addResponse(responseListStr) {
         var packId = '{{ packId }}';
@@ -99,6 +106,29 @@
 
     }
 
+    function skipStimulus() {
+        var packId = '{{ packId }}';
+        var finishTime = new Date();
+        var duration = (finishTime - startTime) / 1000;
+        $.ajax({
+            type: "POST",
+            url: '/addResponse',
+            data: JSON.stringify(
+                    {
+                        stimulusId: stimulusId,
+                        response: null,
+                        packId: packId,
+                        duration: duration
+                    }
+            ),
+            contentType: 'application/json;charset=UTF-8',
+            success: function (result) {
+            }
+        });
+        document.getElementById("Response").value = '';
+        getStimulus();
+    }
+
     function getStimulus() {
         $.ajax({
             type: "POST",
@@ -110,12 +140,12 @@
             ),
             contentType: 'application/json;charset=UTF-8',
             success: function (result) {
-                if (result == '/') {
-                    window.location = result;
-                } else {
+                if (result == '') {
+                    window.location = "{{ url_for('endPack',pack_id=packId) }}";
+                }
+                else {
                     stimulusId = result['stimulusId'];
                     if (result['isPictorial']) {
-                        console.log(result['stimulus']);
                         document.getElementById("picture").src = result['stimulus'];
                     } else {
                         document.getElementById("phrase").textContent = result['stimulus'];
@@ -134,27 +164,7 @@
         });
     }
 
-    function endQuestionnaire() {
-        $.ajax({
-            type: "POST",
-            url: '/endQuestionnaire',
-            data: JSON.stringify(
-                    {
-                        packId: '{{ packId }}'
-                    }
-            ),
-            contentType: 'application/json;charset=UTF-8',
-            success: function (result) {
-                window.location = result;
-            }
-        });
-    }
 
-    function nospaces(t) {
-        if (t.value.match(/\s/g)) {
-            t.value = t.value.replace(/^\s+|\s+$/gm, '');
-        }
-    }
 </script>
 {% endblock %}
 

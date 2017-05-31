@@ -27,7 +27,7 @@ class ResponseInPack(db.Model):
                                                                         pack_id=self.pack_id).order_by(
             desc(ResponseInPack.number)).first()
         if lastSamePhrase1_id:
-            if not lastSamePhrase1_id.phrase2_id:
+            if not lastSamePhrase1_id.duration:
                 lastSamePhrase1_id.duration = self.duration
                 lastSamePhrase1_id.phrase2_id = self.phrase2_id
             else:
@@ -41,4 +41,4 @@ class ResponseInPack(db.Model):
 
 
     def unansweredPhraseId(self):
-        return db.session.query(ResponseInPack.phrase1_id).filter_by(pack_id=self.pack_id, phrase2_id=None).first()
+        return db.session.query(ResponseInPack.phrase1_id).filter_by(pack_id=self.pack_id, duration=None).first()
