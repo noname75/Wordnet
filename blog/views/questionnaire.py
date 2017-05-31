@@ -22,6 +22,7 @@ def questionnaire(questionnaire_id):
     #set existUnansweredPicture
     user_id = User(session['username']).getUser().id
     questionnaire.isExistUnansweredPicture = existUnansweredPicture(user_id, questionnaire_id)
+    questionnaire.isExistUnansweredPhrase = existUnansweredPhrase(user_id, questionnaire_id)
 
 
     return render_template('questionnaire.html', questionnaire=questionnaire)
@@ -58,9 +59,23 @@ def existUnansweredPicture(user_id, questionnaire_id):
     packList = Pack.getPackList_byQuestionnaireIdAndUserId(questionnaire_id, user_id)
     phraseIdList_byUser = []
     for pack in packList:
-        phraseIdList_byUser.extend(
-            [response.phrase1_id for response in ResponseInPack.getResponseList_byPackId(pack.id)])
+        if pack.isPictorial:
+            phraseIdList_byUser.extend(
+                [response.phrase1_id for response in ResponseInPack.getResponseList_byPackId(pack.id)])
     unseenPhraseIdList = [item for item in phraseList_byQuestionnaire if
                           (item not in phraseIdList_byUser) and PictureForPhrase(phrase_id=item,
-                                                                                 questionnaire_id=pack.questionnaire_id).getPicture()]
+                                                                                 questionnaire_id=questionnaire_id).getPicture()]
+    return not (unseenPhraseIdList.__len__() == 0)
+
+
+def existUnansweredPhrase(user_id, questionnaire_id):
+    phraseList_byQuestionnaire = [phrase.phrase_id for phrase in
+                                  PhraseInQuestionnaire.getPhraseList_byQuestionnaireId(questionnaire_id)]
+    packList = Pack.getPackList_byQuestionnaireIdAndUserId(questionnaire_id, user_id)
+    phraseIdList_byUser = []
+    for pack in packList:
+        if not pack.isPictorial:
+            phraseIdList_byUser.extend(
+                [response.phrase1_id for response in ResponseInPack.getResponseList_byPackId(pack.id)])
+    unseenPhraseIdList = [item for item in phraseList_byQuestionnaire if (item not in phraseIdList_byUser)]
     return not (unseenPhraseIdList.__len__() == 0)

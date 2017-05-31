@@ -28,11 +28,13 @@
                     </div>
                 </div>
                 <div class="panel-body" style="color:#083C32;">
+                    {% if questionnaire.isExistUnansweredPhrase %}
                     <div class="col-md-11">
                         <button class="btn" type="button" onclick="addPack(false)"
                                 style="font-family: BYekan; width: 220px; margin: 10px">شروع پرسش‌نامه اسمی
                     </button>
                     </div>
+                    {% endif %}
                     {% if questionnaire.isExistUnansweredPicture %}
                     <div class="col-md-11">
                         <button class="btn" type="button" onclick="addPack(true)"

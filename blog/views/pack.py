@@ -55,8 +55,9 @@ def getStimulus():
         stimulusId = unansweredPhraseId[0]
 
     if pack.isPictorial:
-        picture = PictureForPhrase(phrase_id=stimulusId, questionnaire_id=pack.questionnaire_id).getPicture()[0]
-        stimulus = picture.decode('utf-8')[1:-1]
+        pictureForPhrase = PictureForPhrase(phrase_id=stimulusId, questionnaire_id=pack.questionnaire_id).getPicture()[
+            0]
+        stimulus = pictureForPhrase.decode('utf-8')[1:-1]
     else:
         stimulus = Phrase(phrase_id=stimulusId).getPhrase().content
     return jsonify({'stimulusId': stimulusId, 'stimulus': stimulus, 'isPictorial': pack.isPictorial})
@@ -78,14 +79,19 @@ def getUnseenPhraseIdList(packId):
     phraseList_byQuestionnaire = [phrase.phrase_id for phrase in
                                   PhraseInQuestionnaire.getPhraseList_byQuestionnaireId(pack.questionnaire_id)]
     packList = Pack.getPackList_byQuestionnaireIdAndUserId(pack.questionnaire_id, pack.user_id)
-    phraseIdList_byUser = []
+    phrase_phraseIdList_byUser = []
+    picture_phraseIdList_byUser = []
     for pack in packList:
-        phraseIdList_byUser.extend(
-            [response.phrase1_id for response in ResponseInPack.getResponseList_byPackId(pack.id)])
+        if pack.isPictorial:
+            picture_phraseIdList_byUser.extend(
+                [response.phrase1_id for response in ResponseInPack.getResponseList_byPackId(pack.id)])
+        else:
+            phrase_phraseIdList_byUser.extend(
+                [response.phrase1_id for response in ResponseInPack.getResponseList_byPackId(pack.id)])
     if pack.isPictorial:
         unseenPhraseIdList = [item for item in phraseList_byQuestionnaire if
-                              (item not in phraseIdList_byUser) and PictureForPhrase(phrase_id=item,
+                              (item not in picture_phraseIdList_byUser) and PictureForPhrase(phrase_id=item,
                                                                                      questionnaire_id=pack.questionnaire_id).getPicture()]
     else:
-        unseenPhraseIdList = [item for item in phraseList_byQuestionnaire if item not in phraseIdList_byUser]
+        unseenPhraseIdList = [item for item in phraseList_byQuestionnaire if item not in phrase_phraseIdList_byUser]
     return unseenPhraseIdList

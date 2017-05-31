@@ -61,13 +61,22 @@ def getModalContent():
 def isCompletedByUser(questionnaire_id, user_id):
     phraseList_byQuestionnaire = [phrase.phrase_id for phrase in
                                   PhraseInQuestionnaire.getPhraseList_byQuestionnaireId(questionnaire_id)]
-    packList = Pack.getPackList_byUserId(user_id)
-    phraseIdList_byUser = []
+    packList = Pack.getPackList_byQuestionnaireIdAndUserId(questionnaire_id, user_id)
+    phrase_phraseIdList_byUser = []
+    picture_phraseIdList_byUser = []
     for pack in packList:
-        phraseIdList_byUser.extend(
-            [response.phrase1_id for response in ResponseInPack.getResponseList_byPackId(pack.id)])
-    unseenPhraseIdList = [item for item in phraseList_byQuestionnaire if item not in phraseIdList_byUser]
-    if unseenPhraseIdList.__len__() == 0:
+        if pack.isPictorial:
+            picture_phraseIdList_byUser.extend(
+                [response.phrase1_id for response in ResponseInPack.getResponseList_byPackId(pack.id)])
+        else:
+            phrase_phraseIdList_byUser.extend(
+                [response.phrase1_id for response in ResponseInPack.getResponseList_byPackId(pack.id)])
+
+    unseenPicture_phraseIdList = [item for item in phraseList_byQuestionnaire if
+                                  (item not in picture_phraseIdList_byUser) and PictureForPhrase(phrase_id=item,
+                                                                                                 questionnaire_id=questionnaire_id).getPicture()]
+    unseenPhrase_phraseIdList = [item for item in phraseList_byQuestionnaire if item not in phrase_phraseIdList_byUser]
+    if unseenPhrase_phraseIdList.__len__() == 0 and unseenPicture_phraseIdList.__len__() == 0:
         return True
     else:
         return False
