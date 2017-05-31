@@ -43,7 +43,7 @@
                                 {% else %}
                                 <td class="v-align-middle bold">
                                     <button type="button" class="btn" style="font-family: BYekan">
-                                        <a href="{{ url_for('showQuestionnaire', questionnaire_id=questionnaire.id) }}">
+                                        <a href="{{ url_for('questionnaire', questionnaire_id=questionnaire.id) }}">
                                             {{ questionnaire.subject }}
                                         </a>
                                     </button>
@@ -122,21 +122,6 @@
 
 {% block js %}
 <script type="text/javascript">
-    function addPack(questionnaireId, isPictorial) {
-        $.ajax({
-            type: "POST",
-            url: '/addPack',
-            data: JSON.stringify({
-                isChosen: '{{ isChosen }}',
-                isPictorial: isPictorial,
-                questionnaireId: questionnaireId
-            }),
-            contentType: 'application/json;charset=UTF-8',
-            success: function (result) {
-                window.location = result;
-            }
-        });
-    }
 
     function changeActivationStatus(questionnaireId) {
         $.ajax({
