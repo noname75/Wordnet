@@ -12,6 +12,7 @@ class Graph(db.Model):
     minFrequency = db.Column(db.Float, default=0)
     startTime = db.Column(db.DateTime)
     finishTime = db.Column(db.DateTime)
+    creationTime = db.Column(db.DateTime())
 
 
     def getGraphList_bySource(self, source):

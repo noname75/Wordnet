@@ -29,14 +29,16 @@ def addResponse():
 
     phrase2_id = None
     if response:
-        response = Phrase(content=response).addIfNotExists()
+        response = Phrase(content=response, creationTime=time.strftime('%Y-%m-%d %H:%M:%S')).addIfNotExists()
         phrase2_id = response.id
 
-
-    ResponseInPack(pack_id=packId,
-                   phrase1_id=stimulus,
-                   phrase2_id=phrase2_id,
-                   duration=duration).addResponseInPack()
+    ResponseInPack(
+        pack_id=packId,
+        phrase1_id=stimulus,
+        phrase2_id=phrase2_id,
+        duration=duration,
+        creationTime=time.strftime('%Y-%m-%d %H:%M:%S')
+    ).addResponseInPack()
     return ''
 
 
@@ -52,7 +54,11 @@ def getStimulus():
         if unseenPhraseIdList.__len__() == 0:
             return ''
         stimulusId = random.choice(unseenPhraseIdList)
-        ResponseInPack(pack_id=pack.id, phrase1_id=stimulusId).addResponseInPack()
+        ResponseInPack(
+            pack_id=pack.id,
+            phrase1_id=stimulusId,
+            creationTime=time.strftime('%Y-%m-%d %H:%M:%S')
+        ).addResponseInPack()
     else:
         stimulusId = unansweredPhraseId[0]
 

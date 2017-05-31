@@ -10,7 +10,6 @@ questionnaireList_page = Blueprint('questionnaireList', __name__, template_folde
 @app.route('/questionnaireList/<int:isChosen>', methods=['GET'])
 @user.require(http_exception=403)
 def questionnaireList(isChosen):
-    try:
         user = User(username=session['username']).getUser()
         questionnaireList = Questionnaire.getQuestionnaireList(isChosen)
         for questionnnaire in questionnaireList:
@@ -19,10 +18,6 @@ def questionnaireList(isChosen):
             questionnnaire.isCompletedByUser = isCompletedByUser(questionnnaire.id, user.id)
         return render_template('questionnaireList.html',
                                questionnaireList=questionnaireList)
-
-    except Exception:
-        return redirect('page_not_found')
-
 
 
 @app.route("/changeActivationStatus", methods=['POST'])

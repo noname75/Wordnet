@@ -3,6 +3,7 @@ from blog.models.db_config import *
 from blog import app
 from blog.views.permission_config import admin
 from blog.forms.AddQuestionnaireForm import AddQuestionnaireForm
+import time
 
 addQuestionnaire_page = Blueprint('addQuestionnaire', __name__, template_folder='templates')
 
@@ -16,13 +17,14 @@ def addQuestionnaire():
 
         questionnaire = Questionnaire(
             subject=form.subject.data,
-            moreInfo=form.moreInfo.data
+            moreInfo=form.moreInfo.data,
+            creationTime=time.strftime('%Y-%m-%d %H:%M:%S')
         ).addQuestionnaire()
 
         stimuliList = form.stimuli.data.split('\r\n')
 
         for s in stimuliList:
-            stimulus = Phrase(content=s).addIfNotExists()
+            stimulus = Phrase(content=s, creationTime=time.strftime('%Y-%m-%d %H:%M:%S')).addIfNotExists()
             PhraseInQuestionnaire(
                 phrase_id=stimulus.id,
                 questionnarire_id=questionnaire.id).addPhraseInQuestionnaire()

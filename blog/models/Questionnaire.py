@@ -9,6 +9,7 @@ class Questionnaire(db.Model):
     isActive = db.Column(db.Boolean, default=False)
     isPictorial = db.Column(db.Boolean, default=False)
     isChosen = db.Column(db.Boolean)
+    creationTime = db.Column(db.DateTime())
 
 
     def __init__(self,
@@ -18,7 +19,8 @@ class Questionnaire(db.Model):
                  isActive=0,
                  isPictorial=0,
                  isChosen=0,
-                 picture=None):
+                 picture=None,
+                 creationTime=None):
 
         self.id = questionnaire_id
         self.subject = subject
@@ -27,6 +29,7 @@ class Questionnaire(db.Model):
         self.isChosen = isChosen
         self.moreInfo = moreInfo
         self.picture = picture
+        self.creationTime = creationTime
 
     def addQuestionnaire(self):
         db.session.add(self)
