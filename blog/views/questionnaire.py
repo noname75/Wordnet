@@ -10,7 +10,9 @@ questionnaire_page = Blueprint('questionnaire', __name__, template_folder='templ
 @app.route('/questionnaire/<int:questionnaire_id>', methods=['GET'])
 @user.require(http_exception=403)
 def questionnaire(questionnaire_id):
-    return render_template('questionnaire.html', questionnaire_id=questionnaire_id)
+    questionnaire = Questionnaire(questionnaire_id=questionnaire_id).getQuestionnaire()
+
+    return render_template('questionnaire.html', questionnaire=questionnaire)
 
 
 @app.route("/addPack", methods=['POST'])

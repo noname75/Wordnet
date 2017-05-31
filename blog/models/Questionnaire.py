@@ -4,6 +4,7 @@ class Questionnaire(db.Model):
     __tablename__ = 'questionnaire'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     subject = db.Column(db.Unicode(100), unique=True)
+    picture = db.Column(db.VARBINARY)
     moreInfo = db.Column(db.Unicode(1000))
     isActive = db.Column(db.Boolean, default=False)
     isPictorial = db.Column(db.Boolean, default=False)
@@ -16,7 +17,8 @@ class Questionnaire(db.Model):
                  subject=None,
                  isActive=0,
                  isPictorial=0,
-                 isChosen=0):
+                 isChosen=0,
+                 picture=None):
 
         self.id = questionnaire_id
         self.subject = subject
@@ -24,7 +26,7 @@ class Questionnaire(db.Model):
         self.isPictorial = isPictorial
         self.isChosen = isChosen
         self.moreInfo = moreInfo
-
+        self.picture = picture
 
     def addQuestionnaire(self):
         db.session.add(self)
