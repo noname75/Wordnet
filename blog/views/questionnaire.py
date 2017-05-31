@@ -12,6 +12,18 @@ questionnaire_page = Blueprint('questionnaire', __name__, template_folder='templ
 def questionnaire(questionnaire_id):
     questionnaire = Questionnaire(questionnaire_id=questionnaire_id).getQuestionnaire()
 
+    # Set number of users which where participated in this questionnaire
+    packList = Pack.getPackList_byQuestionnaireId(questionnaire.id)
+    userList = set()
+    for pack in packList:
+        userList.add(pack.user_id)
+    questionnaire.userNumber = len(userList)
+
+    #set existUnansweredPicture
+    user_id = User(session['username']).getUser().id
+    questionnaire.isExistUnansweredPicture = existUnansweredPicture(user_id, questionnaire_id)
+
+
     return render_template('questionnaire.html', questionnaire=questionnaire)
 
 
@@ -38,3 +50,17 @@ def addPack():
     pack.addPack()
 
     return url_for('pack', packId=pack.id)
+
+
+def existUnansweredPicture(user_id, questionnaire_id):
+    phraseList_byQuestionnaire = [phrase.phrase_id for phrase in
+                                  PhraseInQuestionnaire.getPhraseList_byQuestionnaireId(questionnaire_id)]
+    packList = Pack.getPackList_byQuestionnaireIdAndUserId(questionnaire_id, user_id)
+    phraseIdList_byUser = []
+    for pack in packList:
+        phraseIdList_byUser.extend(
+            [response.phrase1_id for response in ResponseInPack.getResponseList_byPackId(pack.id)])
+    unseenPhraseIdList = [item for item in phraseList_byQuestionnaire if
+                          (item not in phraseIdList_byUser) and PictureForPhrase(phrase_id=item,
+                                                                                 questionnaire_id=pack.questionnaire_id).getPicture()]
+    return not (unseenPhraseIdList.__len__() == 0)

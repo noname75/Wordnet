@@ -25,6 +25,12 @@ class Pack(db.Model):
     def getPackList_byUserId(userId):
         return db.session.query(Pack).filter_by(user_id=userId).all()
 
+    def getPackList_byQuestionnaireId(questionnaireId):
+        return db.session.query(Pack).filter_by(questionnaire_id=questionnaireId).all()
+
+    def getPackList_byQuestionnaireIdAndUserId(questionnaireId, userId):
+        return db.session.query(Pack).filter_by(questionnaire_id=questionnaireId, user_id=userId)
+
     def addPack(self):
         db.session.add(self)
         db.session.flush()

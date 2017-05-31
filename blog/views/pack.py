@@ -77,7 +77,7 @@ def getUnseenPhraseIdList(packId):
     pack = Pack(pack_id=packId).getPack()
     phraseList_byQuestionnaire = [phrase.phrase_id for phrase in
                                   PhraseInQuestionnaire.getPhraseList_byQuestionnaireId(pack.questionnaire_id)]
-    packList = Pack.getPackList_byUserId(pack.user_id)
+    packList = Pack.getPackList_byQuestionnaireIdAndUserId(pack.questionnaire_id, pack.user_id)
     phraseIdList_byUser = []
     for pack in packList:
         phraseIdList_byUser.extend(
