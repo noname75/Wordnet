@@ -37,6 +37,5 @@ def setPicture():
     phrase_id = request.json['phrase_id']
     picture = bytes(json.dumps(request.json['picture']), 'utf8')
     questionnaire_id = request.json['questionnaire_id']
-
     PictureForPhrase(phrase_id=phrase_id, picture=picture, questionnaire_id=questionnaire_id).addPictureForPhrase()
     return ''

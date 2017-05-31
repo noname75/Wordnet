@@ -18,36 +18,11 @@ def questionnaireList(isChosen):
                 questionnnaire.id).__len__()
             questionnnaire.isCompletedByUser = isCompletedByUser(questionnnaire.id, user.id)
         return render_template('questionnaireList.html',
-                               questionnaireList=questionnaireList,
-                               isChosen=isChosen)
+                               questionnaireList=questionnaireList)
 
     except Exception:
         return redirect('page_not_found')
 
-
-@app.route("/addPack", methods=['POST'])
-@user.require(http_exception=403)
-def addPack():
-    questionnaireId = request.json['questionnaireId']
-    isChosen = bool(int(request.json['isChosen']))
-    isPictorial = bool(int(request.json['isPictorial']))
-
-    questionnaire = Questionnaire(questionnaireId).getQuestionnaire()
-
-    if not questionnaire.isActive or not questionnaire.isChosen == isChosen or (
-        isPictorial and not questionnaire.isPictorial):
-        raise AssertionError()
-
-    pack = Pack(
-        questionnaire_id=questionnaireId,
-        user_id=User(session['username']).getUser().id,
-        startTime=time.strftime('%Y-%m-%d %H:%M:%S'),
-        isPictorial=isPictorial,
-        isChosen=isChosen)
-
-    pack.addPack()
-
-    return url_for('questionnaire', packId=pack.id)
 
 
 @app.route("/changeActivationStatus", methods=['POST'])

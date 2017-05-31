@@ -117,6 +117,13 @@
     }
 
     function setNodeList() {
+
+        $("#nodeIdList").val('').change();
+        var nodeInListElement = document.getElementById("nodeIdList");
+        for (i = nodeInListElement.options.length - 1; i >= 0; i--) {
+            nodeInListElement.options[i].selected = false;
+            nodeInListElement.options[i] = null;
+        }
         $.ajax({
             type: "POST",
             url: '/getNodes',
@@ -127,11 +134,6 @@
             ),
             contentType: 'application/json;charset=UTF-8',
             success: function (result) {
-                var nodeInListElement = document.getElementById("nodeIdList");
-                for (i = nodeInListElement.options.length - 1; i >= 0; i--) {
-                    nodeInListElement.options[i].selected = false;
-                    nodeInListElement.options[i] = null;
-                }
                 var nodeList = result['nodeList'];
                 for (i = 0; i < nodeList.length; i++) {
                     $("#nodeIdList").append(new Option(nodeList[i]['content'], nodeList[i]['id']));

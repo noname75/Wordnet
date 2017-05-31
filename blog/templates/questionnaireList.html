@@ -42,44 +42,11 @@
                                 </td>
                                 {% else %}
                                 <td class="v-align-middle bold">
-                                    <button type="button" class="btn" data-toggle="modal"
-                                            data-target="#questionnaireOptions"
-                                            style="font-family: BYekan">
-                                        {{ questionnaire.subject }}
+                                    <button type="button" class="btn" style="font-family: BYekan">
+                                        <a href="{{ url_for('showQuestionnaire', questionnaire_id=questionnaire.id) }}">
+                                            {{ questionnaire.subject }}
+                                        </a>
                                     </button>
-                                    <!-- Modal -->
-                                    <div class="modal fade" id="questionnaireOptions" role="dialog">
-                                        <div class="modal-dialog">
-                                            <!-- Modal content-->
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <button type="button" class="close"
-                                                            data-dismiss="modal">&times;</button>
-                                                    <h4 class="modal-title" id="modalTitle"
-                                                        style="font-family: BYekan"></h4>
-                                                </div>
-                                                <div class="modal-body"
-                                                     style="color: darkslategray; font-family: BYekan">
-                                                    <br><br>
-
-                                                    <p>در این قسمت شما واژه‌های مختلف را مشاهده می‌کنید و می‌توانید برای
-                                                        هر کدام اولین کلمه‌ای که به ذهنتان می‌رسد را ثبت کنید.</p>
-                                                    <button type="button"
-                                                            onclick="addPack('{{ questionnaire.id }}',false)">شروع
-                                                        پرسش‌نامه‌ی اسمی
-                                                    </button>
-                                                    {% if questionnaire.isPictorial %}
-                                                    <p>در این قسمت شما تصاویر مختلف را مشاهده می‌کندی و می‌توانید برای
-                                                        هر کدام اولین کلمه‌ای که به ذهنتان می‌رسد را ثبت کنید.</p>
-                                                    <button type="button"
-                                                            onclick="addPack('{{ questionnaire.id }}',true)">شروع
-                                                        پرسش‌نامه تصویری
-                                                    </button>
-                                                    {% endif %}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </td>
                                 {% endif %}
                                 <td>{{ questionnaire.moreInfo }}</td>

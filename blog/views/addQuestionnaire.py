@@ -19,7 +19,7 @@ def addQuestionnaire():
             moreInfo=form.moreInfo.data
         ).addQuestionnaire()
 
-        stimuliList = form.stimuli.data.split('\n')
+        stimuliList = form.stimuli.data.split('\r\n')
 
         for s in stimuliList:
             stimulus = Phrase(content=s).addIfNotExists()

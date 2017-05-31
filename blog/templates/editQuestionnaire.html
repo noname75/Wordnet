@@ -54,17 +54,17 @@
         <div class="col-xs-6 col-md-3"></div>
         <div class="col-xs-6 col-md-6">
             <div class="panel panel-default">
+                <form onsubmit="setPicture()">
                 <div class="panel-heading">
                     <h5 style="text-align: center; font-family: BYekan">
                         <strong>افزودن تصویر به واژه‌ها</strong>
                     </h5>
                     <br><br>
-
                     <div style="font-family: BYekan;height: 55px"
                          class="form-group form-group-default form-group-default-select2">
                         <label style="font-family: BYekan">انتخاب واژه</label>
                         <select id="phraseIdList" style="font-family: BYekan" class="full-width"
-                                data-init-plugin="select2">
+                                data-init-plugin="select2" required>
                         </select>
                     </div>
                 </div>
@@ -73,17 +73,17 @@
                         <div class="uploader" onclick="$('#filePhoto').click()">
                             برای بارگذاری تصویر اینجا کلیک کنید یا تصویر را در این قسمت قرار دهید.
                             <img id="picture" src=""/>
-                            <input type="file" name="userprofile_picture" id="filePhoto"/>
+                            <input type="file" id="filePhoto" accept="image/*" required/>
                         </div>
                         <br>
 
                         <div class="col-md-9">
-                            <input type="submit" class="btn" style="font-family: BYekan" onclick="setPicture()"
+                            <input type="submit" class="btn" style="font-family: BYekan"
                                    value="ثبت تصویر"/>
                         </div>
                     </div>
-
                 </div>
+                </form>
             </div>
         </div>
     </div>
@@ -95,25 +95,25 @@
 <script type="text/javascript">
 
     setPhraseList();
-
-    function setPhraseInfo() {
-        document.getElementById("phraseid").innerHTML = document.getElementById("phraseId").value
-    }
-
     var imageLoader = document.getElementById('filePhoto');
     imageLoader.addEventListener('change', handleImage, false);
 
+
     function handleImage(e) {
         var reader = new FileReader();
-//            if ( (/\.(png|jpeg|jpg|gif)$/i).test(reader.name) ) {
         reader.onload = function (event) {
-            $('.uploader img').attr('src', event.target.result);
+            $('#picture').attr('src', event.target.result);
         };
-//        }
         reader.readAsDataURL(e.target.files[0]);
     }
 
+
     function setPhraseList() {
+        var phraseIdListElement = document.getElementById("phraseIdList");
+        for (i = phraseIdListElement.options.length - 1; i >= 0; i--) {
+            phraseIdListElement.options[i].selected = false;
+            phraseIdListElement.options[i] = null;
+        }
         $.ajax({
             type: "POST",
             url: '/getPhrases',
@@ -124,12 +124,9 @@
             ),
             contentType: 'application/json;charset=UTF-8',
             success: function (result) {
-                var phraseIdListElement = document.getElementById("phraseIdList");
-                for (i = phraseIdListElement.options.length - 1; i >= 0; i--) {
-                    phraseIdListElement.options[i].selected = false;
-                    phraseIdListElement.options[i] = null;
-                }
+
                 var phraseList = result['phraseList'];
+                $("#phraseIdList").append(new Option());
                 for (i = 0; i < phraseList.length; i++) {
                     $("#phraseIdList").append(new Option(phraseList[i]['content'], phraseList[i]['id']));
                 }
@@ -140,6 +137,7 @@
         var phraseId = $('#phraseIdList').val();
         var picture = document.getElementById('picture').src;
         var questionnaireId = '{{ questionnaire_id }}';
+
         $.ajax({
             type: "POST",
             url: '/setPicture',
@@ -150,7 +148,8 @@
             }),
             contentType: 'application/json;charset=UTF-8',
             success: function (result) {
-                document.getElementById('picture').src = '#';
+                document.getElementById('picture').removeAttribute('src');
+                $("#phraseIdList").select2("val", "");
                 setPhraseList();
             }
         });
