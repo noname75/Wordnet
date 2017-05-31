@@ -10,24 +10,18 @@ questionnaireList_page = Blueprint('questionnaireList', __name__, template_folde
 @app.route('/questionnaireList/<int:isChosen>', methods=['GET'])
 @user.require(http_exception=403)
 def questionnaireList(isChosen):
-    # try:
-    print('1')
-    user = User(username=session['username']).getUser()
-    print('2')
-    questionnaireList = Questionnaire.getQuestionnaireList(isChosen)
-    print('3')
-    for questionnnaire in questionnaireList:
-        print('4')
-        questionnnaire.stimulusCount = PhraseInQuestionnaire.getPhraseList_byQuestionnaireId(
-            questionnnaire.id).__len__()
-        print('5')
-        questionnnaire.isCompletedByUser = isCompletedByUser(questionnnaire.id, user.id)
-    print('6')
-    return render_template('questionnaireList.html',
-                           questionnaireList=questionnaireList)
-    #
-    # except Exception:
-    # return redirect('page_not_found')
+    try:
+        user = User(username=session['username']).getUser()
+        questionnaireList = Questionnaire.getQuestionnaireList(isChosen)
+        for questionnnaire in questionnaireList:
+            questionnnaire.stimulusCount = PhraseInQuestionnaire.getPhraseList_byQuestionnaireId(
+                questionnnaire.id).__len__()
+            questionnnaire.isCompletedByUser = isCompletedByUser(questionnnaire.id, user.id)
+        return render_template('questionnaireList.html',
+                               questionnaireList=questionnaireList)
+
+    except Exception:
+        return redirect('page_not_found')
 
 
 

@@ -27,7 +27,7 @@
                     </div>
                 </div>
                 <div class="panel-body" style="color:#083C32">
-                    <button type="button" onclick="addPack('{{questionnaire_id}}',false)">شروع
+                    <button type="button" onclick="addPack(false)">شروع
                     </button>
                 </div>
             </div>
@@ -39,14 +39,14 @@
 
 {% block js %}
 <script type="text/javascript">
-    function addPack(questionnaireId, isPictorial) {
+    function addPack(isPictorial) {
         $.ajax({
             type: "POST",
             url: '/addPack',
             data: JSON.stringify({
                 isChosen: false,
                 isPictorial: isPictorial,
-                questionnaireId: questionnaireId
+                questionnaireId: '{{questionnaire.id}}'
             }),
             contentType: 'application/json;charset=UTF-8',
             success: function (result) {

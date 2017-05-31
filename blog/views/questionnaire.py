@@ -18,11 +18,11 @@ def questionnaire(questionnaire_id):
 @app.route("/addPack", methods=['POST'])
 @user.require(http_exception=403)
 def addPack():
-    questionnaireId = request.json['questionnaireId']
+    questionnaireId = int(request.json['questionnaireId'])
     isChosen = bool(int(request.json['isChosen']))
     isPictorial = bool(int(request.json['isPictorial']))
 
-    questionnaire = Questionnaire(questionnaireId).getQuestionnaire()
+    questionnaire = Questionnaire(questionnaire_id=questionnaireId).getQuestionnaire()
 
     if not questionnaire.isActive or not questionnaire.isChosen == isChosen or (
                 isPictorial and not questionnaire.isPictorial):
