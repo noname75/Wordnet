@@ -1,0 +1,117 @@
+{% extends "layout.html" %}
+
+{% macro render_field(field) %}
+<div> {{ field.label }}<br><br>
+
+    <div>{{ field(class="form-control") }}</div>
+</div>
+{% if field.errors %}
+<ul class="errors">{% for error in field.errors %}
+    <li>{{ error }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endmacro %}
+
+
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-sm-8">
+            <div class="panel panel-transparent">
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs nav-tabs-linetriangle" data-init-reponsive-tabs="dropdownfx">
+                    <li class="active">
+                        <a data-toggle="tab" href="#addPost" style="font-family: BYekan;"><span>افزودن پست</span></a>
+                    </li>
+                    <li>
+                        <a data-toggle="tab" href="#postStatistics"
+                           style="font-family: BYekan;"><span>آمار پست‌ها</span></a>
+                    </li>
+                </ul>
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div class="tab-pane active" id="addPost">
+                        <div class="col-md-12">
+                            <div class="row column-seperation">
+                                <h3 class="semi-bold" style="font-family: BYekan;">افزودن پست</h3>
+
+                                <p style="font-family: BYekan;">فایل با فرمت json حاوی پست‌ها را آپلود نماییید.</p>
+
+                                <form action="/addPost" class="dropzone" id="uploadForm" method="post">
+                                    <div class="fallback">
+                                        <input name="file" type="file" multiple/>
+                                    </div>
+                                </form>
+                                <img id="processing" class="image-responsive-height demo-mw-50"
+                                     src="../static/assets/img/demo/progress.svg" alt="Progress" style="display: none;">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="postStatistics">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h3></h3>
+
+                                <p></p>
+                                <br>
+
+                                <p class="pull-right">
+                                    <button type="button" class="btn btn-default btn-cons">White</button>
+                                    <button type="button" class="btn btn-success btn-cons">Success</button>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block js %}
+<script type="text/javascript">
+
+    //    function processFile(e) {
+    //        var processBar = document.getElementById('processBar');
+    //        var file = e.target.result;
+    //        if (file && file.length) {
+    //            var jsonPostList = JSON.parse(file).slice(1, 100);
+    //            for(var i=0; i<jsonPostList.length; i++){
+    //                processBar.style.width = 100*(i/jsonPostList.length)+'%';
+    //                var jsonPost = jsonPostList[i];
+    //                $.ajax({
+    //                    type: "POST",
+    //                    url: '/addPost',
+    //                    data: JSON.stringify({
+    //                        'code': jsonPost.code,
+    //                        'caption': jsonPost.caption,
+    //                        'time': jsonPost.time,
+    //                        'uid': jsonPost.uid,
+    //                        'name': jsonPost.name
+    //                    }),
+    //                    contentType: 'application/json;charset=UTF-8',
+    //                    success: function (result) {
+    //                        sleep(100);
+    //                    }
+    //                });
+    //            }
+    //        }
+    //    }
+    //    function sleep(milliseconds) {
+    //      var start = new Date().getTime();
+    //      for (var i = 0; i < 1e7; i++) {
+    //        if ((new Date().getTime() - start) > milliseconds){
+    //          break;
+    //        }
+    //      }
+    //    }
+
+</script>
+{% endblock %}
+
+
+

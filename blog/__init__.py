@@ -15,6 +15,7 @@ from blog.views.graph import graph_page
 from blog.views.editQuestionnaire import editQuestionnaire_page
 from blog.views.pack import pack_page
 from blog.views.endPack import endPack_page
+from blog.views.postManagement import postManagement_page
 
 app.register_blueprint(errorhandler_page)
 app.register_blueprint(index_page)
@@ -28,6 +29,7 @@ app.register_blueprint(graph_page)
 app.register_blueprint(editQuestionnaire_page)
 app.register_blueprint(pack_page)
 app.register_blueprint(endPack_page)
+app.register_blueprint(postManagement_page)
 
 
 # from blog.models.db_config import *

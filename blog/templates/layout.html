@@ -107,9 +107,12 @@
             media="screen"/>
       <link href="../static/pages/css/pages-icons.css" rel="stylesheet" type="text/css">
       <link class="main-stylesheet" href="../static/pages/css/themes/simple.rtl.css" rel="stylesheet" type="text/css"/>
+      <link type="text/css" rel="stylesheet" href="../static/assets/plugins/dropzone/css/dropzone.css">
       <script src="http://d3js.org/d3.v3.js" charset="utf-8"></script>
       <script src="../static/assets/js/jsnetworkx.js"></script>
       <script src="../static/assets/js/select2.js"></script>
+      <script src="../static/assets/plugins/dropzone/dropzone.min.js" type="text/javascript"></script>
+      <script src="../static/assets/plugins/dropzone/dropzone.js" type="text/javascript"></script>
       <script link="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.8.0/bootstrap-slider.js"></script>
       <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.8.0/css/bootstrap-slider.css"
             type="text/css"/>
@@ -258,6 +261,10 @@
                           <li style="font-family: BYekan">
                               <a href="{{ url_for('addQuestionnaire') }}"><i class="fs-10 pg-plus"></i><span
                                       class="bold"> افزودن پرسش‌نامه</span></a>
+                          </li>
+                          <li style="font-family: BYekan">
+                              <a href="{{ url_for('postManagement') }}"><i class="fs-14 fa fa-tag"></i><span
+                                      class="bold"> مدیریت پست‌های اینستاگرام</span></a>
                           </li>
                           {% endif %}
                       </ul>

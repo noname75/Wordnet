@@ -15,8 +15,8 @@ from blog.models.Dictionary import Dictionary
 from blog.models.Graph import Graph
 from blog.models.Questionnaire import Questionnaire
 from blog.models.Pack import Pack
-from blog.models.Post import Post
 from blog.models.Tag import Tag
+from blog.models.Post import Post
 
 from blog.models.TagInPost import TagInPost
 from blog.models.SearchedPhrase import SearchedPhrase
