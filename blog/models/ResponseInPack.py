@@ -1,4 +1,4 @@
-from sqlalchemy import func, desc
+from sqlalchemy import func, desc, and_, column
 from blog.models.db_config import *
 
 
@@ -13,6 +13,10 @@ class ResponseInPack(db.Model):
 
     def getResponseList_byPackId(pack_id):
         return db.session.query(ResponseInPack).filter_by(pack_id=pack_id).all()
+
+    def getResponseCount_byPackId(pack_id):
+        return db.session.query(func.count(ResponseInPack.phrase1_id)).filter_by(pack_id=pack_id).filter(
+            column('phrase2_id').isnot(None)).scalar()
 
     def getResponseCount_byPhraseId(phrase_id):
         return db.session.query(func.count(ResponseInPack.phrase2_id)).filter_by(phrase1_id=phrase_id).scalar()

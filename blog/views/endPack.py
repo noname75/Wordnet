@@ -14,6 +14,6 @@ def endPack(pack_id):
     pack = Pack(pack_id=pack_id).getPack()
     pack.setFinishTime(time.strftime('%Y-%m-%d %H:%M:%S'))
     pack.duration = pack.finishTime - pack.startTime
-    pack.numberOfResponses = ResponseInPack.getResponseList_byPackId(pack.id).__len__()
+    pack.numberOfResponses = ResponseInPack.getResponseCount_byPackId(pack.id)
 
     return render_template('endPack.html', pack=pack)
