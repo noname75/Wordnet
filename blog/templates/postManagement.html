@@ -13,11 +13,15 @@
 {% endif %}
 {% endmacro %}
 
+{% block header %}
+
+{% endblock %}
+
 
 {% block body %}
 <div class="container">
     <div class="row">
-        <div class="col-md-1"></div>
+        <div class="col-md-2"></div>
         <div class="col-sm-8">
             <div class="panel panel-transparent">
                 <!-- Nav tabs -->
@@ -26,8 +30,16 @@
                         <a data-toggle="tab" href="#addPost" style="font-family: BYekan;"><span>افزودن پست</span></a>
                     </li>
                     <li>
-                        <a data-toggle="tab" href="#postStatistics"
-                           style="font-family: BYekan;"><span>آمار پست‌ها</span></a>
+                        <a data-toggle="tab" href="#postCountGroupByPhrase_chart"
+                           style="font-family: BYekan;"><span>نمودار توزیع پست‌ها بر اساس تگ جستجوشده</span></a>
+                    </li>
+                    <li>
+                        <a data-toggle="tab" href="#postCountGroupByTime_chart"
+                           style="font-family: BYekan;"><span>نمودار توزیع تگ‌های جستجوشده به تفکیک ماه انتشار</span></a>
+                    </li>
+                    <li>
+                        <a data-toggle="tab" href="#postCountGroupByUid_chart"
+                           style="font-family: BYekan;"><span>نمودار توزیع کاربران برحسب تعداد پست‌ها</span></a>
                     </li>
                 </ul>
                 <!-- Tab panes -->
@@ -35,9 +47,7 @@
                     <div class="tab-pane active" id="addPost">
                         <div class="col-md-12">
                             <div class="row column-seperation">
-                                <h3 class="semi-bold" style="font-family: BYekan;">افزودن پست</h3>
-
-                                <p style="font-family: BYekan;">فایل با فرمت json حاوی پست‌ها را آپلود نماییید.</p>
+                                <p style="font-family: BYekan;">فایل با فرمت json حاوی پست‌ها را آپلود نمایید.</p>
 
                                 <form action="/addPost" class="dropzone" id="uploadForm" method="post">
                                     <div class="fallback">
@@ -49,18 +59,28 @@
                             </div>
                         </div>
                     </div>
-                    <div class="tab-pane" id="postStatistics">
+                    <div class="tab-pane" id="postCountGroupByPhrase_chart">
                         <div class="row">
                             <div class="col-md-12">
-                                <h3></h3>
+                                <p id="postCount"></p>
 
-                                <p></p>
-                                <br>
-
-                                <p class="pull-right">
-                                    <button type="button" class="btn btn-default btn-cons">White</button>
-                                    <button type="button" class="btn btn-success btn-cons">Success</button>
-                                </p>
+                                <p id="phraseCount"></p>
+                                <canvas id="postCountGroupByPhrase" width="400" height="1800"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="postCountGroupByTime_chart">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <canvas id="postCountGroupByTime" width="400" height="200"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="postCountGroupByUid_chart">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <p id="uidCount"></p>
+                                <canvas id="postCountGroupByUid" width="400" height="200"></canvas>
                             </div>
                         </div>
                     </div>
@@ -74,41 +94,85 @@
 
 {% block js %}
 <script type="text/javascript">
+    var ctx;
+    var myChart;
+    setPostChartsData();
 
-    //    function processFile(e) {
-    //        var processBar = document.getElementById('processBar');
-    //        var file = e.target.result;
-    //        if (file && file.length) {
-    //            var jsonPostList = JSON.parse(file).slice(1, 100);
-    //            for(var i=0; i<jsonPostList.length; i++){
-    //                processBar.style.width = 100*(i/jsonPostList.length)+'%';
-    //                var jsonPost = jsonPostList[i];
-    //                $.ajax({
-    //                    type: "POST",
-    //                    url: '/addPost',
-    //                    data: JSON.stringify({
-    //                        'code': jsonPost.code,
-    //                        'caption': jsonPost.caption,
-    //                        'time': jsonPost.time,
-    //                        'uid': jsonPost.uid,
-    //                        'name': jsonPost.name
-    //                    }),
-    //                    contentType: 'application/json;charset=UTF-8',
-    //                    success: function (result) {
-    //                        sleep(100);
-    //                    }
-    //                });
-    //            }
-    //        }
-    //    }
-    //    function sleep(milliseconds) {
-    //      var start = new Date().getTime();
-    //      for (var i = 0; i < 1e7; i++) {
-    //        if ((new Date().getTime() - start) > milliseconds){
-    //          break;
-    //        }
-    //      }
-    //    }
+    function setPostChartsData() {
+        $.ajax({
+            type: "POST",
+            url: '/getPostChartsData',
+            success: function (result) {
+
+                var basicStatistics = result['basicStatistics'];
+                document.getElementById('postCount').innerHTML = 'تعداد کل پست‌ها: ' + basicStatistics['countOfPosts'];
+                document.getElementById('phraseCount').innerHTML = 'تعداد کل تگ‌های جستجوشده: ' + basicStatistics['countOfPhrases'];
+                document.getElementById('uidCount').innerHTML = 'تعداد کل کاربران: ' + basicStatistics['countOfUids'];
+
+                var postCountGroupByPharseId = result['postCountGroupByPharseId'];
+                ctx = document.getElementById("postCountGroupByPhrase").getContext('2d');
+                myChart = new Chart(ctx, {
+                    type: 'horizontalBar',
+                    data: {
+                        labels: postCountGroupByPharseId['labels'],
+                        datasets: [{
+                            label: 'تعداد پست‌ها',
+                            data: postCountGroupByPharseId['data'],
+                            backgroundColor: "rgba(25,140,230,0.7)",
+                            strokeColor: "black"
+                        }]
+                    }
+                });
+
+                var postCountGroupByTime = result['postCountGroupByTime'];
+                ctx = document.getElementById("postCountGroupByTime").getContext('2d');
+                myChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: postCountGroupByTime['labels'],
+                        datasets: [{
+                            label: 'تعداد پست‌ها',
+                            data: postCountGroupByTime['data'],
+                            backgroundColor: "rgba(25,140,230,0.7)",
+                            strokeColor: "black"
+                        }]
+                    }
+                });
+
+                var postCountGroupByUid = result['postCountGroupByUid'];
+                ctx = document.getElementById("postCountGroupByUid").getContext('2d');
+                myChart = new Chart(ctx, {
+                    type: 'scatter',
+                    data: {
+                        datasets: [{
+                            label: 'نمودار تعداد افراد برحسب تعداد پست‌ها',
+                            data: postCountGroupByUid['data'],
+                            backgroundColor: "rgba(25,140,230,0.7)",
+                            strokeColor: "black"
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            xAxes: [{
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: 'تعداد پست‌ها'
+                                },
+                                type: 'linear',
+                                position: 'bottom'
+                            }],
+                            yAxes: [{
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: 'تعداد افراد'
+                                }
+                            }]
+                        }
+                    }
+                });
+            }
+        });
+    }
 
 </script>
 {% endblock %}
