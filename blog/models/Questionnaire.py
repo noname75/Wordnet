@@ -8,7 +8,6 @@ class Questionnaire(db.Model):
     moreInfo = db.Column(db.Unicode(1000))
     isActive = db.Column(db.Boolean, default=False)
     isPictorial = db.Column(db.Boolean, default=False)
-    isChosen = db.Column(db.Boolean)
     creationTime = db.Column(db.DateTime())
 
 
@@ -26,7 +25,6 @@ class Questionnaire(db.Model):
         self.subject = subject
         self.isActive = isActive
         self.isPictorial = isPictorial
-        self.isChosen = isChosen
         self.moreInfo = moreInfo
         self.picture = picture
         self.creationTime = creationTime
@@ -37,14 +35,15 @@ class Questionnaire(db.Model):
         db.session.commit()
         return self
 
+
     def changeActivationStatus(self):
         self.isActive = not self.isActive
         db.session.commit()
         return self
 
 
-    def getQuestionnaireList(isChosen):
-        return db.session.query(Questionnaire).filter_by(isChosen=isChosen).all()
+    def getQuestionnaireList():
+        return db.session.query(Questionnaire).all()
 
 
     def getQuestionnaire(self):

@@ -32,21 +32,18 @@ def questionnaire(questionnaire_id):
 @user.require(http_exception=403)
 def addPack():
     questionnaireId = int(request.json['questionnaireId'])
-    isChosen = bool(int(request.json['isChosen']))
     isPictorial = bool(int(request.json['isPictorial']))
 
     questionnaire = Questionnaire(questionnaire_id=questionnaireId).getQuestionnaire()
 
-    if not questionnaire.isActive or not questionnaire.isChosen == isChosen or (
-                isPictorial and not questionnaire.isPictorial):
+    if not questionnaire.isActive or (isPictorial and not questionnaire.isPictorial):
         raise AssertionError()
 
     pack = Pack(
         questionnaire_id=questionnaireId,
         user_id=User(session['username']).getUser().id,
         startTime=time.strftime('%Y-%m-%d %H:%M:%S'),
-        isPictorial=isPictorial,
-        isChosen=isChosen)
+        isPictorial=isPictorial)
 
     pack.addPack()
 

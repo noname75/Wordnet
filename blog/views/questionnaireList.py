@@ -7,11 +7,11 @@ import time
 questionnaireList_page = Blueprint('questionnaireList', __name__, template_folder='templates')
 
 
-@app.route('/questionnaireList/<int:isChosen>', methods=['GET'])
+@app.route('/questionnaireList', methods=['GET'])
 @user.require(http_exception=403)
-def questionnaireList(isChosen):
+def questionnaireList():
         user = User(username=session['username']).getUser()
-        questionnaireList = Questionnaire.getQuestionnaireList(isChosen)
+        questionnaireList = Questionnaire.getQuestionnaireList()
         for questionnnaire in questionnaireList:
             questionnnaire.stimulusCount = PhraseInQuestionnaire.getPhraseList_byQuestionnaireId(
                 questionnnaire.id).__len__()

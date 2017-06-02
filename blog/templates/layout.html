@@ -239,39 +239,30 @@
                                       class="bold"> نمایش گراف</span></a>
                           </li>
                           <li style="font-family: BYekan">
-                              <a href="#"><i class="fs-10 pg-menu"></i><span class="bold"> پرسش‌نامه‌ها</span><span
-                                      class="arrow"></span></a>
-                              <ul class="classic col-xs-1" style="margin-right: 190px">
-                                  <li>
-                                      <a href="{{ url_for('questionnaireList',isChosen=0) }}">توصیفی
-                                        <span class="description">
-                                        </span>
-                                      </a>
-                                  </li>
-                                  <li>
-                                      <a href="{{ url_for('questionnaireList',isChosen=1) }}">انتخابی
-                                        <span class="description">
-                                        </span>
-                                      </a>
-                                  </li>
-                              </ul>
+                              <a href="{{ url_for('questionnaireList') }}">
+                                  <i class="fs-10 pg-menu"></i><span class="bold"> پرسش‌نامه‌ها</span>
+                              </a>
                           </li>
                           {% if session.admin %}
                           <li style="font-family: BYekan">
-                              <a href="{{ url_for('addQuestionnaire') }}"><i class="fs-10 pg-plus"></i><span
-                                      class="bold"> افزودن پرسش‌نامه</span></a>
+                              <a href="{{ url_for('addQuestionnaire') }}">
+                                  <i class="fs-10 pg-plus"></i><span class="bold"> افزودن پرسش‌نامه</span>
+                              </a>
                           </li>
                           <li style="font-family: BYekan">
-                              <a href="{{ url_for('postManagement') }}"><i class="fs-14 fa fa-instagram"></i><span
-                                      class="bold"> مدیریت پست‌ها</span></a>
+                              <a href="{{ url_for('postManagement') }}">
+                                  <i class="fs-14 fa fa-instagram"></i><span class="bold"> مدیریت پست‌ها</span>
+                              </a>
                           </li>
                           <li style="font-family: BYekan">
-                              <a href="{{ url_for('graphManagement') }}"><i class="fs-14 fa fa-connectdevelop"></i><span
-                                      class="bold"> مدیریت گراف‌ها</span></a>
+                              <a href="{{ url_for('graphManagement') }}">
+                                  <i class="fs-14 fa fa-connectdevelop"></i><span class="bold"> مدیریت گراف‌ها</span>
+                              </a>
                           </li>
                           <li style="font-family: BYekan">
-                              <a href="{{ url_for('packManagement') }}"><i class="fs-14 fa fa-pencil"></i><span
-                                      class="bold"> مدیریت بسته‌های پاسخ</span></a>
+                              <a href="{{ url_for('packManagement') }}">
+                                  <i class="fs-14 fa fa-pencil"></i><span class="bold"> مدیریت بسته‌های پاسخ</span>
+                              </a>
                           </li>
                           {% endif %}
                       </ul>
