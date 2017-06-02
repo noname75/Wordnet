@@ -3,6 +3,7 @@ from passlib.hash import bcrypt
 from blog.forms.RegisterationForm import RegistrationForm
 from blog.models.db_config import *
 from blog import app
+import time
 
 register_page = Blueprint('register', __name__, template_folder='templates')
 
@@ -17,7 +18,8 @@ def register():
             password=bcrypt.encrypt(form.password.data),
             firstname=form.firstname.data,
             lastname=form.lastname.data,
-            email=form.email.data
+            email=form.email.data,
+            registerationTime=time.strftime('%Y-%m-%d %H:%M:%S')
         ).addUser()
         flash(message='ثبت نام شما انجام شد.', category='success')
         return redirect(url_for('index'))

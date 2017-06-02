@@ -55,6 +55,7 @@ def getPostChartsData():
         count = row.count
         labels.append(phrase)
         data.append(count)
+
     finalData['postCountGroupByPharseId'] = {'labels': labels, 'data': data}
 
     # postCountGroupByTime

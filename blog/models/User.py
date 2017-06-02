@@ -15,9 +15,19 @@ class User(db.Model):
     degree = db.Column(db.Enum('کارشناسی ارشد و دکتری', 'کارشناسی', 'فوق دیپلم', 'دیپلم', 'زیر دیپلم'))
     nativeLanguage = db.Column(db.Enum('فارسی', 'سایر زبان‌ها'))
     major = db.Column(db.Unicode(100))
+    registerationTime = db.Column(db.DateTime())
 
-    def __init__(self, user_id=None, username=None, password=None, firstname=None, lastname=None, email=None,
-                 role='user'):
+    def __init__(
+            self,
+            user_id=None,
+            username=None,
+            password=None,
+            firstname=None,
+            lastname=None,
+            email=None,
+            registerationTime=None,
+            role='user'):
+
         self.id = user_id
         self.username = username
         self.password = password
@@ -25,6 +35,7 @@ class User(db.Model):
         self.lastname = lastname
         self.email = email
         self.role = role
+        self.registerationTime = registerationTime
 
     def addUser(self):
         db.session.add(self)

@@ -48,7 +48,6 @@
                         <div class="col-md-12">
                             <div class="row column-seperation">
                                 <p style="font-family: BYekan;">فایل با فرمت json حاوی پست‌ها را آپلود نمایید.</p>
-
                                 <form action="/addPost" class="dropzone" id="uploadForm" method="post">
                                     <div class="fallback">
                                         <input name="file" type="file" multiple/>
@@ -62,9 +61,11 @@
                     <div class="tab-pane" id="postCountGroupByPhrase_chart">
                         <div class="row">
                             <div class="col-md-12">
-                                <p id="postCount"></p>
+                                <div style="border: outset; border-radius: 5px; padding: 10px">
+                                    <p id="postCount"></p>
 
-                                <p id="phraseCount"></p>
+                                    <p id="phraseCount"></p>
+                                </div>
                                 <canvas id="postCountGroupByPhrase" width="400" height="1800"></canvas>
                             </div>
                         </div>
@@ -79,7 +80,9 @@
                     <div class="tab-pane" id="postCountGroupByUid_chart">
                         <div class="row">
                             <div class="col-md-12">
-                                <p id="uidCount"></p>
+                                <div style="border: outset; border-radius: 5px; padding: 10px">
+                                    <p id="uidCount"></p>
+                                </div>
                                 <canvas id="postCountGroupByUid" width="400" height="200"></canvas>
                             </div>
                         </div>

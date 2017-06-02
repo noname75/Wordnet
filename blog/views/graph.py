@@ -1,9 +1,9 @@
 from blog.models.db_config import *
-from flask import render_template, Blueprint, request, jsonify
+from flask import render_template, Blueprint, request, jsonify, session
 from blog import app
 from blog.views.permission_config import user
 import json
-import urllib
+import time
 
 graph_page = Blueprint('graph', __name__, template_folder='templates')
 
@@ -44,6 +44,14 @@ def getGraph():
     graphId = request.json['graphId']
     nodeIdList = [int(id) for id in request.json['nodeIdList']]
     level = int(request.json['level'])
+
+    user_id = User(username=session['username']).getUser().id
+    for node in nodeIdList:
+        SearchedPhrase(
+            user_id=user_id,
+            phrase_id=node,
+            time=time.strftime('%Y-%m-%d %H:%M:%S')).addIfNotExists()
+
 
     edgeInGraphList = []
     nodeInGraphIdList = set(nodeIdList)

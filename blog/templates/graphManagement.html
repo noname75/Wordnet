@@ -1,0 +1,54 @@
+{% extends "layout.html" %}
+
+{% macro render_field(field) %}
+<div> {{ field.label }}<br><br>
+
+    <div>{{ field(class="form-control") }}</div>
+</div>
+{% if field.errors %}
+<ul class="errors">{% for error in field.errors %}
+    <li>{{ error }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endmacro %}
+
+{% block header %}
+
+{% endblock %}
+
+
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-sm-8">
+            <div class="panel panel-transparent">
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs nav-tabs-linetriangle" data-init-reponsive-tabs="dropdownfx">
+                    <li class="active">
+                        <a data-toggle="tab" href="#addPost" style="font-family: BYekan;"><span>افزودن گراف</span></a>
+                    </li>
+                </ul>
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div class="tab-pane active" id="addPost">
+                        <div class="col-md-12">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block js %}
+<script type="text/javascript">
+
+</script>
+{% endblock %}
+
+
+
