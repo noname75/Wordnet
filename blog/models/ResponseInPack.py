@@ -12,6 +12,7 @@ class ResponseInPack(db.Model):
     creationTime = db.Column(db.DateTime())
     status = db.Column(db.Enum('accepted', 'rejected'))
 
+
     def getResponseList_byPackId(pack_id):
         return db.session.query(ResponseInPack).filter_by(pack_id=pack_id).all()
 
