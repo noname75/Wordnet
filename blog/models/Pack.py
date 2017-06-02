@@ -9,15 +9,25 @@ class Pack(db.Model):
     isChosen = db.Column(db.Boolean)
     user_id = db.Column(db.ForeignKey(User.id))
     questionnaire_id = db.Column(db.ForeignKey(Questionnaire.id))
+    isChecked = db.Column(db.Boolean)
 
-    def __init__(self, pack_id=None, questionnaire_id=None, user_id=None, startTime=None, isPictorial=None,
-                 isChosen=None):
+    def __init__(
+            self,
+            pack_id=None,
+            questionnaire_id=None,
+            user_id=None,
+            startTime=None,
+            isPictorial=None,
+            isChosen=None,
+            isChecked=False):
+
         self.id = pack_id
         self.questionnaire_id = questionnaire_id
         self.user_id = user_id
         self.startTime = startTime
         self.isPictorial = isPictorial
         self.isChosen = isChosen
+        self.isChecked = isChecked
 
     def getPack(self):
         return db.session.query(Pack).filter_by(id=self.id).first()

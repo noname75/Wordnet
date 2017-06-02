@@ -10,6 +10,7 @@ class ResponseInPack(db.Model):
     phrase2_id = db.Column(db.ForeignKey(Phrase.id))
     pack_id = db.Column(db.ForeignKey(Pack.id), primary_key=True)
     creationTime = db.Column(db.DateTime())
+    status = db.Column(db.Enum('accepted', 'rejected'))
 
     def getResponseList_byPackId(pack_id):
         return db.session.query(ResponseInPack).filter_by(pack_id=pack_id).all()
@@ -21,12 +22,13 @@ class ResponseInPack(db.Model):
     def getResponseCount_byPhraseId(phrase_id):
         return db.session.query(func.count(ResponseInPack.phrase2_id)).filter_by(phrase1_id=phrase_id).scalar()
 
-    def __init__(self, pack_id, phrase1_id=None, phrase2_id=None, duration=None, creationTime=None):
+    def __init__(self, pack_id, phrase1_id=None, phrase2_id=None, duration=None, creationTime=None, status=None):
         self.pack_id = pack_id
         self.phrase1_id = phrase1_id
         self.phrase2_id = phrase2_id
         self.duration = duration
         self.creationTime = creationTime
+        self.status = status
 
     def addResponseInPack(self):
         lastSamePhrase1_id = db.session.query(ResponseInPack).filter_by(phrase1_id=self.phrase1_id,
