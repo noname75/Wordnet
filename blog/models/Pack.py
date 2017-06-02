@@ -50,3 +50,7 @@ class Pack(db.Model):
     def setFinishTime(self, finishTime):
         self.finishTime = finishTime
         db.session.commit()
+
+
+    def getPackList_byIsChecked(self, isChecked):
+        return db.session.query(Pack).filter_by(isChecked=isChecked).all()

@@ -9,4 +9,7 @@ packManagement_page = Blueprint('packManagement', __name__, template_folder='tem
 @app.route('/packManagement', methods=['GET', 'POST'])
 @admin.require(http_exception=403)
 def packManagement():
-    return render_template('packManagement.html')
+    uncheckedPackList = Pack().getPackList_byIsChecked(False)
+    checkedPackList = Pack().getPackList_byIsChecked(True)
+
+    return render_template('packManagement.html', uncheckedPackList=uncheckedPackList, checkedPackList=checkedPackList)
