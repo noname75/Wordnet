@@ -13,6 +13,11 @@ class ResponseInPack(db.Model):
     status = db.Column(db.Enum('accepted', 'rejected'))
 
 
+    def getResponseInPack(self):
+        return db.session.query(ResponseInPack).filter_by(pack_id=self.pack_id,
+                                                          phrase1_id=self.phrase1_id,
+                                                          phrase2_id=self.phrase2_id).first()
+
     def getResponseList_byPackId(pack_id):
         return db.session.query(ResponseInPack).filter_by(pack_id=pack_id).all()
 
@@ -41,7 +46,9 @@ class ResponseInPack(db.Model):
                 lastSamePhrase1_id.phrase2_id = self.phrase2_id
             else:
                 self.number = lastSamePhrase1_id.number + 1
-                db.session.add(self)
+                if not db.session.query(ResponseInPack).filter_by(pack_id=self.pack_id, phrase1_id=self.phrase1_id,
+                                                                  phrase2_id=self.phrase2_id):
+                    db.session.add(self)
         else:
             db.session.add(self)
         db.session.commit()
@@ -51,3 +58,8 @@ class ResponseInPack(db.Model):
 
     def unansweredPhraseId(self):
         return db.session.query(ResponseInPack.phrase1_id).filter_by(pack_id=self.pack_id, duration=None).first()
+
+
+    def setStatus(self, status):
+        self.status = status
+        db.session.commit()

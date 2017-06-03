@@ -13,7 +13,7 @@ def packManagement():
     uncheckedPackList = Pack().getPackList_byIsChecked(False)
     checkedPackList = Pack().getPackList_byIsChecked(True)
 
-    for pack in uncheckedPackList:
+    for pack in uncheckedPackList + checkedPackList:
         pack.responseCount = ResponseInPack.getResponseCount_byPackId(pack.id)
         pack.subject = Questionnaire(questionnaire_id=pack.questionnaire_id).getQuestionnaire().subject
         pack.time = timesince(pack.startTime)
@@ -25,6 +25,7 @@ def packManagement():
 @admin.require(http_exception=403)
 def getResponseList():
     packId = request.json['packId']
+    pack = Pack(pack_id=packId).getPack()
     responseInPackList = ResponseInPack.getResponseList_byPackId(packId)
     stimulusResponseList = []
     for responseInPack in responseInPackList:
@@ -35,12 +36,18 @@ def getResponseList():
             phraseController = PhraseController(phrase_id=response.id).getPhraseController()
             if phraseController:
                 if phraseController.type == 'black':
-                    suggestedStatus = 'red'
+                    suggestedStatus = 'rejected'
                 elif phraseController.type == 'white':
-                    suggestedStatus = 'green'
+                    suggestedStatus = 'accepted'
             stimulusResponseList.append(
-                {'stimulus': stimulus.content, 'response': response.content, 'suggestedStatus': suggestedStatus})
-    return jsonify({'stimulusResponseList': stimulusResponseList})
+                {'stimulus': stimulus.content,
+                 'stimulusId': stimulus.id,
+                 'response': response.content,
+                 'responseId': response.id,
+                 'status': suggestedStatus,
+                 'suggestedStatus': suggestedStatus})
+            stimulusResponseList.sort(key=lambda x: (x['status']))
+    return jsonify({'stimulusResponseList': stimulusResponseList, 'pack_isChecked': pack.isChecked})
 
 
 @app.route('/addPhraseController', methods=['POST'])
@@ -59,14 +66,43 @@ def addPhraseController():
                     elif content[1] == '0':
                         type = 'black'
                     phraseController = PhraseController(phrase_id=phrase.id, type=type)
-                    if not phraseController.getPhraseController():
+                    last = phraseController.getPhraseController()
+                    if not last:
                         phraseController.addPhraseController()
                     else:
-                        if phraseController.credit == 0:
-                            phraseController.updateType()
+                        if last.credit == 0:
+                            last.updateType(phraseController.type)
             return ''
     except():
         pass
+
+
+@app.route('/setResponseStatus', methods=['POST'])
+@admin.require(http_exception=403)
+def setResponseStatus():
+    stimulusResponseList = request.json['stimulusResponseList']
+    packId = request.json['packId']
+    for stimulusResponse in stimulusResponseList:
+        stimulusId = stimulusResponse['stimulusId']
+        responseId = stimulusResponse['responseId']
+        status = stimulusResponse['status']
+        suggestedStatus = stimulusResponse['suggestedStatus']
+        if status == 'accepted':
+            newType = 'white'
+        else:
+            newType = 'black'
+        if suggestedStatus == 'none':
+            PhraseController(phrase_id=responseId, type=newType).addPhraseController()
+        elif suggestedStatus == status:
+            PhraseController(phrase_id=responseId).getPhraseController().creditPlusOne()
+        else:
+            PhraseController(phrase_id=responseId).getPhraseController().updateType(newType)
+        ResponseInPack(pack_id=packId, phrase1_id=stimulusId, phrase2_id=responseId).getResponseInPack().setStatus(
+            status)
+        Pack(pack_id=packId).getPack().setIsChecked(True)
+
+    return ''
+
 
 
 def timesince(dt, default="همین الان"):
@@ -74,22 +110,22 @@ def timesince(dt, default="همین الان"):
     Returns string representing "time since" e.g.
     3 days ago, 5 hours ago etc.
     """
-    now = datetime.utcnow()
+    now = datetime.now()
     diff = now - dt
 
     periods = (
-        (diff.days / 365, "سال", "سال"),
-        (diff.days / 30, "ماه", "ماه"),
-        (diff.days / 7, "هفته", "هفته"),
-        (diff.days, "روز", "روز"),
-        (diff.seconds / 3600, "ساعت", "ساعت"),
-        (diff.seconds / 60, "دقیقه", "دقیقه"),
-        (diff.seconds, "ثانیه", "ثاینه"),
+        (diff.days / 365, "سال"),
+        (diff.days / 30, "ماه"),
+        (diff.days / 7, "هفته"),
+        (diff.days, "روز"),
+        (diff.seconds / 3600, "ساعت"),
+        (diff.seconds / 60, "دقیقه"),
+        (diff.seconds, "ثانیه"),
     )
 
-    for period, singular, plural in periods:
+    for period, name in periods:
 
         if period >= 1:
-            return "%d %s پیش" % (period, singular if period == 1 else plural)
+            return "%d %s پیش" % (period, name)
 
     return default

@@ -13,10 +13,6 @@
 {% endif %}
 {% endmacro %}
 
-{% block header %}
-
-{% endblock %}
-
 
 {% block body %}
 <div class="container">
@@ -64,7 +60,7 @@
 
                                     <p id="phraseCount"></p>
                                 </div>
-                                <canvas id="postCountGroupByPhrase" width="400" height="1800"></canvas>
+                                <canvas id="postCountGroupByPhrase" width="400" height="2000"></canvas>
                             </div>
                         </div>
                     </div>
@@ -98,6 +94,7 @@
     var ctx;
     var myChart;
     setPostChartsData();
+    Chart.defaults.global.defaultFontFamily = 'BYekan';
 
     function setPostChartsData() {
         $.ajax({

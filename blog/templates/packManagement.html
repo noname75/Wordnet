@@ -31,6 +31,48 @@
 
 
 {% block body %}
+<!-- Modal -->
+<div class="modal fade" id="responseListModal" tabindex="-1" role="dialog"
+     aria-labelledby="responseListModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i
+                        class="text-danger fa fa-times"></i></button>
+                <h5 class="modal-title" style="font-family: BYekan">لیست پاسخ‌ها</h5>
+            </div>
+            <div class="modal-body">
+
+                <table id="responseListTable" class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th style="text-align: center; color: darkslategray; font-family: BYekan">
+                            واژه
+                        </th>
+                        <th style="text-align: center; color: darkslategray; font-family: BYekan">
+                            پاسخ
+                        </th>
+                        <th style="text-align: center; color: darkslategray; font-family: BYekan">
+                            وضعیت
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody id="responseListTableBody">
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="modal-footer" style="text-align: center">
+                <button data-dismiss="modal" aria-hidden="true" id="submitButton"
+                        class="btn btn-success" style="font-family: BYekan" onclick="setResponseStatus()">ثبت
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <div class="container">
     <div class="row">
         <div class="col-md-1"></div>
@@ -39,8 +81,12 @@
                 <!-- Nav tabs -->
                 <ul class="nav nav-tabs nav-tabs-linetriangle" data-init-reponsive-tabs="dropdownfx">
                     <li class="active">
-                        <a data-toggle="tab" href="#packList"
-                           style="font-family: BYekan;"><span>لیست بسته‌های پاسخ بررسی‌نشده</span></a>
+                        <a data-toggle="tab" href="#uncheckedPackList"
+                           style="font-family: BYekan;"><span>بسته‌های پاسخ بررسی‌نشده</span></a>
+                    </li>
+                    <li>
+                        <a data-toggle="tab" href="#checkedPackList"
+                           style="font-family: BYekan;"><span>بسته‌های پاسخ بررسی‌شده</span></a>
                     </li>
                     <li>
                         <a data-toggle="tab" href="#addPhraseController"
@@ -48,9 +94,9 @@
                     </li>
                 </ul>
                 <div class="tab-content">
-                    <div class="tab-pane active" id="packList">
+                    <div class="tab-pane active" id="uncheckedPackList">
                         <div class="container-fluid container-fixed-lg">
-                            <table class="table table-hover" id="packTable">
+                            <table class="table table-hover">
                                 <thead>
                                 <tr>
                                     <th style="text-align: center; color: darkslategray; font-family: BYekan">نام
@@ -84,96 +130,49 @@
                                 </tbody>
                             </table>
                         </div>
-                        <!-- Modal -->
-                        <div class="modal" id="responseListModal" tabindex="-1" role="dialog"
-                             aria-labelledby="responseListModal" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-
-                                    <div class="modal-header">
-                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i
-                                                class="text-danger fa fa-times"></i></button>
-                                        <h5 class="modal-title" style="font-family: BYekan">لیست پاسخ‌ها</h5>
-                                    </div>
-
-                                    <div class="modal-body">
-                                        <table class="table table-hover">
-                                            <thead>
-                                            <tr>
-                                                <th style="text-align: center; color: darkslategray; font-family: BYekan">
-                                                    واژه
-                                                </th>
-                                                <th style="text-align: center; color: darkslategray; font-family: BYekan">
-                                                    پاسخ
-                                                </th>
-                                                <th style="text-align: center; color: darkslategray; font-family: BYekan">
-                                                    وضعیت
-                                                </th>
-                                            </tr>
-                                            </thead>
-                                            <tbody id="responseListTable">
-                                            </tbody>
-                                        </table>
-                                        <div id="hiddenButtonsGreen" hidden>
-                                            <div class="col-md-12">
-                                                <div class="btn-group" data-toggle="buttons">
-                                                    <label class="btn btn-xs btn-success active">
-                                                        <input type="radio" name="options" id="option2"
-                                                               autocomplete="off" checked>
-                                                        <span class="glyphicon glyphicon-ok"></span>
-                                                    </label>
-                                                    <label class="btn btn-xs btn-danger">
-                                                        <input type="radio" name="options" id="option2"
-                                                               autocomplete="off">
-                                                        <span class="glyphicon glyphicon-remove"></span>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div id="hiddenButtonsRed" hidden>
-                                            <div class="col-md-12">
-                                                <div class="btn-group" data-toggle="buttons">
-                                                    <label class="btn btn-xs btn-success">
-                                                        <input type="radio" name="options" id="option2"
-                                                               autocomplete="off">
-                                                        <span class="glyphicon glyphicon-ok"></span>
-                                                    </label>
-                                                    <label class="btn btn-xs btn-danger active">
-                                                        <input type="radio" name="options" id="option2"
-                                                               autocomplete="off" checked>
-                                                        <span class="glyphicon glyphicon-remove"></span>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div id="hiddenButtonsNone" hidden>
-                                            <div class="col-md-12">
-                                                <div class="btn-group" data-toggle="buttons">
-                                                    <label class="btn btn-xs btn-success">
-                                                        <input type="radio" name="options" id="option2"
-                                                               autocomplete="off">
-                                                        <span class="glyphicon glyphicon-ok"></span>
-                                                    </label>
-                                                    <label class="btn btn-xs btn-danger">
-                                                        <input type="radio" name="options" id="option2"
-                                                               autocomplete="off">
-                                                        <span class="glyphicon glyphicon-remove"></span>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="modal-footer">
-                                    </div>
-                                </div>
-                            </div>
+                    </div>
+                    <div class="tab-pane" id="checkedPackList">
+                        <div class="container-fluid container-fixed-lg">
+                            <table class="table table-hover">
+                                <thead>
+                                <tr>
+                                    <th style="text-align: center; color: darkslategray; font-family: BYekan">نام
+                                        پرسش‌نامه
+                                    </th>
+                                    <th style="text-align: center; color: darkslategray; font-family: BYekan">تعداد
+                                        پاسخ‌ها
+                                    </th>
+                                    <th style="text-align: center; color: darkslategray; font-family: BYekan">زمان
+                                        شروع
+                                    </th>
+                                    <th style="text-align: center; color: darkslategray; font-family: BYekan">نوع
+                                        پرسش‌نامه
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for pack in checkedPackList %}
+                                <tr onclick="setQuestionnaieInfoOnModal('{{ pack.id }}')"
+                                    data-target="#responseListModal" data-toggle="modal">
+                                    <td style="text-align: center;">{{ pack.subject }}</td>
+                                    <td style="text-align: center;">{{ pack.responseCount }}</td>
+                                    <td style="text-align: center;">{{ pack.time }}</td>
+                                    {% if pack.isPictorial %}
+                                    <td style="text-align: center;">تصویری</td>
+                                    {% else %}
+                                    <td style="text-align: center;">اسمی</td>
+                                    {% endif %}
+                                </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                     <div class="tab-pane" id="addPhraseController">
                         <div class="col-md-12">
                             <div class="row column-seperation">
-                                <p style="font-family: BYekan;">فایل با فرمت txt حاوی پست‌ها را آپلود نمایید.</p>
+                                <p style="font-family: BYekan;">فایل با فرمت txt حاوی کلمه‌های کنترلی را آپلود
+                                    نمایید.</p>
 
                                 <form action="/addPhraseController" class="dropzone" id="uploadForm" method="post">
                                     <div class="fallback">
@@ -194,8 +193,12 @@
 {% block js %}
 <script type="text/javascript">
 
+    var stimulusResponseList;
+    var lastPackId;
+    var pack_isChecked;
+
     $(document).ready(function () {
-        $('#packTable').dataTable({
+        $('.container table').dataTable({
             "bLengthChange": false,
             "bFilter": true,
             "bInfo": false,
@@ -210,6 +213,7 @@
         });
     });
     function setQuestionnaieInfoOnModal(packId) {
+        lastPackId = packId;
         $.ajax({
             type: "POST",
             url: '/getResponseList',
@@ -219,36 +223,82 @@
             contentType: 'application/json;charset=UTF-8',
             success: function (result) {
                 stimulusResponseList = result['stimulusResponseList'];
-
+                pack_isChecked = result['pack_isChecked'];
                 var t = "";
-                var hiddenButtonsNone = document.getElementById('hiddenButtonsNone').innerHTML;
-                var hiddenButtonsRed = document.getElementById('hiddenButtonsRed').innerHTML;
-                var hiddenButtonsGreen = document.getElementById('hiddenButtonsGreen').innerHTML;
                 for (var i = 0; i < stimulusResponseList.length; i++) {
                     var tr = "<tr>";
                     tr += "<td style='text-align: center;'>" + stimulusResponseList[i]['stimulus'] + "</td>";
                     tr += "<td style='text-align: center;'>" + stimulusResponseList[i]['response'] + "</td>";
-                    if (stimulusResponseList[i]['suggestedStatus'] == 'none') {
-                        tr += "<td style='text-align: center;'>" + hiddenButtonsNone + "</td>";
-                    }
-                    if (stimulusResponseList[i]['suggestedStatus'] == 'red') {
-                        tr += "<td style='text-align: center;'>" + hiddenButtonsRed + "</td>";
-                    }
-                    if (stimulusResponseList[i]['suggestedStatus'] == 'green') {
-                        tr += "<td style='text-align: center;'>" + hiddenButtonsGreen + "</td>";
-                    }
-                    tr += "</tr>";
+                    tr += "<td style='text-align: center;'>" + getRadioButtonHTML(stimulusResponseList[i]['status'], i) + "</td>";
                     t += tr;
                 }
-                document.getElementById("responseListTable").innerHTML += t;
+                document.getElementById("responseListTableBody").innerHTML = t;
+                var buttonContent = 'ثبت';
+                if (pack_isChecked == true) {
+                    buttonContent = 'ویرایش';
+                }
+                document.getElementById('submitButton').innerHTML = buttonContent;
 
             }
         });
     }
 
 
+    function setResponseStatus() {
+        for (var i = 0; i < stimulusResponseList.length; i++) {
+            if (stimulusResponseList[i]['status'] == 'none') {
+                alert('وضعیت تمامی پاسخ‌ها وارد نشده است.');
+                return;
+            }
+        }
+        $.ajax({
+            type: "POST",
+            url: '/setResponseStatus',
+            data: JSON.stringify({
+                stimulusResponseList: stimulusResponseList,
+                packId: lastPackId
+            }),
+            contentType: 'application/json;charset=UTF-8',
+            success: function (result) {
+                if (pack_isChecked == false)
+                    window.location.reload();
+            }
+        });
+    }
+
+
+    function getRadioButtonHTML(status, id) {
+        var accepted_active = '';
+        var accepted_selected = '';
+        var rejected_acitve = '';
+        var rejected_selected = '';
+        if (status == 'rejected') {
+            rejected_acitve = 'active';
+        }
+        if (status == 'accepted') {
+            accepted_active = 'active';
+        }
+        var html = '<div>' +
+                '<div class="btn-group" data-toggle="buttons">' +
+                '<label onclick="setStatusAccepted(' + id + ')" class="btn btn-xs btn-success ' + accepted_active + '">' +
+                '<input type="radio" value="accepted" autocomplete="off">' +
+                '<span class="glyphicon glyphicon-ok"></span>' +
+                '</label>' +
+                '<label onclick="setStatusRejected(' + id + ')" class="btn btn-xs btn-danger ' + rejected_acitve + '">' +
+                '<input type="radio" value="rejected" autocomplete="off">' +
+                '<span class="glyphicon glyphicon-remove"></span>' +
+                '</label>' +
+                '</div>' +
+                '</div>';
+        return html;
+    }
+
+    function setStatusAccepted(i) {
+        stimulusResponseList[i]['status'] = 'accepted';
+    }
+    function setStatusRejected(i) {
+        stimulusResponseList[i]['status'] = 'rejected';
+    }
+
 </script>
 {% endblock %}
-
-
-

@@ -19,7 +19,10 @@ class PhraseController(db.Model):
         db.session.add(self)
         db.session.commit()
 
-    def updateCredit(self):
-        last = self.getPhraseController()
-        last.type = self.type
+    def updateType(self, type):
+        self.type = type
+        db.session.commit()
+
+    def creditPlusOne(self):
+        self.credit = self.credit + 1
         db.session.commit()
