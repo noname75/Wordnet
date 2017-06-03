@@ -53,8 +53,6 @@
                                         <input name="file" type="file" multiple/>
                                     </div>
                                 </form>
-                                <img id="processing" class="image-responsive-height demo-mw-50"
-                                     src="../static/assets/img/demo/progress.svg" alt="Progress" style="display: none;">
                             </div>
                         </div>
                     </div>
@@ -148,7 +146,7 @@
                     type: 'scatter',
                     data: {
                         datasets: [{
-                            label: 'نمودار تعداد افراد برحسب تعداد پست‌ها',
+                            label: 'نمودار تعداد کاربران برحسب تعداد پست‌ها',
                             data: postCountGroupByUid['data'],
                             backgroundColor: "rgba(25,140,230,0.7)",
                             strokeColor: "black"
@@ -167,7 +165,7 @@
                             yAxes: [{
                                 scaleLabel: {
                                     display: true,
-                                    labelString: 'تعداد افراد'
+                                    labelString: 'تعداد کاربران'
                                 }
                             }]
                         }

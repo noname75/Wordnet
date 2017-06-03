@@ -23,7 +23,7 @@ class ResponseInPack(db.Model):
     def getResponseCount_byPhraseId(phrase_id):
         return db.session.query(func.count(ResponseInPack.phrase2_id)).filter_by(phrase1_id=phrase_id).scalar()
 
-    def __init__(self, pack_id, phrase1_id=None, phrase2_id=None, duration=None, creationTime=None, status=None):
+    def __init__(self, pack_id=None, phrase1_id=None, phrase2_id=None, duration=None, creationTime=None, status=None):
         self.pack_id = pack_id
         self.phrase1_id = phrase1_id
         self.phrase2_id = phrase2_id
