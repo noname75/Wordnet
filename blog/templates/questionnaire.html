@@ -21,7 +21,7 @@
         <div class="col-xs-6 col-md-4">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <div style="font-family: BYekan; border: outset; border-radius: 5px; padding: 10px">
+                    <div style="border: outset; border-radius: 5px; padding: 10px">
                         نام پرسش‌نامه: {{questionnaire.subject}}<br>
                         توضیحات: {{questionnaire.moreInfo}}<br>
                         تعداد کاربرانی که در این پرسشنامه مشارکت کردند: {{questionnaire.userNumber}}
@@ -31,14 +31,14 @@
                     {% if questionnaire.isExistUnansweredPhrase %}
                     <div class="col-md-11">
                         <button class="btn" type="button" onclick="addPack(false)"
-                                style="font-family: BYekan; width: 220px; margin: 10px">شروع پرسش‌نامه اسمی
+                                style="width: 220px; margin: 10px">شروع پرسش‌نامه اسمی
                     </button>
                     </div>
                     {% endif %}
                     {% if questionnaire.isExistUnansweredPicture %}
                     <div class="col-md-11">
                         <button class="btn" type="button" onclick="addPack(true)"
-                                style="font-family: BYekan; width: 220px; margin: 10px">شروع پرسش‌نامه تصویری
+                                style="width: 220px; margin: 10px">شروع پرسش‌نامه تصویری
                         </button>
                     </div>
                     {% endif %}

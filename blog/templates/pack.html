@@ -22,30 +22,28 @@
                                 {% if isPictorial %}
                                 <img id="picture" src="" alt="picture" style="width:300px;height:300px;">
                                 {% else %}
-                                <h3 style="font-family: BYekan" id="phrase"></h3>
+                                <h3 id="phrase"></h3>
                                 {% endif %}
                             </div>
                             <br><br>
-                            <input style="font-family: BYekan" type=text id="Response" onchange="submitButtonControl()"
+                            <input type=text id="Response" onchange="submitButtonControl()"
                                    class="form-control"
                                    onkeyup="nospaces(this)" autocomplete="off">
                             <br>
-                            <input style="font-family: BYekan" id="bttnsubmit" type=submit
+                            <input id="bttnsubmit" type=submit
                                    class="btn btn-success btn-block"
                                    onclick="addResponse(document.getElementById('Response').value)" value='ثبت پاسخ'>
                             <br>
 
                             <div class="row">
                                 <div class="col-xs-4 col-md-5">
-                                    <button style="font-family: BYekan" id="bttnexit" style="border-color: indianred"
-                                            class="btn btn-block">
+                                    <button id="bttnexit" class="btn btn-block">
                                         <a href="{{ url_for('endPack',pack_id=packId) }}">پایان پاسخ‌گویی</a>
                                     </button>
                                 </div>
                                 <div class="col-xs-4 col-md-2"></div>
                                 <div class="col-xs-4 col-md-5">
-                                    <input style="font-family: BYekan" id="bttnskip" type=button
-                                           class="btn btn-block"
+                                    <input id="bttnskip" type=button class="btn btn-block" style="color: #4682b4"
                                            onclick="skipStimulus()" value="بعدی">
                                 </div>
                             </div>

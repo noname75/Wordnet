@@ -24,23 +24,23 @@
     <div class="row">
         <div class="col-md-2">
             <div class="form-group">
-                <button style="font-family: BYekan; height: 55px" class="btn"
+                <button style="height: 55px" class="btn"
                         onclick="getGraph()" type="submit">
                     نمایش گراف
                 </button>
             </div>
         </div>
         <div class="col-md-5">
-            <div style="font-family: BYekan;height: 55px"
+            <div style="height: 55px"
                  class="form-group form-group-default form-group-default-select2">
-                <label class="" style="font-family: BYekan">انتخاب واژه‌ها</label>
-                <select id="nodeIdList" style="font-family: BYekan" class="full-width"
+                <label class="">انتخاب واژه‌ها</label>
+                <select id="nodeIdList" class="full-width"
                         data-init-plugin="select2" multiple></select>
             </div>
         </div>
         <div class="col-md-3">
             <div class="form-group form-group-default form-group-default-select2">
-                <label class="" style="font-family: BYekan">انتخاب منبع گراف</label>
+                <label class="">انتخاب منبع گراف</label>
                 <select id="graphId" class="full-width" data-init-plugin="select2" onchange="setNodeList()">
                     <option style="display:none">
                     {% if tagGraphList %}

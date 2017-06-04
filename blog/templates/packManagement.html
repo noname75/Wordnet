@@ -40,20 +40,20 @@
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i
                         class="text-danger fa fa-times"></i></button>
-                <h5 class="modal-title" style="font-family: BYekan">لیست پاسخ‌ها</h5>
+                <h5 class="modal-title">لیست پاسخ‌ها</h5>
             </div>
             <div class="modal-body">
 
                 <table id="responseListTable" class="table table-hover">
                     <thead>
                     <tr>
-                        <th style="text-align: center; color: darkslategray; font-family: BYekan">
+                        <th style="text-align: center; color: darkslategray;">
                             واژه
                         </th>
-                        <th style="text-align: center; color: darkslategray; font-family: BYekan">
+                        <th style="text-align: center; color: darkslategray;">
                             پاسخ
                         </th>
-                        <th style="text-align: center; color: darkslategray; font-family: BYekan">
+                        <th style="text-align: center; color: darkslategray;">
                             وضعیت
                         </th>
                     </tr>
@@ -65,7 +65,7 @@
 
             <div class="modal-footer" style="text-align: center">
                 <button data-dismiss="modal" aria-hidden="true" id="submitButton"
-                        class="btn btn-success" style="font-family: BYekan" onclick="setResponseStatus()">ثبت
+                        class="btn btn-success" onclick="setResponseStatus()">ثبت
                 </button>
             </div>
         </div>
@@ -82,15 +82,29 @@
                 <ul class="nav nav-tabs nav-tabs-linetriangle" data-init-reponsive-tabs="dropdownfx">
                     <li class="active">
                         <a data-toggle="tab" href="#uncheckedPackList"
-                           style="font-family: BYekan;"><span>بسته‌های پاسخ بررسی‌نشده</span></a>
+                                ><span>بسته‌های پاسخ بررسی‌نشده</span></a>
                     </li>
                     <li>
                         <a data-toggle="tab" href="#checkedPackList"
-                           style="font-family: BYekan;"><span>بسته‌های پاسخ بررسی‌شده</span></a>
+                                ><span>بسته‌های پاسخ بررسی‌شده</span></a>
                     </li>
                     <li>
-                        <a data-toggle="tab" href="#addPhraseController"
-                           style="font-family: BYekan;"><span>افزودن واژه‌ی کنترلی</span></a>
+                        <a data-toggle="tab" href="#addPhraseController"><span>افزودن واژه‌ی کنترلی</span></a>
+                    </li>
+                    <li>
+                        <a data-toggle="tab" href="#responseCountGroupByPhrase1_chart"><span>نمودار توزیع پاسخ‌ها به تفکیک واژه</span></a>
+                    </li>
+                    <li>
+                        <a data-toggle="tab" href="#responseCountGroupByPicture_chart"><span>نمودار توزیع پاسخ‌ها به تفکیک تصویر</span></a>
+                    </li>
+                    <li>
+                        <a data-toggle="tab" href="#responseCountGroupByQuestionnaire_chart"><span>نمودار توزیع پاسخ‌ها به تفکیک پرسش‌نامه</span></a>
+                    </li>
+                    <li>
+                        <a data-toggle="tab" href="#userCountGroupByResponseCount_chart"><span>نمودار توزیع کاربران به تفکیک تعداد پاسخ‌ها</span></a>
+                    </li>
+                    <li>
+                        <a data-toggle="tab" href="#responseCountGroupByTime_chart"><span>نمودار توزیع پاسخ‌ها به تفکیک زمان</span></a>
                     </li>
                 </ul>
                 <div class="tab-content">
@@ -99,16 +113,16 @@
                             <table class="table table-hover">
                                 <thead>
                                 <tr>
-                                    <th style="text-align: center; color: darkslategray; font-family: BYekan">نام
+                                    <th style="text-align: center; color: darkslategray;">نام
                                         پرسش‌نامه
                                     </th>
-                                    <th style="text-align: center; color: darkslategray; font-family: BYekan">تعداد
+                                    <th style="text-align: center; color: darkslategray;">تعداد
                                         پاسخ‌ها
                                     </th>
-                                    <th style="text-align: center; color: darkslategray; font-family: BYekan">زمان
+                                    <th style="text-align: center; color: darkslategray;">زمان
                                         شروع
                                     </th>
-                                    <th style="text-align: center; color: darkslategray; font-family: BYekan">نوع
+                                    <th style="text-align: center; color: darkslategray;">نوع
                                         پرسش‌نامه
                                     </th>
                                 </tr>
@@ -136,16 +150,16 @@
                             <table class="table table-hover">
                                 <thead>
                                 <tr>
-                                    <th style="text-align: center; color: darkslategray; font-family: BYekan">نام
+                                    <th style="text-align: center; color: darkslategray;">نام
                                         پرسش‌نامه
                                     </th>
-                                    <th style="text-align: center; color: darkslategray; font-family: BYekan">تعداد
+                                    <th style="text-align: center; color: darkslategray;">تعداد
                                         پاسخ‌ها
                                     </th>
-                                    <th style="text-align: center; color: darkslategray; font-family: BYekan">زمان
+                                    <th style="text-align: center; color: darkslategray;">زمان
                                         شروع
                                     </th>
-                                    <th style="text-align: center; color: darkslategray; font-family: BYekan">نوع
+                                    <th style="text-align: center; color: darkslategray;">نوع
                                         پرسش‌نامه
                                     </th>
                                 </tr>
@@ -169,10 +183,9 @@
                         </div>
                     </div>
                     <div class="tab-pane" id="addPhraseController">
-                        <div class="col-md-12">
+                        <div class="container-fluid container-fixed-lg">
                             <div class="row column-seperation">
-                                <p style="font-family: BYekan;">فایل با فرمت txt حاوی کلمه‌های کنترلی را آپلود
-                                    نمایید.</p>
+                                <p>فایل با فرمت txt حاوی کلمه‌های کنترلی را آپلود نمایید.</p>
 
                                 <form action="/addPhraseController" class="dropzone" id="uploadForm" method="post">
                                     <div class="fallback">
@@ -180,6 +193,26 @@
                                     </div>
                                 </form>
                             </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="responseCountGroupByPhrase1_chart">
+                        <div class="container-fluid container-fixed-lg">
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="responseCountGroupByPicture_chart">
+                        <div class="container-fluid container-fixed-lg">
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="responseCountGroupByQuestionnaire_chart">
+                        <div class="container-fluid container-fixed-lg">
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="userCountGroupByResponseCount_chart">
+                        <div class="container-fluid container-fixed-lg">
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="responseCountGroupByTime_chart">
+                        <div class="container-fluid container-fixed-lg">
                         </div>
                     </div>
                 </div>
