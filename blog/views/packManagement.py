@@ -32,13 +32,17 @@ def getResponseList():
         stimulus = Phrase(phrase_id=responseInPack.phrase1_id).getPhrase()
         response = Phrase(phrase_id=responseInPack.phrase2_id).getPhrase()
         if response:
-            suggestedStatus = 'none'
-            phraseController = PhraseController(phrase_id=response.id).getPhraseController()
-            if phraseController:
-                if phraseController.type == 'black':
-                    suggestedStatus = 'rejected'
-                elif phraseController.type == 'white':
-                    suggestedStatus = 'accepted'
+            if pack.isChecked:
+                suggestedStatus = ResponseInPack(pack_id=pack.id, phrase1_id=stimulus.id,
+                                                 phrase2_id=response.id).getResponseInPack().status
+            else:
+                suggestedStatus = 'none'
+                phraseController = PhraseController(phrase_id=response.id).getPhraseController()
+                if phraseController:
+                    if phraseController.type == 'black':
+                        suggestedStatus = 'rejected'
+                    elif phraseController.type == 'white':
+                        suggestedStatus = 'accepted'
             stimulusResponseList.append(
                 {'stimulus': stimulus.content,
                  'stimulusId': stimulus.id,

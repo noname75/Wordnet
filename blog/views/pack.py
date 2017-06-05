@@ -16,7 +16,20 @@ def pack(packId):
     if pack.user_id != User(username=session['username']).getUser().id:
         return redirect('authorisation_failed')
 
-    return render_template('pack.html', packId=packId, isPictorial=pack.isPictorial)
+    isSeePackPage = User(username=session['username']).getUser().isSeePackPage
+
+    return render_template('pack.html',
+                           packId=packId,
+                           isPictorial=pack.isPictorial,
+                           isSeePackPage=isSeePackPage)
+
+
+@app.route('/setIsSeePackPage', methods=['POST'])
+@user.require(http_exception=403)
+def setIsSeePackPage():
+    User(username=session['username']).getUser().setIsSeePackPage()
+    return ''
+
 
 
 @app.route('/addResponse', methods=['POST'])

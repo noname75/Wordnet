@@ -5,22 +5,22 @@
     <div class="row">
         <div class="col-md-3">
             <div class="form-group">
-                <button style="height: 55px" class="btn"
+                <button id="addGraph" style="height: 55px" class="btn"
                         onclick="getGraph()" type="submit">
                     افزودن همسایه‌ها
                 </button>
-                <button style="height: 55px" class="btn"
+                <button id="resetGraph" style="height: 55px" class="btn"
                         onclick="resetGraph()" type="submit">
                     بازنشانی گراف
                 </button>
             </div>
         </div>
-        <div class="col-md-1" style="background-color: white">
+        <div id="levelSelection_tour" class="col-md-1" style="background-color: white">
             <p id="levelLabel" style="font-size: 12px"></p>
             <input id="level" type="range" min="1" max="5" step="1" value="1" onchange="setLevel()"/>
         </div>
         <div class="col-md-4">
-            <div style="height: 55px"
+            <div id="nodeSelection_tour" style="height: 55px"
                  class="form-group form-group-default form-group-default-select2">
                 <label>انتخاب واژه‌ها</label>
                 <select id="nodeIdList" class="full-width" data-init-plugin="select2"
@@ -28,7 +28,7 @@
             </div>
         </div>
         <div class="col-md-2">
-            <div class="form-group form-group-default form-group-default-select2">
+            <div id="graphSelection_tour" class="form-group form-group-default form-group-default-select2">
                 <label>انتخاب منبع گراف</label>
                 <select id="graphId" class="full-width" data-init-plugin="select2" onchange="setNodeList()">
                     <option style="display:none">
@@ -46,13 +46,6 @@
                             {% endfor %}
                         </optgroup>
                         {% endif %}
-                        {% if tagAndResponseGraphList %}
-                        <optgroup label="تگ‌های اینستاگرام + پاسخ‌های کاربران">
-                            {% for graph in tagAndResponseGraphList %}
-                            <option value="{{ graph.id }}">{{ graph.name }}</option>
-                            {% endfor %}
-                        </optgroup>
-                        {% endif %}
                 </select>
             </div>
             </form>
@@ -61,7 +54,9 @@
     <div class="row">
         <div class="col-md-10">
             <div id="panel"
-                 style="width:930px; height:500px; background-color: white; letter-spacing: 0; font-family: BKoodakBold;"></div>
+                 style="width:930px; height:500px; background-color: white; letter-spacing: 0; font-family: BKoodakBold;">
+                <i class="fs-14 fa fa-question" style="color: cornflowerblue;margin: 10px;" onclick="tourExecute()"></i>
+            </div>
         </div>
     </div>
 </div>
@@ -71,8 +66,6 @@
 
 {% block js %}
 <script type="text/javascript">
-
-    setLevel();
 
     var draw_config = {
         element: '#panel',
@@ -101,14 +94,21 @@
         stickyDrag: true
     };
 
-
     var G = new jsnx.DiGraph();
     jsnx.draw(G, draw_config, true);
 
 
+    setLevel();
+
+    if ('{{ isSeeGraphPage }}' == 'False') {
+        tourExecute();
+    }
+
+
+
     $(document).ready(function () {
         $("#nodeIdList").select2({
-            minimumInputLength: 1
+            minimumInputLength: 2
         });
     });
 
@@ -187,5 +187,66 @@
         G.removeNodesFrom(G.nodes());
     }
 
+
+    function setIsSee() {
+        $.ajax({
+            type: "POST",
+            url: '/setIsSeeGraphPage',
+            data: {},
+            contentType: 'application/json;charset=UTF-8',
+            success: function (result) {
+            }
+        });
+    }
+
+
+    function tourExecute() {
+        var tour = new Tour({
+            steps: [
+                {
+                    element: "#graphSelection_tour",
+                    title: "انتخاب گراف",
+                    content: " گراف‌ها بر اساس منبع (تگ‌های اینستاگرام یا پاسخ‌های کاربران) در دو دسته کلی قرار دارند. در این قسمت می‌توانید گراف موردنظر را انتخاب کنید."
+                },
+                {
+                    element: "#nodeSelection_tour",
+                    title: "انتخاب واژه‌ها",
+                    content: "واژه‌های موجود در گراف را از این قسمت می‌توانید انتخاب کنید. برای نمایش واژه باید حداقل دو حرف از آن را وارد کنید."
+                },
+                {
+                    element: "#levelSelection_tour",
+                    title: "انتخاب سطح همسایگی",
+                    content: "در این قسمت می‌توانید سطح جستجوی همسایه‌ها را از بین ۱ تا ۵ انتخاب کنید."
+                },
+                {
+                    element: "#addGraph",
+                    title: "افزودن همسایه‌ها",
+                    content: "همسایه‌های واژگانی که انتخاب کردید با کلیک روی این دکمه به صفحه‌ی نمایش گراف  اضافه می‌شوند."
+                },
+                {
+                    element: "#panel",
+                    title: "صفحه‌ی نمایش گراف",
+                    content: "در این صفحه، همسایگان واژه‌ی انتخاب‌شده نمایش داده می‌شوند. واژگانی که جستجو شدند صورتی‌رنگ و همسایه‌های آن‌ها آبی‌رنگ هستند."
+                },
+                {
+                    element: "#resetGraph",
+                    title: "بازنشانی گراف",
+                    content: "با کلیک روی این دکمه، تمامی واژگان و همسایگان آن‌ها از صفحه نمایش گراف حذف می‌شوند."
+                },
+                {
+                    title: "ایده!",
+                    content: "یک ایده: با ترکیب واژه‌ها از دو نوع گراف (تگ‌ها و پاسخ‌ها) می‌توانید بین گراف‌ها مقایسه انجام دهید!"
+                }
+            ],
+            storage: false,
+            orphan: true,
+//        placement: 'bottom',
+//        backdrop: true,
+            template: document.getElementById('tourExample').innerHTML
+        });
+
+        tour.init();
+        tour.start(true);
+    }
 </script>
 {% endblock %}

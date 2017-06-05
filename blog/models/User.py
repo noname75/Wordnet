@@ -16,6 +16,8 @@ class User(db.Model):
     nativeLanguage = db.Column(db.Enum('فارسی', 'سایر زبان‌ها'))
     major = db.Column(db.Unicode(100))
     registerationTime = db.Column(db.DateTime())
+    isSeeGraphPage = db.Column(db.Boolean, default=False)
+    isSeePackPage = db.Column(db.Boolean, default=False)
 
     def __init__(
             self,
@@ -46,3 +48,12 @@ class User(db.Model):
             return db.session.query(User).filter_by(username=self.username).first()
         elif self.id:
             return db.session.query(User).filter_by(username=self.id).first()
+
+
+    def setIsSeeGraphPage(self):
+        self.isSeeGraphPage = True
+        db.session.commit()
+
+    def setIsSeePackPage(self):
+        self.isSeePackPage = True
+        db.session.commit()

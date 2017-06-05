@@ -13,12 +13,19 @@ graph_page = Blueprint('graph', __name__, template_folder='templates')
 def graph():
     tagGraphList = Graph().getGraphList_bySource('tags')
     responseGraphList = Graph().getGraphList_bySource('responses')
-    tagAndResponseGraphList = Graph().getGraphList_bySource('tagsAndResponses')
+    isSeeGraphPage = User(username=session['username']).getUser().isSeeGraphPage
 
     return render_template('graphViz.html',
                            tagGraphList=tagGraphList,
                            responseGraphList=responseGraphList,
-                           tagAndResponseGraphList=tagAndResponseGraphList)
+                           isSeeGraphPage=isSeeGraphPage)
+
+
+@app.route('/setIsSeeGraphPage', methods=['POST'])
+@user.require(http_exception=403)
+def setIsSeeGraphPage():
+    User(username=session['username']).getUser().setIsSeeGraphPage()
+    return ''
 
 
 @app.route('/getNodes', methods=['POST'])

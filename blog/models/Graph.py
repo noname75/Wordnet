@@ -6,7 +6,7 @@ class Graph(db.Model):
     name = db.Column(db.Unicode(200))
     moreInfo = db.Column(db.Unicode(1000))
     isDirect = db.Column(db.Boolean)
-    source = db.Column(db.Enum('tags', 'responses', 'tagsAndResponses'))
+    source = db.Column(db.Enum('tags', 'responses'))
     minEdgeWeight = db.Column(db.Float, default=0)
     minUserOnNode = db.Column(db.Float, default=0)
     minUserOnEdge = db.Column(db.Float, default=0)

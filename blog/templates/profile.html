@@ -1,6 +1,41 @@
 {% extends "layout.html" %}
 {% block body %}
-<h2>{{ user.firstname }} {{ user.lastname }}</h2>
-	<p><strong>نام کاربری:</strong> {{ user.username }} </p>
+<h2 id="fulluser">{{ user.firstname }} {{ user.lastname }}</h2>
+<p id="username"><strong>نام کاربری:</strong> {{ user.username }} </p>
 <p><strong>ایمیل:</strong> {{ user.email }}</p>
+{% endblock %}
+
+
+{% block js %}
+<script type="text/javascript">
+    var tour = new Tour({
+        steps: [
+            {
+                element: "#fulluser",
+                title: "نام کاربری",
+                content: "اینجا نام کاربری را مشاهده میکنید."
+            },
+            {
+                element: "#username",
+                title: "نام کامل",
+                content: "اینجا نام کامل را مشاهده می‌کنید."
+            }
+        ],
+        backdrop: true,
+        template: "<div class='popover tour'><div class='arrow'></div>" +
+        "<h3 class='popover-title'></h3>" +
+        "<div class='popover-content'></div><div class='popover-navigation'>" +
+        "<button class='btn btn-default' data-role='prev'>« قبلی</button>" +
+        "<span data-role='separator'>|</span>" +
+        "<button class='btn btn-default' data-role='next'>بعدی »</button></div>" +
+        "<button class='btn btn-default' data-role='end'>توقف تور</button>" +
+        "</div>"
+    });
+
+    // Initialize the tour
+    tour.init();
+
+    // Start the tour
+    tour.start(true);
+</script>
 {% endblock %}

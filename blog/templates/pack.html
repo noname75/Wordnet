@@ -15,10 +15,11 @@
             <div class="col-xs-6 col-md-4">
 				<div class="panel panel-default">
 					<div class="panel-heading">
+                        <i class="fs-14 fa fa-question" style="color: cornflowerblue;" onclick="tourExecute()"></i>
 					</div>
                     <div class="panel-body" style="color:#083C32">
                         <form>
-                            <div class="row" style=" text-align: center">
+                            <div id="stimulus_tour" class="row" style=" text-align: center">
                                 {% if isPictorial %}
                                 <img id="picture" src="" alt="picture" style="width:300px;height:300px;">
                                 {% else %}
@@ -60,7 +61,12 @@
 <script type="text/javascript">
     var startTime;
     var stimulusId;
+
     getStimulus();
+
+    if ('{{ isSeePackPage }}' == 'False') {
+        tourExecute();
+    }
 
     $(document).ready(function () {
         $('#bttnsubmit').prop('disabled', true);
@@ -161,6 +167,55 @@
         });
     }
 
+
+    function setIsSee() {
+        $.ajax({
+            type: "POST",
+            url: '/setIsSeePackPage',
+            data: {},
+            contentType: 'application/json;charset=UTF-8',
+            success: function (result) {
+            }
+        });
+    }
+
+    function tourExecute() {
+        var tour = new Tour({
+            steps: [
+                {
+                    element: "#stimulus_tour",
+                    title: "نمایش واژه‌ یا تصویر",
+                    content: "در این قسمت یک واژه یا تصویر نمایش داده می‌شود."
+                },
+                {
+                    element: "#Response",
+                    title: "محل ورود پاسخ‌ها",
+                    content: "با دیدن تصویر/واژه، اولین کلمه ای که به ذهنتان می‌رسد را در این قسمت وارد کنید. اگر چند کلمه به ذهنتان رسید، آن‌ها را با خط فاصله (-) از هم جدا کنید."
+                },
+                {
+                    element: "#bttnsubmit",
+                    title: "ثبت پاسخ",
+                    content: "با کلیک روی این دکمه، پاسخ شما ثبت می‌شود و واژه یا تصویر بعدی نمایش داده می‌شود."
+                },
+                {
+                    element: "#bttnskip",
+                    title: "گذر از واژه یا تصویر",
+                    content: "درصورتی که با دیدن پاسخ یا تصویر چیزی به ذهنتان نرسید یا معنی آن را نمی‌دانستید می‌توانید با کلیک روی این دکمه به واژه/تصویر بعدی بروید."
+                },
+                {
+                    element: "#bttnexit",
+                    title: "پایان پاسخ‌گویی",
+                    content: "برای اتمام پرسش‌نامه روی این دکمه کلیک کنید."
+                }
+            ],
+//        backdrop: true,
+            storage: false,
+            template: document.getElementById('tourExample').innerHTML
+        });
+
+        tour.init();
+        tour.start(true);
+    }
 
 </script>
 {% endblock %}
