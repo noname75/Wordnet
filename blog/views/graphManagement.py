@@ -259,7 +259,6 @@ def printInfo(info):
 
 def saveGraph(g, graph):
     graph_id = graph.addGraph().id
-
     for node in g.nodes():
         weight = g.node[node]['distUserList'].__len__()
         if graph.source == 'tags':
