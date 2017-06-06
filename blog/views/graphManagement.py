@@ -256,7 +256,6 @@ def printInfo(info):
         print("%30s: %d" % (i, info[i]))
     print("_________________________________________________\n")
 
-
 def saveGraph(g, graph):
     graph_id = graph.addGraph().id
     for node in g.nodes():
