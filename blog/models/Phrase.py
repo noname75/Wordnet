@@ -23,11 +23,9 @@ class Phrase(db.Model):
         return self
 
     def addIfNotExists(self):
-        meillis = int(round(time.time() * 1000))
         last = self.getPhrase_byContent()
         if not last:
             self.addPhrase()
-            print(int(round(time.time() * 1000)) - meillis)
             return self
         else:
             return last

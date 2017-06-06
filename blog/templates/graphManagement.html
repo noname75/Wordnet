@@ -15,6 +15,10 @@
 
 {% block header %}
 <style>
+    .disabledCalendar {
+        pointer-events: none;
+        opacity: 0.4;
+    }
     .stepwizard-step p {
         margin-top: 10px;
     }
@@ -114,8 +118,8 @@
                                             <input type="checkbox" data-init-plugin="switchery" data-size="small"
                                                    onchange="radioButtonTimePicker()" data-color="complete"/>
 
-                                            <div class="pull-right"
-                                                 style="visibility:hidden; background: #fff; cursor: pointer; padding: 5px 10px; width: 100%; border: solid lightgray 1px; border-radius: 5px;"
+                                            <div class="pull-right disabledCalendar"
+                                                 style="background: #fff; cursor: pointer; padding: 5px 10px; width: 100%; border: solid lightgray 1px; border-radius: 5px;"
                                                  id="reportrange">
                                                 <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>&nbsp;
                                                 <span></span> <b class="caret"></b>
@@ -222,6 +226,7 @@
 <script type="text/javascript">
 
     var start, end;
+    var timeLimitation = false;
 
     /////////////////////////////////manage steps///////////////////////////////////
     $(document).ready(function () {
@@ -325,7 +330,6 @@
     function getDataCountAndResetFields() {
         var startTime = start.format('L');
         var finishTime = end.format('L');
-        var timeLimitation = (document.getElementById('reportrange').style.visibility == 'visible');
         if (!timeLimitation) {
             startTime = null;
             finishTime = null;
@@ -365,10 +369,12 @@
     }
 
     function radioButtonTimePicker() {
-        if (document.getElementById('reportrange').style.visibility == 'hidden') {
-            document.getElementById('reportrange').style.visibility = 'visible';
+        if (timeLimitation) {
+            $("#reportrange").addClass('disabledCalendar');
+            timeLimitation = false;
         } else {
-            document.getElementById('reportrange').style.visibility = 'hidden';
+            $("#reportrange").removeClass('disabledCalendar');
+            timeLimitation = true;
         }
         getDataCountAndResetFields();
     }
@@ -387,7 +393,6 @@
 
         var startTime = start.format('L');
         var finishTime = end.format('L');
-        var timeLimitation = (document.getElementById('reportrange').style.visibility == 'visible');
         if (!timeLimitation) {
             startTime = null;
             finishTime = null;
@@ -423,7 +428,11 @@
                 document.getElementById('edgeCount_value').innerHTML = edgeCount;
                 document.getElementById('averageDegree_value').innerHTML = Math.round((edgeCount * 2 / nodeCount) * 100) / 100;
                 document.getElementById('processImg1').style.visibility = 'hidden';
-                document.getElementById('2stepButton').disabled = false;
+                if (edgeCount != 0) {
+                    document.getElementById('2stepButton').disabled = false;
+                } else {
+                    document.getElementById('2stepButton').disabled = true;
+                }
             }
         });
     }
@@ -436,7 +445,6 @@
 
         var startTime = start.format('L');
         var finishTime = end.format('L');
-        var timeLimitation = (document.getElementById('reportrange').style.visibility == 'visible');
         if (!timeLimitation) {
             startTime = null;
             finishTime = null;
