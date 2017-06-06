@@ -26,6 +26,7 @@ class Phrase(db.Model):
         last = self.getPhrase_byContent()
         if not last:
             self.addPhrase()
+            print('Tag added')
             return self
         else:
             return last

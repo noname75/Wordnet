@@ -51,7 +51,7 @@ def getResponseList():
                  'status': suggestedStatus,
                  'suggestedStatus': suggestedStatus})
             stimulusResponseList.sort(key=lambda x: (x['status']))
-    return jsonify({'stimulusResponseList': stimulusResponseList, 'pack_isChecked': pack.isChecked})
+    return jsonify({'stimulusResponseList': stimulusResponseList, 'packIsChecked': pack.isChecked})
 
 
 @app.route('/addPhraseController', methods=['POST'])

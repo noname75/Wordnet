@@ -58,15 +58,26 @@ def getPostChartsData():
 
     finalData['postCountGroupByPharseId'] = {'labels': labels, 'data': data}
 
-    # postCountGroupByTime
+    # postCountGroupByPublishTime
     labels = []
     data = []
-    for row in Post().getCountGroupByTime():
+    for row in Post().getCountGroupByPublishTime():
         count = row.count
         year_month = str(row.year) + '.' + str(row.month)
         labels.append(year_month)
         data.append(count)
-    finalData['postCountGroupByTime'] = {'labels': labels, 'data': data}
+    finalData['postCountGroupByPublishTime'] = {'labels': labels, 'data': data}
+
+
+    # postCountGroupByStoreTime
+    labels = []
+    data = []
+    for row in Post().getCountGroupByStoreTime():
+        count = row.count
+        year_month = str(row.year) + '.' + str(row.month)
+        labels.append(year_month)
+        data.append(count)
+    finalData['postCountGroupByStoreTime'] = {'labels': labels, 'data': data}
 
 
     # postCountGroupByUid

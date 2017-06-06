@@ -1,10 +1,10 @@
 /**
  * @version: 2.1.25
-* @author: Dan Grossman http://www.dangrossman.info/
+ * @author: Dan Grossman http://www.dangrossman.info/
  * @copyright: Copyright (c) 2012-2017 Dan Grossman. All rights reserved.
-* @license: Licensed under the MIT license. See http://www.opensource.org/licenses/mit-license.php
+ * @license: Licensed under the MIT license. See http://www.opensource.org/licenses/mit-license.php
  * @website: http://www.daterangepicker.com/
-*/
+ */
 // Follow the UMD template https://github.com/umdjs/umd/blob/master/templates/returnExportsGlobal.js
 (function (root, factory) {
     if (typeof define === 'function' && define.amd) {
@@ -66,13 +66,13 @@
         this.cancelClass = 'btn-default';
 
         this.locale = {
-            direction: 'ltr',
+            direction: 'rtl',
             format: moment.localeData().longDateFormat('L'),
-            separator: ' - ',
-            applyLabel: 'Apply',
-            cancelLabel: 'Cancel',
+            separator: ' تا ',
+            applyLabel: 'ثبت',
+            cancelLabel: 'انصراف',
             weekLabel: 'W',
-            customRangeLabel: 'Custom Range',
+            customRangeLabel: 'بازه دلخواه',
             daysOfWeek: moment.weekdaysMin(),
             monthNames: moment.monthsShort(),
             firstDay: moment.localeData().firstDayOfWeek()
@@ -97,6 +97,12 @@
         //html template for the picker UI
         if (typeof options.template !== 'string' && !(options.template instanceof $))
             options.template = '<div class="daterangepicker dropdown-menu">' +
+            '<div class="ranges">' +
+            '<div class="range_inputs">' +
+            '<button class="applyBtn" disabled="disabled" type="button"></button> ' +
+            '<button class="cancelBtn" type="button"></button>' +
+            '</div>' +
+            '</div>' +
             '<div class="calendar left">' +
             '<div class="daterangepicker_input">' +
             '<input class="input-mini form-control" type="text" name="daterangepicker_start" value="" />' +
@@ -105,7 +111,7 @@
             '<div></div>' +
             '<i class="fa fa-clock-o glyphicon glyphicon-time"></i>' +
             '</div>' +
-                    '</div>' +
+            '</div>' +
             '<div class="calendar-table"></div>' +
             '</div>' +
             '<div class="calendar right">' +
@@ -116,14 +122,8 @@
             '<div></div>' +
             '<i class="fa fa-clock-o glyphicon glyphicon-time"></i>' +
             '</div>' +
-                    '</div>' +
-            '<div class="calendar-table"></div>' +
-                '</div>' +
-            '<div class="ranges">' +
-            '<div class="range_inputs">' +
-            '<button class="applyBtn" disabled="disabled" type="button"></button> ' +
-            '<button class="cancelBtn" type="button"></button>' +
             '</div>' +
+            '<div class="calendar-table"></div>' +
             '</div>' +
             '</div>';
 
@@ -1076,7 +1076,7 @@
                 this.container.css({
                     top: containerTop,
                     left: this.element.offset().left - parentOffset.left + this.element.outerWidth() / 2
-                            - this.container.outerWidth() / 2,
+                    - this.container.outerWidth() / 2,
                     right: 'auto'
                 });
                 if (this.container.offset().left < 0) {
@@ -1110,13 +1110,13 @@
 
             // Bind global datepicker mousedown for hiding and
             $(document)
-              .on('mousedown.daterangepicker', this._outsideClickProxy)
-              // also support mobile devices
-              .on('touchend.daterangepicker', this._outsideClickProxy)
-              // also explicitly play nice with Bootstrap dropdowns, which stopPropagation when clicking them
-              .on('click.daterangepicker', '[data-toggle=dropdown]', this._outsideClickProxy)
-              // and also close when focus changes to outside the picker (eg. tabbing between controls)
-              .on('focusin.daterangepicker', this._outsideClickProxy);
+                .on('mousedown.daterangepicker', this._outsideClickProxy)
+                // also support mobile devices
+                .on('touchend.daterangepicker', this._outsideClickProxy)
+                // also explicitly play nice with Bootstrap dropdowns, which stopPropagation when clicking them
+                .on('click.daterangepicker', '[data-toggle=dropdown]', this._outsideClickProxy)
+                // and also close when focus changes to outside the picker (eg. tabbing between controls)
+                .on('focusin.daterangepicker', this._outsideClickProxy);
 
             // Reposition the picker if the window is resized while it's open
             $(window).on('resize.daterangepicker', $.proxy(function (e) {
@@ -1180,13 +1180,13 @@
             this.element.trigger('outsideClick.daterangepicker', this);
         },
 
-        showCalendars: function() {
+        showCalendars: function () {
             this.container.addClass('show-calendar');
             this.move();
             this.element.trigger('showCalendar.daterangepicker', this);
         },
 
-        hideCalendars: function() {
+        hideCalendars: function () {
             this.container.removeClass('show-calendar');
             this.element.trigger('hideCalendar.daterangepicker', this);
         },
@@ -1421,7 +1421,7 @@
         monthOrYearChanged: function (e) {
             var isLeft = $(e.target).closest('.calendar').hasClass('left'),
                 leftOrRight = isLeft ? 'left' : 'right',
-                cal = this.container.find('.calendar.'+leftOrRight);
+                cal = this.container.find('.calendar.' + leftOrRight);
 
             // Month must be Number for new moment versions
             var month = parseInt(cal.find('.monthselect').val(), 10);
@@ -1613,7 +1613,7 @@
             }
         },
 
-        remove: function() {
+        remove: function () {
             this.container.remove();
             this.element.off('.daterangepicker');
             this.element.removeData();

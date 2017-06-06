@@ -65,7 +65,7 @@
 
             <div class="modal-footer" style="text-align: center">
                 <button data-dismiss="modal" aria-hidden="true" id="submitButton"
-                        class="btn btn-success" onclick="setResponseStatus()">ثبت
+                        class="btn btn-success" onclick="setResponseStatus()" disabled>ثبت
                 </button>
             </div>
         </div>
@@ -228,7 +228,7 @@
 
     var stimulusResponseList;
     var lastPackId;
-    var pack_isChecked;
+    var packIsChecked;
 
     $(document).ready(function () {
         $('.container table').dataTable({
@@ -256,7 +256,7 @@
             contentType: 'application/json;charset=UTF-8',
             success: function (result) {
                 stimulusResponseList = result['stimulusResponseList'];
-                pack_isChecked = result['pack_isChecked'];
+                packIsChecked = result['packIsChecked'];
                 var t = "";
                 for (var i = 0; i < stimulusResponseList.length; i++) {
                     var tr = "<tr>";
@@ -267,23 +267,27 @@
                 }
                 document.getElementById("responseListTableBody").innerHTML = t;
                 var buttonContent = 'ثبت';
-                if (pack_isChecked == true) {
+                if (packIsChecked == true) {
                     buttonContent = 'ویرایش';
                 }
                 document.getElementById('submitButton').innerHTML = buttonContent;
-
+                buttonAbility();
             }
         });
     }
 
-
-    function setResponseStatus() {
+    function buttonAbility() {
+        var disabled = false;
         for (var i = 0; i < stimulusResponseList.length; i++) {
             if (stimulusResponseList[i]['status'] == 'none') {
-                alert('وضعیت تمامی پاسخ‌ها وارد نشده است.');
-                return;
+                disabled = true;
             }
         }
+        document.getElementById('submitButton').disabled = disabled;
+
+    }
+
+    function setResponseStatus() {
         $.ajax({
             type: "POST",
             url: '/setResponseStatus',
@@ -293,8 +297,9 @@
             }),
             contentType: 'application/json;charset=UTF-8',
             success: function (result) {
-                if (pack_isChecked == false)
+                if (packIsChecked == false) {
                     window.location.reload();
+                }
             }
         });
     }
@@ -328,9 +333,11 @@
 
     function setStatusAccepted(i) {
         stimulusResponseList[i]['status'] = 'accepted';
+        buttonAbility();
     }
     function setStatusRejected(i) {
         stimulusResponseList[i]['status'] = 'rejected';
+        buttonAbility();
     }
 
 </script>

@@ -83,9 +83,9 @@
 
     function addResponse(responseListStr) {
         var packId = '{{ packId }}';
-        var responseList = responseListStr.split('/');
+        var responseList = responseListStr.split('-');
         var finishTime = new Date();
-        var duration = (finishTime - startTime) / 1000;
+        var duration = ((finishTime - startTime) / 1000) / responseList.length;
         for (count = 0; count < responseList.length; count++) {
             var response = responseList[count];
             $.ajax({
@@ -195,12 +195,12 @@
                 {
                     element: "#bttnsubmit",
                     title: "ثبت پاسخ",
-                    content: "با کلیک روی این دکمه، پاسخ شما ثبت می‌شود و واژه یا تصویر بعدی نمایش داده می‌شود."
+                    content: "با کلیک روی این دکمه، یا فشردن دکمه‌ی «Enter» پاسخ شما ثبت می‌شود و واژه/تصویر بعدی نمایش داده می‌شود."
                 },
                 {
                     element: "#bttnskip",
                     title: "گذر از واژه یا تصویر",
-                    content: "درصورتی که با دیدن پاسخ یا تصویر چیزی به ذهنتان نرسید یا معنی آن را نمی‌دانستید می‌توانید با کلیک روی این دکمه به واژه/تصویر بعدی بروید."
+                    content: "درصورتی که با دیدن واژه/تصویر چیزی به ذهنتان نرسید یا معنی آن را نمی‌دانستید می‌توانید با کلیک روی این دکمه به واژه/تصویر بعدی بروید."
                 },
                 {
                     element: "#bttnexit",

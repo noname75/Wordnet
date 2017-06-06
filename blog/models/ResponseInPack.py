@@ -28,6 +28,24 @@ class ResponseInPack(db.Model):
     def getResponseCount_byPhraseId(phrase_id):
         return db.session.query(func.count(ResponseInPack.phrase2_id)).filter_by(phrase1_id=phrase_id).scalar()
 
+    def getAcceptedResponses(self):
+        return db.session.query(ResponseInPack).filter_by(status='accepted').filter(
+            ResponseInPack.phrase2_id.isnot(None)).all()
+
+    def getAcceptedResponseCount(self):
+        return db.session.query(func.count(ResponseInPack.phrase2_id)).filter_by(status='accepted').scalar()
+
+    def getAcceptedResponses_byStartTimeAndFinishTime(self, startTime, finishTime):
+        return db.session.query(ResponseInPack).filter(ResponseInPack.phrase2_id.isnot(None),
+                                                       ResponseInPack.creationTime >= startTime,
+                                                       ResponseInPack.creationTime <= finishTime,
+                                                       ResponseInPack.status == 'accepted').all()
+
+    def getAcceptedResponseCount_byStartTimeAndFinishTime(self, startTime, finishTime):
+        return db.session.query(func.count(ResponseInPack.phrase2_id)).filter(ResponseInPack.creationTime >= startTime,
+                                                                              ResponseInPack.creationTime <= finishTime,
+                                                                              ResponseInPack.status == 'accepted').scalar()
+
     def __init__(self, pack_id=None, phrase1_id=None, phrase2_id=None, duration=None, creationTime=None, status=None):
         self.pack_id = pack_id
         self.phrase1_id = phrase1_id

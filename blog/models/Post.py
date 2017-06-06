@@ -1,5 +1,6 @@
 from blog.models.db_config import *
 from sqlalchemy import func, extract, distinct
+from datetime import datetime
 
 class Post(db.Model):
     __tablename__ = 'post'
@@ -41,7 +42,7 @@ class Post(db.Model):
         ).group_by(Post.phrase_id).order_by('count DESC').all()
 
 
-    def getCountGroupByTime(self):
+    def getCountGroupByPublishTime(self):
         return db.session.query(
             extract('year', Post.publishTime).label('year'),
             extract('month', Post.publishTime).label('month'),
@@ -54,6 +55,18 @@ class Post(db.Model):
             extract('month', Post.publishTime)
         ).all()
 
+    def getCountGroupByStoreTime(self):
+        return db.session.query(
+            extract('year', Post.storeTime).label('year'),
+            extract('month', Post.storeTime).label('month'),
+            func.count(Post.caption).label('count')
+        ).group_by(
+            extract('year', Post.storeTime),
+            extract('month', Post.storeTime)
+        ).order_by(
+            extract('year', Post.storeTime),
+            extract('month', Post.storeTime)
+        ).all()
 
     def getCountGroupByUid(self):
         return db.session.query(func.count(Post.caption).label('count')).group_by(Post.uid).all()
@@ -61,6 +74,16 @@ class Post(db.Model):
 
     def getCountOfPosts(self):
         return db.session.query(func.count(Post.caption)).scalar()
+
+    def getPosts(self):
+        return db.session.query(Post).all()
+
+    def getCountOfPosts_byStartTimeAndFinishTime(self, startTime, finishTime):
+        return db.session.query(func.count(Post.caption)).filter(Post.publishTime >= startTime,
+                                                                 Post.publishTime <= finishTime).scalar()
+
+    def getPosts_byStartTimeAndFinishTime(self, startTime, finishTime):
+        return db.session.query(Post).filter(Post.publishTime >= startTime, Post.publishTime <= finishTime).all()
 
     def getCountOfUids(self):
         return db.session.query(func.count(distinct(Post.uid))).scalar()

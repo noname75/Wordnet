@@ -29,7 +29,10 @@
                         <a data-toggle="tab" href="#postCountGroupByPhrase_chart"><span>نمودار توزیع پست‌ها بر اساس تگ جستجوشده</span></a>
                     </li>
                     <li>
-                        <a data-toggle="tab" href="#postCountGroupByTime_chart"><span>نمودار توزیع تگ‌های جستجوشده به تفکیک ماه انتشار</span></a>
+                        <a data-toggle="tab" href="#postCountGroupByPublishTime_chart"><span>نمودار توزیع تگ‌های جستجوشده به تفکیک ماه انتشار</span></a>
+                    </li>
+                    <li>
+                        <a data-toggle="tab" href="#postCountGroupByStoreTime_chart"><span>نمودار توزیع تگ‌های جستجوشده به تفکیک ماه ذخیره‌سازی</span></a>
                     </li>
                     <li>
                         <a data-toggle="tab" href="#postCountGroupByUid_chart"><span>نمودار توزیع کاربران برحسب تعداد پست‌ها</span></a>
@@ -61,10 +64,17 @@
                             </div>
                         </div>
                     </div>
-                    <div class="tab-pane" id="postCountGroupByTime_chart">
+                    <div class="tab-pane" id="postCountGroupByPublishTime_chart">
                         <div class="row">
                             <div class="col-md-12">
-                                <canvas id="postCountGroupByTime" width="400" height="200"></canvas>
+                                <canvas id="postCountGroupByPublishTime" width="400" height="200"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="postCountGroupByStoreTime_chart">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <canvas id="postCountGroupByStoreTime" width="400" height="200"></canvas>
                             </div>
                         </div>
                     </div>
@@ -119,15 +129,30 @@
                     }
                 });
 
-                var postCountGroupByTime = result['postCountGroupByTime'];
-                ctx = document.getElementById("postCountGroupByTime").getContext('2d');
+                var postCountGroupByStoreTime = result['postCountGroupByStoreTime'];
+                ctx = document.getElementById("postCountGroupByStoreTime").getContext('2d');
                 myChart = new Chart(ctx, {
                     type: 'bar',
                     data: {
-                        labels: postCountGroupByTime['labels'],
+                        labels: postCountGroupByStoreTime['labels'],
                         datasets: [{
                             label: 'تعداد پست‌ها',
-                            data: postCountGroupByTime['data'],
+                            data: postCountGroupByStoreTime['data'],
+                            backgroundColor: "rgba(25,140,230,0.7)",
+                            strokeColor: "black"
+                        }]
+                    }
+                });
+
+                var postCountGroupByPublishTime = result['postCountGroupByPublishTime'];
+                ctx = document.getElementById("postCountGroupByPublishTime").getContext('2d');
+                myChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: postCountGroupByPublishTime['labels'],
+                        datasets: [{
+                            label: 'تعداد پست‌ها',
+                            data: postCountGroupByPublishTime['data'],
                             backgroundColor: "rgba(25,140,230,0.7)",
                             strokeColor: "black"
                         }]
