@@ -177,7 +177,7 @@
                                             <br>
                                         </div>
                                     </div>
-                                    <button onclick="calculateGraph()" id="graphCalculateButton" class="btn btn-info"
+                                    <button onclick="justMakeGraph()" id="graphCalculateButton" class="btn btn-info"
                                             type="button">محاسبه ابعاد گراف
                                     </button>
                                     <img id="processImg1" class="image-responsive-height demo-mw-50"
@@ -198,12 +198,11 @@
                                                       class="form-control"></textarea>
                                         </form>
                                     </div>
-
-                                    <button id="3stepButton" onclick="constructGraph()"
+                                    <img id="processImg2" class="image-responsive-height demo-mw-50"
+                                         src="../static/assets/img/demo/progress.svg" style="visibility:hidden;"
+                                         alt="Progress">
+                                    <button id="3stepButton" onclick="makeAndSaveGraph()"
                                             class="btn btn-success pull-right" type="submit">
-                                        <img id="processImg2" class="image-responsive-height demo-mw-50"
-                                             src="../static/assets/img/demo/progress.svg" style="visibility:hidden;"
-                                             alt="Progress">
                                         ایجاد گراف
                                     </button>
                                 </div>
@@ -327,14 +326,16 @@
         var startTime = start.format('L');
         var finishTime = end.format('L');
         var timeLimitation = (document.getElementById('reportrange').style.visibility == 'visible');
-//        var source = $('#source').val();
+        if (!timeLimitation) {
+            startTime = null;
+            finishTime = null;
+        }
         $.ajax({
             type: "POST",
             url: '/getDataCount',
             data: JSON.stringify({
                 startTime: startTime,
-                finishTime: finishTime,
-                timeLimitation: timeLimitation
+                finishTime: finishTime
             }),
             contentType: 'application/json;charset=UTF-8',
             success: function (result) {
@@ -380,13 +381,17 @@
         document.getElementById('minEdgeWeight_value').innerHTML = document.getElementById('minEdgeWeight').value;
     }
 
-    function calculateGraph() {
+    function justMakeGraph() {
 
         document.getElementById('processImg1').style.visibility = 'visible';
 
         var startTime = start.format('L');
         var finishTime = end.format('L');
         var timeLimitation = (document.getElementById('reportrange').style.visibility == 'visible');
+        if (!timeLimitation) {
+            startTime = null;
+            finishTime = null;
+        }
         var source = $('#source').val();
         var isDirected = document.getElementById('isDirected').checked;
         var minUserOnNode = document.getElementById('minUserOnNode').value;
@@ -395,16 +400,18 @@
 
         $.ajax({
             type: "POST",
-            url: '/calculateGraph',
+            url: '/makeGraph',
             data: JSON.stringify({
                 startTime: startTime,
                 finishTime: finishTime,
-                timeLimitation: timeLimitation,
                 source: source,
                 isDirected: isDirected,
                 minUserOnNode: minUserOnNode,
                 minUserOnEdge: minUserOnEdge,
-                minEdgeWeight: minEdgeWeight
+                minEdgeWeight: minEdgeWeight,
+                name: null,
+                moreInfo: null,
+                saveGraph: false
             }),
             contentType: 'application/json;charset=UTF-8',
             success: function (result) {
@@ -414,8 +421,7 @@
 
                 document.getElementById('nodeCount_value').innerHTML = nodeCount;
                 document.getElementById('edgeCount_value').innerHTML = edgeCount;
-                document.getElementById('averageDegree_value').innerHTML = edgeCount * 2 / nodeCount;
-
+                document.getElementById('averageDegree_value').innerHTML = Math.round((edgeCount * 2 / nodeCount) * 100) / 100;
                 document.getElementById('processImg1').style.visibility = 'hidden';
                 document.getElementById('2stepButton').disabled = false;
             }
@@ -424,13 +430,17 @@
 
 
     /////////////////////////////////////Thrid step///////////////////////////////////////////
-    function constructGraph() {
+    function makeAndSaveGraph() {
 
         document.getElementById('processImg2').style.visibility = 'visible';
 
         var startTime = start.format('L');
         var finishTime = end.format('L');
         var timeLimitation = (document.getElementById('reportrange').style.visibility == 'visible');
+        if (!timeLimitation) {
+            startTime = null;
+            finishTime = null;
+        }
         var source = $('#source').val();
         var isDirected = document.getElementById('isDirected').checked;
         var minUserOnNode = document.getElementById('minUserOnNode').value;
@@ -441,18 +451,18 @@
 
         $.ajax({
             type: "POST",
-            url: '/constructGraph',
+            url: '/makeGraph',
             data: JSON.stringify({
                 startTime: startTime,
                 finishTime: finishTime,
-                timeLimitation: timeLimitation,
                 source: source,
                 isDirected: isDirected,
                 minUserOnNode: minUserOnNode,
                 minUserOnEdge: minUserOnEdge,
                 minEdgeWeight: minEdgeWeight,
                 name: name,
-                moreInfo: moreInfo
+                moreInfo: moreInfo,
+                saveGraph: true
             }),
             contentType: 'application/json;charset=UTF-8',
             success: function (result) {

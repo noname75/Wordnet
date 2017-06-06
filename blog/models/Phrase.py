@@ -1,5 +1,5 @@
 from blog.models.db_config import *
-
+import time
 class Phrase(db.Model):
     __tablename__ = 'phrase'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -23,10 +23,15 @@ class Phrase(db.Model):
         return self
 
     def addIfNotExists(self):
+        meillis = int(round(time.time() * 1000))
         last = self.getPhrase_byContent()
         if not last:
             self.addPhrase()
-            print('Tag added')
+            print(int(round(time.time() * 1000)) - meillis)
             return self
         else:
             return last
+
+
+    def getAllPhrases(self):
+        return db.session.query(Phrase).all()
