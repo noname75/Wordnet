@@ -7,7 +7,6 @@ class Questionnaire(db.Model):
     picture = db.Column(db.VARBINARY)
     moreInfo = db.Column(db.Unicode(1000))
     isActive = db.Column(db.Boolean, default=False)
-    isPictorial = db.Column(db.Boolean, default=False)
     creationTime = db.Column(db.DateTime())
 
 
@@ -16,15 +15,12 @@ class Questionnaire(db.Model):
                  moreInfo=None,
                  subject=None,
                  isActive=0,
-                 isPictorial=0,
-                 isChosen=0,
                  picture=None,
                  creationTime=None):
 
         self.id = questionnaire_id
         self.subject = subject
         self.isActive = isActive
-        self.isPictorial = isPictorial
         self.moreInfo = moreInfo
         self.picture = picture
         self.creationTime = creationTime

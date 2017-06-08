@@ -36,7 +36,7 @@ def addPack():
 
     questionnaire = Questionnaire(questionnaire_id=questionnaireId).getQuestionnaire()
 
-    if not questionnaire.isActive or (isPictorial and not questionnaire.isPictorial):
+    if not questionnaire.isActive:
         raise AssertionError()
 
     pack = Pack(

@@ -24,7 +24,7 @@ def addQuestionnaire():
         stimuliList = form.stimuli.data.split('\r\n')
 
         for s in stimuliList:
-            stimulus = Phrase(content=s, creationTime=time.strftime('%Y-%m-%d %H:%M:%S')).addIfNotExists()
+            stimulus = Phrase(content=s).addIfNotExists()
             PhraseInQuestionnaire(
                 phrase_id=stimulus.id,
                 questionnarire_id=questionnaire.id).addPhraseInQuestionnaire()

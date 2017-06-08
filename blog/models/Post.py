@@ -26,13 +26,17 @@ class Post(db.Model):
         db.session.add(self)
         db.session.commit()
 
-    def getPost_byCode(self):
-        return db.session.query(Post).filter_by(code=self.code).first()
-
+    def getPostId_byCode(self):
+        rslt = engine.execute("select id from post where code=?", self.code).fetchone()
+        if rslt:
+            return Post(rslt[0])
+        else:
+            return None
 
     def addIfNotExists(self):
-        if not self.getPost_byCode():
-            self.addPost()
+        last = self.getPostId_byCode()
+        if not last:
+            engine.execute(Post.__table__.insert(), self.__dict__)
 
 
     def getCountGroupByPhraseId(self):

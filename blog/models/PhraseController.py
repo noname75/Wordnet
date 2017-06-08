@@ -7,17 +7,22 @@ class PhraseController(db.Model):
     credit = db.Column(db.Integer, default=0)
     type = db.Column(db.Enum('white', 'black'))
 
-    def __init__(self, phrase_id, type=None):
+    def __init__(self, phrase_id, type=None, credit=0):
         self.phrase_id = phrase_id
         self.type = type
+        self.credit = credit
 
     def getPhraseController(self):
-        return db.session.query(PhraseController).filter_by(phrase_id=self.phrase_id).first()
+        rslt = engine.execute("select phrase_id, type, credit from _phrase_controller where phrase_id=?",
+                              self.phrase_id).fetchone()
+        if rslt:
+            return PhraseController(rslt[0], rslt[1], rslt[2])
+        else:
+            return None
 
 
     def addPhraseController(self):
-        db.session.add(self)
-        db.session.commit()
+        engine.execute("INSERT INTO _phrase_controller (phrase_id,type) VALUES (?,?)", self.phrase_id, self.type)
 
     def updateType(self, type):
         self.type = type

@@ -29,7 +29,6 @@ class Phrase(db.Model):
     def addIfNotExists(self):
         last = self.getPhrase_byContent()
         if not last:
-            # self.addPhrase()
             engine.execute("INSERT INTO phrase (content) VALUES (?)", self.content)
             return self.getPhrase_byContent()
         else:

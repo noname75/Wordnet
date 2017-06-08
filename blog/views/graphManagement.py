@@ -23,8 +23,8 @@ def graphManagement():
 @admin.require(http_exception=403)
 def getDataCount():
     if request.json['startTime']:
-        startTime = datetime.strptime(request.json['startTime'], "%m/%d/%Y")
-        finishTime = datetime.strptime(request.json['finishTime'], "%m/%d/%Y")
+        startTime = datetime.strptime(request.json['startTime'] + ' 00:01:01', "%m/%d/%Y %H:%M:%S")
+        finishTime = datetime.strptime(request.json['finishTime'] + ' 23:59:59', "%m/%d/%Y %H:%M:%S")
     else:
         startTime = None
         finishTime = None
@@ -43,8 +43,8 @@ def getDataCount():
 @admin.require(http_exception=403)
 def makeGraph():
     if request.json['startTime']:
-        startTime = datetime.strptime(request.json['startTime'], "%m/%d/%Y")
-        finishTime = datetime.strptime(request.json['finishTime'], "%m/%d/%Y")
+        startTime = datetime.strptime(request.json['startTime'] + ' 00:01:01', "%m/%d/%Y %H:%M:%S")
+        finishTime = datetime.strptime(request.json['finishTime'] + ' 23:59:59', "%m/%d/%Y %H:%M:%S")
     else:
         startTime = None
         finishTime = None
@@ -91,7 +91,7 @@ def constructResponsesGraph(responses, graph):
         source = response.phrase1_id
         target = response.phrase2_id
         number = response.number
-        uid = response.pack_id
+        uid = Pack(pack_id=response.pack_id).getPack().user_id
         if not g.has_node(source):
             g.add_node(source, distUserList=[])
         if not g.has_node(target):
@@ -157,7 +157,6 @@ def constructTagGraph(posts, graph):
     tagCount = 0
     tagGroups = []
 
-    i = 0
     for post in posts:
         uid = post.uid
         tagList = tag_pattern.findall(post.caption)
@@ -166,15 +165,16 @@ def constructTagGraph(posts, graph):
         tagGroup = set()
         for tagContent in tagList:
             tag = tagContent[1:]
-            tag = tag.replace('ة', 'ت')
             if any(c.isupper() for c in tag):
                 tag = tag.lower()
+            tag = tag.replace('ـ', '')
+            tag = tag.replace('ة', 'ت')
+            tag = tag.replace('ك', 'ک')
+            tag = tag.replace('ي', 'ی')
+            tag = tag.replace('ﻻ', 'لا')
             tagGroup.add(tag)
         tagGroups.append((tuple(tagGroup), uid,))
         tagCount = tagCount + tagGroup.__len__()
-        i = i + 1
-        if i % 100 == 0:
-            print(i, '/', posts.__len__())
 
     info = {}
     info["#Posts"] = posts.__len__()
@@ -267,7 +267,6 @@ def saveGraph(g, graph):
     for node in g.nodes():
         weight = g.node[node]['distUserList'].__len__()
         if graph.source == 'tags':
-            print(node)
             phrase_id = Phrase(content=node).addIfNotExists().id
         else:
             phrase_id = node

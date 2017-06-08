@@ -26,8 +26,7 @@ def addPost():
             data = file.stream.read().decode("utf-8")
             postList = json.loads(data)
             for post in postList:
-                phrase_id = Phrase(content=post['name'],
-                                   creationTime=time.strftime('%Y-%m-%d %H:%M:%S')).addIfNotExists().id
+                phrase_id = Phrase(content=post['name']).addIfNotExists().id
                 Post(
                     code=post['code'],
                     caption=post['caption'],

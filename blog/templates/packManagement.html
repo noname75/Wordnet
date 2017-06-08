@@ -32,7 +32,7 @@
 
 {% block body %}
 <!-- Modal -->
-<div class="modal fade" id="responseListModal" tabindex="-1" role="dialog"
+<div class="modal" id="responseListModal" tabindex="-1" role="dialog"
      aria-labelledby="responseListModal" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -298,7 +298,7 @@
             contentType: 'application/json;charset=UTF-8',
             success: function (result) {
                 if (packIsChecked == false) {
-                    window.location.reload();
+                    window.location.href = window.location.href;
                 }
             }
         });

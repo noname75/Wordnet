@@ -65,7 +65,7 @@ class ResponseInPack(db.Model):
             else:
                 self.number = lastSamePhrase1_id.number + 1
                 if not db.session.query(ResponseInPack).filter_by(pack_id=self.pack_id, phrase1_id=self.phrase1_id,
-                                                                  phrase2_id=self.phrase2_id):
+                                                                  phrase2_id=self.phrase2_id).first():
                     db.session.add(self)
         else:
             db.session.add(self)

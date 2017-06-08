@@ -42,7 +42,7 @@ def addResponse():
 
     phrase2_id = None
     if response:
-        response = Phrase(content=response, creationTime=time.strftime('%Y-%m-%d %H:%M:%S')).addIfNotExists()
+        response = Phrase(content=response).addIfNotExists()
         phrase2_id = response.id
 
     ResponseInPack(

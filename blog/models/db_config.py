@@ -5,12 +5,13 @@ import json
 
 from blog import app
 
-app.config['SQLALCHEMY_DATABASE_URI'] = "mssql+pyodbc://localhost\SQLExpress/wordnet?driver=ODBC+Driver+11+for+SQL+Server"
+app.config[
+    'SQLALCHEMY_DATABASE_URI'] = "mssql+pyodbc://localhost\SQLExpress/wordnet_?driver=ODBC+Driver+11+for+SQL+Server"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
-engine = create_engine("mssql+pyodbc://localhost\SQLExpress/wordnet?driver=ODBC+Driver+11+for+SQL+Server", echo=False)
+engine = create_engine("mssql+pyodbc://localhost\SQLExpress/wordnet_?driver=ODBC+Driver+11+for+SQL+Server", echo=False)
 
 from blog.models.User import User
 from blog.models.Phrase import Phrase
