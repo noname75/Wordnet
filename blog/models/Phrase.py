@@ -5,31 +5,32 @@ class Phrase(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     content = db.Column(db.Unicode(200), unique=True)
 
-    def __init__(self, phrase_id=None, content=None, creationTime=None):
+    def __init__(self, phrase_id=None, content=None):
         self.id = phrase_id
         self.content = content
-        self.creationTime = creationTime
+
 
     def getPhrase(self):
-        return db.session.query(Phrase).filter_by(id=self.id).first()
+        rslt = engine.execute("select id, content from phrase where id=?", self.id).fetchone()
+        if rslt:
+            return Phrase(rslt[0], rslt[1])
+        else:
+            return None
+
 
     def getPhrase_byContent(self):
-            return db.session.query(Phrase).filter_by(content=self.content).first()
+        rslt = engine.execute("select id, content from phrase where content=?", self.content).fetchone()
+        if rslt:
+            return Phrase(rslt[0], rslt[1])
+        else:
+            return None
 
-    def addPhrase(self):
-        db.session.add(self)
-        db.session.flush()
-        db.session.commit()
-        return self
 
     def addIfNotExists(self):
         last = self.getPhrase_byContent()
         if not last:
-            self.addPhrase()
-            return self
+            # self.addPhrase()
+            engine.execute("INSERT INTO phrase (content) VALUES (?)", self.content)
+            return self.getPhrase_byContent()
         else:
             return last
-
-
-    def getAllPhrases(self):
-        return db.session.query(Phrase).all()

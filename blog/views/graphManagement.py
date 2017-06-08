@@ -163,15 +163,14 @@ def constructTagGraph(posts, graph):
         tagList = tag_pattern.findall(post.caption)
         if tagList.__len__() == 0:
             continue
-        tagGroup = []
+        tagGroup = set()
         for tagContent in tagList:
             tag = tagContent[1:]
+            tag = tag.replace('ة', 'ت')
             if any(c.isupper() for c in tag):
                 tag = tag.lower()
-            if not tag in tagGroup:
-                tagGroup.append(tag)
-        tagGroup = tuple(tagGroup)
-        tagGroups.append((tagGroup, uid,))
+            tagGroup.add(tag)
+        tagGroups.append((tuple(tagGroup), uid,))
         tagCount = tagCount + tagGroup.__len__()
         i = i + 1
         if i % 100 == 0:
@@ -184,32 +183,16 @@ def constructTagGraph(posts, graph):
     info['#TagGroups'] = tagGroups.__len__()
     printInfo(info)
 
-
     #Construct Graph
     g = nx.Graph()
 
+    # Add Nodes
     for tagGroup, uid in tagGroups:
-
         for source in tagGroup:
             if not g.has_node(source):
                 g.add_node(source, distUserList=[])
             if not g.node[source]['distUserList'].__contains__(uid):
                 g.node[source]['distUserList'].append(uid)
-
-        for i, source in enumerate(tagGroup[:-1]):
-            for distance, target in enumerate(tagGroup[i + 1:]):
-                if not g.has_edge(source, target):
-                    g.add_edge(source, target, weight=0, occur=0, distUserList=[])
-                else:
-                    if g.edge[source][target]['distUserList'].__contains__(uid):
-                        continue
-                g.edge[source][target]['weight'] = g.edge[source][target]['weight'] + 1 / (math.log(distance + 1) + 1)
-                g.edge[source][target]['distUserList'].append(uid)
-
-    info = {}
-    info['#nodes'] = g.number_of_nodes()
-    info['#edges'] = g.number_of_edges()
-    printInfo(info)
 
 
     #Pruning Nodes
@@ -217,6 +200,24 @@ def constructTagGraph(posts, graph):
         if g.node[node]['distUserList'].__len__() < graph.minUserOnNode:
             g.remove_node(node)
 
+    # Add Edges
+    for tagGroup, uid in tagGroups:
+        for i, source in enumerate(tagGroup[:-1]):
+            for distance, target in enumerate(tagGroup[i + 1:]):
+                if g.has_node(source) and g.has_node(target):
+                    if not g.has_edge(source, target):
+                        g.add_edge(source, target, weight=0, occur=0, distUserList=[])
+                    else:
+                        if g.edge[source][target]['distUserList'].__contains__(uid):
+                            continue
+                    g.edge[source][target]['weight'] = g.edge[source][target]['weight'] + 1 / (
+                        math.log(distance + 1) + 1)
+                    g.edge[source][target]['distUserList'].append(uid)
+
+    # Pruning Edges according to minUserOnEdge
+    for s, t in g.edges():
+        if g.edge[s][t]['distUserList'].__len__() < graph.minUserOnEdge:
+            g.remove_edge(s, t)
 
     #Normalization
     if graph.isDirected:
@@ -232,7 +233,6 @@ def constructTagGraph(posts, graph):
             di.add_edge(target, source, weight=source_target_weight / target_distUseList_len,
                         distUserList=g.edge[source][target]['distUserList'])
         g = di
-
     else:
         for source, target in g.edges():
             source_distUseList_len = g.node[source]['distUserList'].__len__()
@@ -242,10 +242,15 @@ def constructTagGraph(posts, graph):
             source_distUseList_len + target_distUseList_len - edge_distUserList_len)
 
 
-    #Pruning Edges
+    # Pruning Edges according to minEdgeWeight
     for s, t in g.edges():
-        if g.edge[s][t]['distUserList'].__len__() < graph.minUserOnEdge or g.edge[s][t]['weight'] < graph.minEdgeWeight:
+        if g.edge[s][t]['weight'] < graph.minEdgeWeight:
             g.remove_edge(s, t)
+
+    info = {}
+    info['#nodes'] = g.number_of_nodes()
+    info['#edges'] = g.number_of_edges()
+    printInfo(info)
 
     return g
 
@@ -257,21 +262,26 @@ def printInfo(info):
     print("_________________________________________________\n")
 
 def saveGraph(g, graph):
+    print('saving graph')
     graph_id = graph.addGraph().id
     for node in g.nodes():
         weight = g.node[node]['distUserList'].__len__()
         if graph.source == 'tags':
+            print(node)
             phrase_id = Phrase(content=node).addIfNotExists().id
         else:
             phrase_id = node
         NodeInGraph(weight=weight, phrase_id=phrase_id, graph_id=graph_id).addNodeInGraph()
 
+    print('nodes saved')
     for source, target in g.edges():
         weight = g.edge[source][target]['weight']
         if graph.source == 'tags':
-            phrase1_id = Phrase(content=source).addIfNotExists().id
-            phrase2_id = Phrase(content=target).addIfNotExists().id
+            phrase1_id = Phrase(content=source).getPhrase_byContent().id
+            phrase2_id = Phrase(content=target).getPhrase_byContent().id
         else:
             phrase1_id = source
             phrase2_id = target
         EdgeInGraph(weight=weight, phrase1_id=phrase1_id, phrase2_id=phrase2_id, graph_id=graph_id).addEdgeInGraph()
+
+    print('edges saved')

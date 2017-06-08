@@ -34,5 +34,4 @@ class EdgeInGraph(db.Model):
 
 
     def addEdgeInGraph(self):
-        db.session.add(self)
-        db.session.commit()
+        engine.execute(EdgeInGraph.__table__.insert(), self.__dict__)

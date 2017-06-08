@@ -19,6 +19,10 @@ class NodeInGraph(db.Model):
             NodeInGraph.phrase_id.in_(nodeInGraphIdList))
 
 
+
     def addNodeInGraph(self):
-        db.session.add(self)
-        db.session.commit()
+        engine.execute(
+            NodeInGraph.__table__.insert(), self.__dict__)
+
+        # db.session.add(self)
+        # db.session.commit()
