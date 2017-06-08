@@ -5,6 +5,7 @@ from blog.models.db_config import *
 import json
 import time
 from collections import Counter
+import re
 
 postManagement_page = Blueprint('postManagement', __name__, template_folder='templates')
 
@@ -19,22 +20,28 @@ def postManagement():
 @app.route('/addPost', methods=['POST'])
 @admin.require(http_exception=403)
 def addPost():
-
+    blackList = PhraseController().getBlackPhrases()
+    blackList = [e[0] for e in blackList]
     if request.method == 'POST':
         file = request.files['file']
         if file.filename[-5:] == '.json':
             data = file.stream.read().decode("utf-8")
             postList = json.loads(data)
+            i = 0
             for post in postList:
-                phrase_id = Phrase(content=post['name']).addIfNotExists().id
-                Post(
-                    code=post['code'],
-                    caption=post['caption'],
-                    publishTime=post['time'],
-                    storeTime=time.strftime('%Y-%m-%d %H:%M:%S'),
-                    uid=post['uid'],
-                    phrase_id=phrase_id
-                ).addIfNotExists()
+                if not isExistsBlackPhrase(blackList, post['caption']):
+                    phrase_id = Phrase(content=post['name']).addIfNotExists().id
+                    Post(
+                        code=post['code'],
+                        caption=post['caption'],
+                        publishTime=post['time'],
+                        storeTime=time.strftime('%Y-%m-%d %H:%M:%S'),
+                        uid=post['uid'],
+                        phrase_id=phrase_id
+                    ).addIfNotExists()
+                i = i + 1
+                if i % 1000 == 0:
+                    print(i, ' / ', postList.__len__())
 
     return ''
 
@@ -102,3 +109,11 @@ def getPostChartsData():
     }
 
     return jsonify(finalData)
+
+
+def isExistsBlackPhrase(blackList, caption):
+    tagList = re.compile("(#\\w+)").findall(caption)
+    for tag in tagList:
+        if tag[1:] in blackList:
+            return True
+    return False

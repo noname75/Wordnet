@@ -7,7 +7,7 @@ class PhraseController(db.Model):
     credit = db.Column(db.Integer, default=0)
     type = db.Column(db.Enum('white', 'black'))
 
-    def __init__(self, phrase_id, type=None, credit=0):
+    def __init__(self, phrase_id=None, type=None, credit=0):
         self.phrase_id = phrase_id
         self.type = type
         self.credit = credit
@@ -31,3 +31,8 @@ class PhraseController(db.Model):
     def creditPlusOne(self):
         self.credit = self.credit + 1
         db.session.commit()
+
+    def getBlackPhrases(self):
+        return engine.execute('select phrase.content '
+                              'from phrase join _phrase_controller on phrase.id=_phrase_controller.phrase_id '
+                              'where _phrase_controller.type = ?', 'black').fetchall()

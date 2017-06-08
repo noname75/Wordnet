@@ -21,8 +21,4 @@ class NodeInGraph(db.Model):
 
 
     def addNodeInGraph(self):
-        engine.execute(
-            NodeInGraph.__table__.insert(), self.__dict__)
-
-        # db.session.add(self)
-        # db.session.commit()
+        engine.execute(NodeInGraph.__table__.insert(), self.__dict__)

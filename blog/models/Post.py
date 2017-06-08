@@ -22,10 +22,6 @@ class Post(db.Model):
         self.phrase_id = phrase_id
 
 
-    def addPost(self):
-        db.session.add(self)
-        db.session.commit()
-
     def getPostId_byCode(self):
         rslt = engine.execute("select id from post where code=?", self.code).fetchone()
         if rslt:

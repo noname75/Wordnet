@@ -157,6 +157,7 @@ def constructTagGraph(posts, graph):
     tagCount = 0
     tagGroups = []
 
+    i = 0
     for post in posts:
         uid = post.uid
         tagList = tag_pattern.findall(post.caption)
@@ -164,6 +165,7 @@ def constructTagGraph(posts, graph):
             continue
         tagGroup = set()
         for tagContent in tagList:
+            # prepare tag
             tag = tagContent[1:]
             if any(c.isupper() for c in tag):
                 tag = tag.lower()
@@ -172,9 +174,13 @@ def constructTagGraph(posts, graph):
             tag = tag.replace('ك', 'ک')
             tag = tag.replace('ي', 'ی')
             tag = tag.replace('ﻻ', 'لا')
+            #end prepare
             tagGroup.add(tag)
         tagGroups.append((tuple(tagGroup), uid,))
         tagCount = tagCount + tagGroup.__len__()
+        i = i + 1
+        if i % 1000 == 0:
+            print(i, ' / ', posts.__len__())
 
     info = {}
     info["#Posts"] = posts.__len__()
@@ -199,6 +205,8 @@ def constructTagGraph(posts, graph):
     for node in g.nodes():
         if g.node[node]['distUserList'].__len__() < graph.minUserOnNode:
             g.remove_node(node)
+
+
 
     # Add Edges
     for tagGroup, uid in tagGroups:
