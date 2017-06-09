@@ -1,7 +1,10 @@
 {% extends "layout.html" %}
 
 {% macro render_field(field) %}
-    <div> {{ field.label }}<br><br><div>{{ field(class="form-control") }}</div></div>
+<div> {{ field.label}}<br><br>
+
+    <div>{{ field(class="form-control") }}</div>
+</div>
     {% if field.errors %}
         <ul class="errors">{% for error in field.errors %}<li>{{ error }}</li>{% endfor %}</ul>
     {% endif %}
@@ -9,14 +12,20 @@
 
 
 {% block body %}
+
+<style>
+    .container {
+        width: 1300px;
+    }
+</style>
 <br><br>
     <div class="container">
-		<div class="row">
+        <div class="row">
             <div class="col-xs-6 col-md-4"></div>
             <div class="col-xs-6 col-md-4">
 				<div class="panel panel-default">
 					<div class="panel-heading">
-                        <h4 style="text-align: center;">
+                        <h4 style="text-align: center; font-family: BYekan">
 						<strong> ثبت نام</strong>
                         </h4>
 					</div>
@@ -31,7 +40,7 @@
                                 {{ render_field(form.confirm) }}
                             </dl>
                             <p><input type=submit class="btn btn-success btn-block"
-                                      style="background-color: #18bc9c" value=تایید>
+                                      style="background-color: #954121;font-family: BYekan;border: 0px" value=تایید>
                         </form>
 					</div>
                 </div>
