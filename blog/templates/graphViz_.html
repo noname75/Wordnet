@@ -1,0 +1,221 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<style>
+    .cd-nei {
+        padding: .6em 1em;
+        border: 2px solid #8a8a0f;
+        border-radius: 50em;
+        background: transparent;
+        width: 250px;
+
+    }
+
+    .cd-neiii:hover {
+        background-color: lightyellow;
+    }
+
+    .cd-neii {
+        padding: .6em 1em;
+        border: 2px solid #8a8a0f;
+        border-radius: 50em;
+        background: transparent;
+
+    }
+
+    .cd-new {
+        padding: .6em 1em;
+        border: 2px solid #8a8a0f;
+        background: transparent;
+
+    }
+</style>
+<br><br><br><br><br><br>
+<div class="container">
+
+    <div class="col-lg-9 col-md-9 col-sm-8 col-lg-push-3 col-md-push-3 col-sm-push-4 margin-bottom-80">
+
+        <ul class="nav nav-tabs nav-top-border">
+            <li class="active"><a href="#info" data-toggle="tab" aria-expanded="true"
+                                  style="font-family: BYekan; background-color: lightyellow">نمایش گراف</a></li>
+        </ul>
+
+        <div class="tab-content margin-top-20">
+
+            <!-- PERSONAL INFO TAB -->
+
+            <div class="tab-pane fade active in" id="info">
+                <div class="cd-new" id="panel"
+                     style="width:930px; height:500px; background-color: lightyellow; letter-spacing: 0; font-family: BKoodakBold;"></div>
+
+            </div>
+            <!-- /PERSONAL INFO TAB -->
+
+        </div>
+
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-4 col-lg-pull-9 col-md-pull-9 col-sm-pull-8">
+
+        <label class="cd-nei" style="font-family: BYekan ; color: #8a8a0f">انتخاب منبع گراف</label>
+        <select style="background-color: lightyellow" id="graphId" class="full-width" data-init-plugin="select2"
+                onchange="setNodeList()">
+            <option style="display:none">
+                {% if tagGraphList %}
+                <optgroup label="تگ‌های اینستاگرام">
+                    {% for graph in tagGraphList %}
+                    <option value="{{ graph.id }}">{{ graph.name }}</option>
+                    {% endfor %}
+                </optgroup>
+                {% endif %}
+                {% if responseGraphList %}
+                <optgroup label="پاسخ‌های کاربران">
+                    {% for graph in responseGraphList %}
+                    <option value="{{ graph.id }}">{{ graph.name }}</option>
+                    {% endfor %}
+                </optgroup>
+                {% endif %}
+                {% if tagAndResponseGraphList %}
+                <optgroup label="تگ‌های اینستاگرام + پاسخ‌های کاربران">
+                    {% for graph in tagAndResponseGraphList %}
+                    <option value="{{ graph.id }}">{{ graph.name }}</option>
+                    {% endfor %}
+                </optgroup>
+                {% endif %}
+        </select>
+        <br><br>
+
+        <label class="cd-nei" style="font-family: BYekan; color: #8a8a0f">انتخاب واژه‌ها</label>
+        <select id="nodeIdList" style="font-family: BYekan; background-color:lightyellow" class="full-width"
+                data-init-plugin="select2"
+                multiple></select>
+
+        <br><br>
+
+        <p id="levelLabel" class="cd-nei" style="font-family: BYekan ;font-size: 15px; color: #8a8a0f"></p>
+        <input id="level" type="range" min="1" max="5" step="1" value="1" style="background-color: lightyellow"
+               onchange="setLevel()"/>
+        <br>
+
+        <button style="font-family: BYekan; height: 55px" class="btn cd-nei cd-neiii"
+                onclick="getGraph()" type="submit">
+            افزودن همسایه‌ها
+        </button>
+        <br>
+        <button style="font-family: BYekan; height: 55px" class="btn cd-nei cd-neiii"
+                onclick="resetGraph()" type="submit">
+            بازنشانی گراف
+        </button>
+    </div>
+    </form>
+</div>
+</div>
+
+{% endblock %}
+
+
+{% block js %}
+<script type="text/javascript">
+    setLevel();
+    var draw_config = {
+        element: '#panel',
+        layoutAttr: {
+            linkDistance: 75
+        },
+        weighted: true,
+        withLabels: true,
+        labels: 'label',
+        nodeStyle: {
+            fill: function (d) {
+                return d.data.color;
+            },
+            r: 9,
+            "stroke-width": 0
+        },
+        edgeAttr: {
+            weight: function (d) {
+                return d.data.weight;
+            }
+        },
+        edgeStyle: {
+            fill: "LightGray"
+        },
+        labelStyle: {fill: 'DarkSlateGray'},
+        stickyDrag: true
+    };
+    var G = new jsnx.DiGraph();
+    jsnx.draw(G, draw_config, true);
+    $(document).ready(function () {
+        $("#nodeIdList").select2({
+            minimumInputLength: 1
+        });
+    });
+    function setLevel() {
+        document.getElementById("levelLabel").innerHTML = ' سطح جستجو: ' + document.getElementById("level").value;
+    }
+    function setNodeList() {
+        $("#nodeIdList").val('').change();
+        var nodeInListElement = document.getElementById("nodeIdList");
+        for (i = nodeInListElement.options.length - 1; i >= 0; i--) {
+            nodeInListElement.options[i].selected = false;
+            nodeInListElement.options[i] = null;
+        }
+        $.ajax({
+            type: "POST",
+            url: '/getNodes',
+            data: JSON.stringify(
+                    {
+                        graphId: document.getElementById('graphId').value
+                    }
+            ),
+            contentType: 'application/json;charset=UTF-8',
+            success: function (result) {
+                var nodeList = result['nodeList'];
+                for (i = 0; i < nodeList.length; i++) {
+                    $("#nodeIdList").append(new Option(nodeList[i]['content'], nodeList[i]['id']));
+                }
+            }
+        });
+    }
+    function getGraph() {
+        var nodeIdList = $('#nodeIdList').val();
+        var graphId = document.getElementById("graphId").value;
+        var level = document.getElementById("level").value;
+        d3.json('/getGraph')
+                .header("Content-Type", "application/json;charset=UTF-8")
+                .post(
+                JSON.stringify(
+                        {
+                            graphId: graphId,
+                            nodeIdList: nodeIdList,
+                            level: level
+                        }
+                ), function (error, graph) {
+                    for (j = 0; j < nodeIdList.length; j++) {
+                        var nodeName = parseInt(nodeIdList[j]);
+                        if (G.hasNode(nodeName)) {
+                            console.log(G.node.get(nodeName).color);
+                            if (G.node.get(nodeName).color.localeCompare('pink')) {
+                                G.removeNode(nodeName);
+                            }
+                        }
+                    }
+                    for (i = 0; i < graph.nodes.length; i++) {
+                        if (!G.hasNode(graph.nodes[i].name)) {
+                            G.addNode(graph.nodes[i].name, {
+                                label: graph.nodes[i].content,
+                                color: graph.nodes[i].color
+                            });
+                        }
+                    }
+                    for (i = 0; i < graph.links.length; i++) {
+                        if (!G.hasEdge(graph.links[i].source, graph.links[i].target)) {
+                            G.addEdge(graph.links[i].source, graph.links[i].target, {weight: graph.links[i].weight});
+                        }
+                    }
+                });
+    }
+    function resetGraph() {
+        G.removeNodesFrom(G.nodes());
+    }
+</script>
+{% endblock %}
