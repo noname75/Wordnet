@@ -28,8 +28,7 @@
                             </div>
                             <br><br>
                             <input type=text id="Response" onchange="submitButtonControl()"
-                                   class="form-control"
-                                   onkeyup="nospaces(this)" autocomplete="off">
+                                   class="form-control" autocomplete="off">
                             <br>
                             <input id="bttnsubmit" type=submit
                                    class="btn btn-success btn-block"
@@ -75,11 +74,14 @@
         })
     });
 
-    function nospaces(t) {
-        if (t.value.match(/\s/g)) {
-            t.value = t.value.replace(/^\s+|\s+$/gm, '');
-        }
-    }
+    $(document).ready(function () {
+        $("#Response").keypress(function (event) {
+            var inputValue = String.fromCharCode(event.keyCode);
+            if (!(inputValue >= "آ" && inputValue <= "ی") && (inputValue != "_" && inputValue != '-')) {
+                event.preventDefault();
+            }
+        });
+    });
 
     function addResponse(responseListStr) {
         var packId = '{{ packId }}';

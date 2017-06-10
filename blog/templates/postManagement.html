@@ -17,29 +17,30 @@
 {% block body %}
 <div class="container">
     <div class="row">
-        <div class="col-md-1"></div>
-        <div class="col-sm-10">
+        <div class="col-md-11 col-md-push-1">
             <div class="panel panel-transparent">
                 <!-- Nav tabs -->
-                <ul class="nav nav-tabs nav-tabs-linetriangle" data-init-reponsive-tabs="dropdownfx">
+                <ul class="nav nav-tabs nav-tabs-simple nav-tabs-right bg-white" data-init-reponsive-tabs="dropdownfx">
                     <li class="active">
                         <a data-toggle="tab" href="#addPost"><span>افزودن پست</span></a>
                     </li>
                     <li>
-                        <a data-toggle="tab" href="#postCountGroupByPhrase_chart"><span>نمودار توزیع پست‌ها بر اساس تگ جستجوشده</span></a>
+                        <a data-toggle="tab"
+                           href="#postCountGroupByPhrase_chart"><span>توزیع پست‌ها بر اساس تگ جستجوشده</span></a>
                     </li>
                     <li>
-                        <a data-toggle="tab" href="#postCountGroupByPublishTime_chart"><span>نمودار توزیع تگ‌های جستجوشده به تفکیک ماه انتشار</span></a>
+                        <a data-toggle="tab" href="#postCountGroupByPublishTime_chart"><span>توزیع تگ‌های به تفکیک ماه انتشار</span></a>
                     </li>
                     <li>
-                        <a data-toggle="tab" href="#postCountGroupByStoreTime_chart"><span>نمودار توزیع تگ‌های جستجوشده به تفکیک ماه ذخیره‌سازی</span></a>
+                        <a data-toggle="tab" href="#postCountGroupByStoreTime_chart"><span>توزیع تگ‌های به تفکیک ماه ذخیره‌سازی</span></a>
                     </li>
                     <li>
-                        <a data-toggle="tab" href="#postCountGroupByUid_chart"><span>نمودار توزیع کاربران برحسب تعداد پست‌ها</span></a>
+                        <a data-toggle="tab"
+                           href="#postCountGroupByUid_chart"><span>توزیع کاربران برحسب تعداد پست‌ها</span></a>
                     </li>
                 </ul>
                 <!-- Tab panes -->
-                <div class="tab-content">
+                <div class="tab-content" style="background-color: white">
                     <div class="tab-pane active" id="addPost">
                         <div class="col-md-12">
                             <div class="row column-seperation">

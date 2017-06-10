@@ -1,6 +1,16 @@
 {% extends "layout.html" %}
 
 
+{% block header %}
+<style>
+    .disabledRow {
+        pointer-events: none;
+        opacity: 0.7;
+    }
+</style>
+{% endblock %}
+
+
 {% block body %}
 <div class="container-fluid container-fixed-lg">
     <div class="row">
@@ -27,19 +37,15 @@
                             {% for questionnaire in questionnaireList %}
                             {% if questionnaire.isActive %}
 
+                            {% if not questionnaire.isCompletedByUser %}
                             <tr class='clickable-row'
                                 data-href="{{ url_for('questionnaire', questionnaire_id=questionnaire.id) }}">
-                                {% if questionnaire.isCompletedByUser %}
-                                <td class="v-align-middle bold">
-                                    <button type="button" class="btn" disabled>
-                                        {{ questionnaire.subject }}
-                                    </button>
-                                </td>
                                 {% else %}
+                            <tr class='disabledRow'>
+                                {% endif %}
                                 <td class="v-align-middle bold">
                                     {{ questionnaire.subject }}
                                 </td>
-                                {% endif %}
                                 <td>{{ questionnaire.moreInfo }}</td>
                             </tr>
 

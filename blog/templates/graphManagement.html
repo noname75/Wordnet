@@ -80,11 +80,10 @@
 {% block body %}
 <div class="container">
     <div class="row">
-        <div class="col-md-1"></div>
-        <div class="col-md-10">
+        <div class="col-md-11 col-md-push-1">
             <div class="panel panel-transparent">
                 <!-- Nav tabs -->
-                <ul class="nav nav-tabs nav-tabs-linetriangle" data-init-reponsive-tabs="dropdownfx">
+                <ul class="nav nav-tabs nav-tabs-simple nav-tabs-right bg-white" data-init-reponsive-tabs="dropdownfx">
                     <li class="active">
                         <a data-toggle="tab" href="#graphList"><span>لیست گراف‌ها</span></a>
                     </li>
@@ -93,9 +92,10 @@
                     </li>
                 </ul>
                 <!-- Tab panes -->
-                <div class="tab-content">
+                <div class="tab-content" style="background-color: white">
                     <div class="tab-pane" id="addGraph">
                         <div class="container-fluid container-fixed-lg">
+                            <div class="col-md-10 col-md-push-1">
                             <div class="stepwizard col-md-offset-3" style="width: 100%">
                                 <div class="stepwizard-row setup-panel">
                                     <div class="stepwizard-step">
@@ -220,6 +220,7 @@
                             </form>
                         </div>
                         </div>
+                        </div>
                     <div class="tab-pane active" id="graphList">
                         <div class="container-fluid container-fixed-lg">
                             <table class="table table-hover">
@@ -268,7 +269,7 @@
                                     <td style="text-align: center;">{{ graph.minEdgeWeight }}</td>
                                     <td style="text-align: center;">
                                         {% if graph.startTime %}
-                                        {{ graph.startTime }} - {{ graph.finishTime }}
+                                        از {{ graph.startTime }}<br> تا {{ graph.finishTime }}
                                         {% else %}
                                         {% if graph.source=="tags" %}
                                         {% if graph.newPostsCount!=0 %}
@@ -298,7 +299,7 @@
                                         <input type="checkbox" data-init-plugin="switchery" data-size="small" checked
                                                onchange="changeGraphActivationStatus('{{ graph.id }}')"/>
                                         {% else %}
-                                    <td><input type="checkbox" data-init-plugin="switchery" data-size="small"
+                                        <input type="checkbox" data-init-plugin="switchery" data-size="small"
                                                onchange="changeGraphActivationStatus('{{ graph.id }}')"/>
                                         {% endif %}
                                     </td>
@@ -634,7 +635,7 @@
             }),
             contentType: 'application/json;charset=UTF-8',
             success: function (result) {
-                window.location.href = '/';
+                window.location.href = window.location.href;
             }
         });
     }

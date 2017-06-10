@@ -144,7 +144,7 @@
       {% block header %}{% endblock %}
   </head>
   <body class="fixed-header horizontal-menu"
-        style="background-image: url('/static/assets/img/background12.jpg')">
+        style="background-image: url('/static/assets/img/background13 (2).png')">
     <!-- START PAGE-CONTAINER -->
     <div class="page-container">
       <!-- START HEADER -->
@@ -155,9 +155,9 @@
           <div class="pull-center hidden-md hidden-lg">
             <div class="header-inner">
               <div class="brand inline">
-                  <img src="/static/assets/img/logo_2x.png" alt="logo" data-src="/static/assets/img/logo.png"
-                       data-src-retina="/static/assets/img/logo_2x.png" width="78" height="22"
-                       data-src-retina="/static/assets/img/logo_2x.png" width="78" height="22">
+                  <img src="../static/assets/img/logo_2x.png" alt="logo" data-src="/static/assets/img/logo.png"
+                       data-src-retina="../static/assets/img/logo_2x.png" width="78" height="22"
+                       data-src-retina="../static/assets/img/logo_2x.png" width="78" height="22">
               </div>
             </div>
           </div>
@@ -181,7 +181,7 @@
         <div class=" pull-left sm-table hidden-xs hidden-sm">
           <div class="header-inner">
             <div class="brand inline">
-                <img src="/static/assets/img/logo.png" width="78" height="22">
+                <img src="../static/assets/img/logo.png" width="78" height="22">
             </div>
           </div>
         </div>
@@ -204,14 +204,14 @@
                                       {% if error %}<p class="alert alert-danger"><strong>خطا:</strong> {{ error }}{% endif %}
                                      <div class="form-group">
                                      <br>
-                                     <input type="text" class="form-control" name="username" style="font-family: BYekan"
+                                     <input type="text" class="form-control" name="username"
                                             placeholder="نام کاربری">
                                      <br>
                                      <input type="password" class="form-control" name="password"
-                                            style="font-family: BYekan" placeholder="رمز ورود">
+                                            placeholder="رمز ورود">
                                      <br>
                                      <button type="submit" class="btn btn-success btn-block"
-                                             style="font-family: BYekan">ورود
+                                             >ورود
                                      </button>
                                      </div>
                                  </form>
@@ -230,9 +230,9 @@
 	                 <li>
 	                     <div class="navbar-footer">
 	                         <div class="navbar-footer-content">
-                                 <a style="font-family: BYekan"
+                                 <a
                                     href="{{ url_for('profile', username=session.username) }}" class="btn btn-block">پروفایل</a>
-                                 <a style="font-family: BYekan" href="{{ url_for('logout') }}" class="btn btn-block">خروج
+                                 <a href="{{ url_for('logout') }}" class="btn btn-block">خروج
                                      از سایت</a>
 	                         </div>
 	                     </div>
@@ -258,36 +258,36 @@
                   </div>
                   <div class="bar-inner">
                       <ul>
-                          <li style="font-family: BYekan">
-                              <a href="{{ url_for('index') }}"><i class="fs-10 pg-home"></i><span
+                          <li>
+                              <a href="{{ url_for('index') }}"><i class="fs-14 pg-home"></i><span
                                       class="bold"> خانه</span></a>
                           </li>
-                          <li style="font-family: BYekan">
-                              <a href="{{ url_for('graph') }}"><i class="fs-10 pg-charts"></i><span
+                          <li>
+                              <a href="{{ url_for('graph') }}"><i class="fs-14 pg-ui"></i><span
                                       class="bold"> نمایش گراف</span></a>
                           </li>
-                          <li style="font-family: BYekan">
+                          <li>
                               <a href="{{ url_for('questionnaireList') }}">
-                                  <i class="fs-10 pg-menu"></i><span class="bold"> پرسش‌نامه‌ها</span>
+                                  <i class="fs-14 pg-menu"></i><span class="bold"> پرسش‌نامه‌ها</span>
                               </a>
                           </li>
                           {% if session.admin %}
-                          <li style="font-family: BYekan">
+                          <li>
                               <a href="{{ url_for('questionnaireManagement') }}">
-                                  <i class="fs-10 pg-plus"></i><span class="bold"> مدیریت پرسش‌نامه‌ها</span>
+                                  <i class="fs-14 fa fa-question"></i><span class="bold"> مدیریت پرسش‌نامه‌ها</span>
                               </a>
                           </li>
-                          <li style="font-family: BYekan">
+                          <li>
                               <a href="{{ url_for('postManagement') }}">
                                   <i class="fs-14 fa fa-instagram"></i><span class="bold"> مدیریت پست‌ها</span>
                               </a>
                           </li>
-                          <li style="font-family: BYekan">
+                          <li>
                               <a href="{{ url_for('graphManagement') }}">
-                                  <i class="fs-14 fa fa-connectdevelop"></i><span class="bold"> مدیریت گراف‌ها</span>
+                                  <i class="fs-14 pg-charts"></i><span class="bold"> مدیریت گراف‌ها</span>
                               </a>
                           </li>
-                          <li style="font-family: BYekan">
+                          <li>
                               <a href="{{ url_for('packManagement') }}">
                                   <i class="fs-14 fa fa-pencil"></i><span class="bold"> مدیریت پاسخ‌ها</span>
                               </a>

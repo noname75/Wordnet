@@ -3,7 +3,7 @@ from blog.models.db_config import *
 class Questionnaire(db.Model):
     __tablename__ = 'questionnaire'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    subject = db.Column(db.Unicode(100), unique=True)
+    subject = db.Column(db.Unicode(100))
     picture = db.Column(db.VARBINARY)
     moreInfo = db.Column(db.Unicode(1000))
     isActive = db.Column(db.Boolean, default=False)

@@ -69,11 +69,10 @@
 {% block body %}
 <div class="container">
     <div class="row">
-        <div class="col-md-2"></div>
-        <div class="col-sm-8">
+        <div class="col-md-11 col-md-push-1">
             <div class="panel panel-transparent">
                 <!-- Nav tabs -->
-                <ul class="nav nav-tabs nav-tabs-linetriangle" data-init-reponsive-tabs="dropdownfx">
+                <ul class="nav nav-tabs nav-tabs-simple nav-tabs-right bg-white" data-init-reponsive-tabs="dropdownfx">
                     <li class="active">
                         <a data-toggle="tab" href="#questionnaireList"><span>لیست پرسش‌نامه‌ها</span></a>
                     </li>
@@ -85,7 +84,7 @@
                     </li>
                 </ul>
                 <!-- Tab panes -->
-                <div class="tab-content">
+                <div class="tab-content" style="background-color: white">
                     <div class="tab-pane active" id="questionnaireList">
                         <div class="col-md-12">
                             <div class="panel panel-transparent">
@@ -121,10 +120,11 @@
                                             </thead>
                                             {% for questionnaire in questionnaireList %}
                                             <tbody>
-                                            <tr data-toggle="modal"
+                                            <tr>
+                                                <td class="v-align-middle bold" data-toggle="modal"
                                                 onclick="setQuestionnaieInfoOnModal('{{ questionnaire.id }}')"
-                                                data-target="#questionnaieInfoModal">
-                                                <td class="v-align-middle bold">{{ questionnaire.subject }}</td>
+                                                data-target="#questionnaieInfoModal">{{ questionnaire.subject }}
+                                                </td>
                                                 <td style="text-align: center;">{{ questionnaire.moreInfo }}</td>
                                                 <td style="text-align: center;">{{ questionnaire.stimulusCount }}</td>
                                                 {% if questionnaire.isActive %}
@@ -150,7 +150,7 @@
                     <div class="tab-pane" id="addQuestionnaire">
                         <div class="row">
                             <div class="col-md-10 col-md-push-1">
-                                <div class="panel panel-default">
+                                <div class="panel panel-transparent">
                                     <div class="panel-heading">
                                         <h5 style="text-align: center;">
                                             <strong>پرسش‌نامه جدید</strong>
@@ -192,7 +192,7 @@
                     <div class="tab-pane" id="editQuestionnaire">
                         <div class="row">
                             <div class="col-md-10 col-md-push-1">
-                                <div class="panel panel-default">
+                                <div class="panel panel-transparent">
                                     <br>
 
                                     <div class="form-group form-group-default form-group-default-select2">
