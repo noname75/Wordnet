@@ -10,9 +10,8 @@ from blog.views.profile import profile_page
 from blog.views.questionnaire import questionnaire_page
 from blog.views.register import register_page
 from blog.views.questionnaireList import questionnaireList_page
-from blog.views.addQuestionnaire import addQuestionnaire_page
+from blog.views.questionnaireManagement import questionnaireManagement_page
 from blog.views.graph import graph_page
-from blog.views.editQuestionnaire import editQuestionnaire_page
 from blog.views.pack import pack_page
 from blog.views.endPack import endPack_page
 from blog.views.postManagement import postManagement_page
@@ -28,9 +27,9 @@ app.register_blueprint(register_page)
 app.register_blueprint(questionnaire_page)
 app.register_blueprint(questionnaireList_page)
 app.register_blueprint(graph_page)
-app.register_blueprint(editQuestionnaire_page)
 app.register_blueprint(pack_page)
 app.register_blueprint(endPack_page)
+app.register_blueprint(questionnaireManagement_page)
 app.register_blueprint(postManagement_page)
 app.register_blueprint(graphManagement_page)
 app.register_blueprint(packManagement_page)

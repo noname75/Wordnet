@@ -82,6 +82,10 @@ class Post(db.Model):
         return db.session.query(func.count(Post.caption)).filter(Post.publishTime >= startTime,
                                                                  Post.publishTime <= finishTime).scalar()
 
+    def getCountOfPosts_byStartTime(self, startTime):
+        return db.session.query(func.count(Post.caption)).filter(Post.storeTime >= startTime).scalar()
+
+
     def getPosts_byStartTimeAndFinishTime(self, startTime, finishTime):
         return db.session.query(Post).filter(Post.publishTime >= startTime, Post.publishTime <= finishTime).all()
 

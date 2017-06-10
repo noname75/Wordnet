@@ -82,8 +82,15 @@
               font-style: normal;
           }
 
-          .popover-content, th, label, select, a, h1, h2, h3, h4, h5, h6, input, textarea, button, dl {
+          .popover-content, body, th, label, p, select, a, input, textarea, button, dl {
               font-family: BYekan !important;
+              font-size: 100% !important;
+              font-weight: 200 !important;
+          }
+
+          h1, h2, h3, h4, h5, h6 {
+              font-family: BYekan !important;
+              font-weight: 200 !important;
           }
 
       </style>
@@ -137,7 +144,7 @@
       {% block header %}{% endblock %}
   </head>
   <body class="fixed-header horizontal-menu"
-        style="font-family: BYekan;font-size: 105%; background-image: url('/static/assets/img/background12.jpg')">
+        style="background-image: url('/static/assets/img/background12.jpg')">
     <!-- START PAGE-CONTAINER -->
     <div class="page-container">
       <!-- START HEADER -->
@@ -182,13 +189,15 @@
           {% if not session.username %}
 	         <div class="pull-right">
 	          <div class="header-inner">
-	         	<a href="{{ url_for('register') }}" class="m-l-20 sm-no-margin hidden-sm hidden-xs">ثبت نام</a>
+                  <a href="{{ url_for('register') }}" class="m-l-20 sm-no-margin hidden-sm hidden-xs"><i
+                          class="fs-14 fa fa-user-plus"></i> ثبت نام</a>
 	         	</div>
 	         </div>
 	         <div class="pull-right">
 	          <div class="header-inner">
-	             <a class="dropdown-toggle m-l-20 sm-no-margin hidden-sm hidden-xs" data-toggle="dropdown">ورود به سایت<b class="caret"></b></a>
-                     <ul class="dropdown-menu" style="padding: 15px;min-width: 250px;">
+                  <a class="dropdown-toggle m-l-20 sm-no-margin hidden-sm hidden-xs" data-toggle="dropdown"><i
+                          class="fs-14 fa fa-sign-in"></i> ورود به سایت</a>
+                  <ul class="dropdown-menu" style="padding: 15px;min-width: 200px;">
                          <div class="dropdown keep-open">
                              <li>
                                  <form class="form" role="form" method=post action="{{ url_for('login') }}" accept-charset="UTF-8">
@@ -215,8 +224,9 @@
 	     {% else %}
 	         <div class="pull-right">
 	         <div class="header-inner">
-	             <a class="dropdown-toggle" data-toggle="dropdown"> سلام، {{ session.username }} <b class="caret"></b></a>
-	             <ul class="dropdown-menu" style="padding: 15px; min-width: 250px;">
+                 <a class="dropdown-toggle" data-toggle="dropdown"> <i class="fs-14 fa fa-user"></i> {{ session.username
+                     }} <b class="caret"></b></a>
+                 <ul class="dropdown-menu" style="padding: 15px; min-width: 200px;">
 	                 <li>
 	                     <div class="navbar-footer">
 	                         <div class="navbar-footer-content">
@@ -263,8 +273,8 @@
                           </li>
                           {% if session.admin %}
                           <li style="font-family: BYekan">
-                              <a href="{{ url_for('addQuestionnaire') }}">
-                                  <i class="fs-10 pg-plus"></i><span class="bold"> افزودن پرسش‌نامه</span>
+                              <a href="{{ url_for('questionnaireManagement') }}">
+                                  <i class="fs-10 pg-plus"></i><span class="bold"> مدیریت پرسش‌نامه‌ها</span>
                               </a>
                           </li>
                           <li style="font-family: BYekan">

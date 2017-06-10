@@ -14,7 +14,7 @@ class Questionnaire(db.Model):
                  questionnaire_id=None,
                  moreInfo=None,
                  subject=None,
-                 isActive=0,
+                 isActive=None,
                  picture=None,
                  creationTime=None):
 
@@ -38,7 +38,7 @@ class Questionnaire(db.Model):
         return self
 
 
-    def getQuestionnaireList():
+    def getQuestionnaireList(self):
         return db.session.query(Questionnaire).all()
 
 

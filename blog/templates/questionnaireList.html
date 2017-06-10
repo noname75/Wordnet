@@ -4,8 +4,8 @@
 {% block body %}
 <div class="container-fluid container-fixed-lg">
     <div class="row">
-        <div class="col-xs-6 col-md-1"></div>
-        <div class="col-xs-6 col-md-10">
+        <div class="col-xs-6 col-md-3"></div>
+        <div class="col-xs-6 col-md-6">
             <!-- START PANEL -->
             <div class="panel panel-transparent">
                 <div class="panel-title">
@@ -21,19 +21,14 @@
                                     پرسش‌نامه</p></th>
                                 <th><p style="text-align: center; color: darkslategray;">توضیحات</p>
                                 </th>
-                                {% if session.admin %}
-                                <th><p style="text-align: center; color: darkslategray;">تعداد
-                                    واژه‌ها</p></th>
-                                <th><p style="text-align: center; color: darkslategray;">
-                                    فعال/غیرفعال</p></th>
-                                {% endif %}
                             </tr>
                             </thead>
                             <tbody>
                             {% for questionnaire in questionnaireList %}
-                            {% if (not questionnaire.isActive and session.admin) or questionnaire.isActive %}
-                            <tr>
-                                {% if not session.admin %}
+                            {% if questionnaire.isActive %}
+
+                            <tr class='clickable-row'
+                                data-href="{{ url_for('questionnaire', questionnaire_id=questionnaire.id) }}">
                                 {% if questionnaire.isCompletedByUser %}
                                 <td class="v-align-middle bold">
                                     <button type="button" class="btn" disabled>
@@ -42,68 +37,12 @@
                                 </td>
                                 {% else %}
                                 <td class="v-align-middle bold">
-                                    <button type="button" class="btn">
-                                        <a href="{{ url_for('questionnaire', questionnaire_id=questionnaire.id) }}">
-                                            {{ questionnaire.subject }}
-                                        </a>
-                                    </button>
+                                    {{ questionnaire.subject }}
                                 </td>
                                 {% endif %}
                                 <td>{{ questionnaire.moreInfo }}</td>
-                                {% else %}
-                                <td class="v-align-middle bold">{{ questionnaire.subject }}</td>
-                                <td>{{ questionnaire.moreInfo }}</td>
-                                <td>
-                                    <button type="button" class="btn" data-toggle="modal"
-                                            onclick="setQuestionnaieInfoOnModal('{{ questionnaire.id }}')"
-                                            data-target="#questionnaieInfoModal">
-                                        {{ questionnaire.stimulusCount }}
-                                    </button>
-                                    <!-- Modal -->
-                                    <div class="modal fade" id="questionnaieInfoModal" role="dialog">
-                                        <div class="modal-dialog">
-                                            <!-- Modal content-->
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <button type="button" class="close"
-                                                            data-dismiss="modal">&times;</button>
-                                                    <h4 class="modal-title" id="modalTitle"></h4>
-                                                </div>
-                                                <div class="modal-body"
-                                                     style="color: darkslategray;">
-                                                    <br><br>
-
-                                                    <div id="hasPic" style="display: none">
-                                                        <h5>واژه‌های با تصویر</h5>
-
-                                                        <p id="modalHasPic"></p>
-                                                        <button type="button">
-                                                            <a href="">مشاهده تصاویر</a>
-                                                        </button>
-                                                    </div>
-                                                    <div id="hasNotPic" style="display: none">
-                                                        <h5>واژه‌های بدون تصویر</h5>
-
-                                                        <p id="modalHasNotPic"></p>
-                                                        <button type="button">
-                                                            <a href="{{ url_for('editQuestionnaire', questionnaire_id=questionnaire.id) }}">افزودن
-                                                                تصویر به واژه‌ها</a>
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-                                {% if questionnaire.isActive %}
-                                <td><input type="checkbox" data-init-plugin="switchery" data-size="small" checked
-                                           onchange="changeActivationStatus('{{ questionnaire.id }}')"/></td>
-                                {% else %}
-                                <td><input type="checkbox" data-init-plugin="switchery" data-size="small"
-                                           onchange="changeActivationStatus('{{ questionnaire.id }}')"/></td>
-                                {% endif %}
-                                {% endif %}
                             </tr>
+
                             {% endif %}
                             {% endfor %}
                             </tbody>
@@ -122,43 +61,11 @@
 {% block js %}
 <script type="text/javascript">
 
-    function changeActivationStatus(questionnaireId) {
-        $.ajax({
-            type: "POST",
-            url: '/changeActivationStatus',
-            data: JSON.stringify({
-                questionnaireId: questionnaireId
-            }),
-            contentType: 'application/json;charset=UTF-8',
-            success: function (result) {
-            }
+    jQuery(document).ready(function ($) {
+        $(".clickable-row").click(function () {
+            window.location = $(this).data("href");
         });
-    }
-    function setQuestionnaieInfoOnModal(questionnaireId) {
-        $.ajax({
-            type: "POST",
-            url: '/getModalContent',
-            data: JSON.stringify({
-                questionnaireId: questionnaireId
-            }),
-            contentType: 'application/json;charset=UTF-8',
-            success: function (result) {
-                title = result['title'];
-                hasPicStr = result['hasPicStr'];
-                hasNotPicStr = result['hasNotPicStr'];
-
-                document.getElementById("modalTitle").innerHTML = title;
-                if (hasPicStr.localeCompare('')) {
-                    document.getElementById("hasPic").style.display = 'block';
-                    document.getElementById("modalHasPic").innerHTML = hasPicStr;
-                }
-                if (hasNotPicStr.localeCompare('')) {
-                    document.getElementById("hasNotPic").style.display = 'block';
-                    document.getElementById("modalHasNotPic").innerHTML = hasNotPicStr;
-                }
-            }
-        });
-    }
+    });
 
 </script>
 {% endblock %}

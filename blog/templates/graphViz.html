@@ -2,59 +2,64 @@
 
 {% block body %}
 <div class="container" style="position: fixed;">
+
     <div class="row">
-        <div class="col-md-3">
-            <div class="form-group">
-                <button id="addGraph" style="height: 55px" class="btn"
+        <div class="col-md-11">
+            <div class="col-md-3">
+                <button id="addGraph" style="height: 55px; width: 125px" class="btn btn-xs"
                         onclick="getGraph()" type="submit">
                     افزودن همسایه‌ها
                 </button>
-                <button id="resetGraph" style="height: 55px" class="btn"
+                <button id="resetGraph" style="height: 55px; width: 100px" class="btn btn-xs"
                         onclick="resetGraph()" type="submit">
-                    بازنشانی گراف
+                    بازنشانی
                 </button>
             </div>
-        </div>
-        <div id="levelSelection_tour" class="col-md-1" style="background-color: white">
-            <p id="levelLabel" style="font-size: 12px"></p>
-            <input id="level" type="range" min="1" max="5" step="1" value="1" onchange="setLevel()"/>
-        </div>
-        <div class="col-md-4">
-            <div id="nodeSelection_tour" style="height: 55px"
-                 class="form-group form-group-default form-group-default-select2">
-                <label>انتخاب واژه‌ها</label>
-                <select id="nodeIdList" class="full-width" data-init-plugin="select2"
-                        multiple></select>
+            <div id="levelSelection_tour" class="col-md-3" style="background-color: white">
+                <p id="levelLabel"></p>
+                <input id="level" type="range" min="1" max="5" step="1" value="1" onchange="setLevel()"/>
             </div>
-        </div>
-        <div class="col-md-2">
-            <div id="graphSelection_tour" class="form-group form-group-default form-group-default-select2">
-                <label>انتخاب منبع گراف</label>
-                <select id="graphId" class="full-width" data-init-plugin="select2" onchange="setNodeList()">
-                    <option style="display:none">
-                        {% if tagGraphList %}
-                        <optgroup label="تگ‌های اینستاگرام">
-                            {% for graph in tagGraphList %}
-                            <option value="{{ graph.id }}">{{ graph.name }}</option>
-                            {% endfor %}
-                        </optgroup>
-                        {% endif %}
-                        {% if responseGraphList %}
-                        <optgroup label="پاسخ‌های کاربران">
-                            {% for graph in responseGraphList %}
-                            <option value="{{ graph.id }}">{{ graph.name }}</option>
-                            {% endfor %}
-                        </optgroup>
-                        {% endif %}
-                </select>
+            <div class="col-md-3">
+                <div id="nodeSelection_tour" style="height: 55px"
+                     class="form-group form-group-default form-group-default-select2">
+                    <label>انتخاب واژه‌ها</label>
+                    <select id="nodeIdList" class="full-width" data-init-plugin="select2"
+                            multiple></select>
+                </div>
             </div>
-            </form>
+            <div class="col-md-3">
+                <div id="graphSelection_tour" class="form-group form-group-default form-group-default-select2">
+                    <label>انتخاب منبع گراف</label>
+                    <select id="graphId" class="full-width" data-init-plugin="select2" onchange="setNodeList()">
+                        <option style="display:none">
+                            {% if tagGraphList %}
+                            <optgroup label="تگ‌های اینستاگرام">
+                                {% for graph in tagGraphList %}
+                                {% if graph.isActive or session.admin %}
+                                <option value="{{ graph.id }}">{{ graph.name }}</option>
+                                {% endif %}
+                                {% endfor %}
+                            </optgroup>
+                            {% endif %}
+                            {% if responseGraphList %}
+                            <optgroup label="پاسخ‌های کاربران">
+                                {% for graph in responseGraphList %}
+                                {% if graph.isActive or session.admin %}
+                                <option value="{{ graph.id }}">{{ graph.name }}</option>
+                                {% endif %}
+                                {% endfor %}
+                            </optgroup>
+                            {% endif %}
+                    </select>
+                </div>
+            </div>
         </div>
     </div>
     <div class="row">
+        <div class="col-md-1"></div>
         <div class="col-md-10">
             <div id="panel"
-                 style="width:930px; height:500px; background-color: white; letter-spacing: 0; font-family: BKoodakBold;">
+                 style="width:1050px; height:520px; background-color: white; letter-spacing: 0; font-family: BKoodakBold;">
                 <i class="fs-14 fa fa-question" style="color: cornflowerblue;margin: 10px;" onclick="tourExecute()"></i>
             </div>
         </div>

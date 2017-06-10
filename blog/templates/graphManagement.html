@@ -13,8 +13,12 @@
 {% endif %}
 {% endmacro %}
 
+
 {% block header %}
 <style>
+    .dataTables_filter {
+        visibility: hidden;
+    }
     .disabledCalendar {
         pointer-events: none;
         opacity: 0.4;
@@ -76,18 +80,21 @@
 {% block body %}
 <div class="container">
     <div class="row">
-        <div class="col-md-3"></div>
-        <div class="col-sm-6">
+        <div class="col-md-1"></div>
+        <div class="col-md-10">
             <div class="panel panel-transparent">
                 <!-- Nav tabs -->
                 <ul class="nav nav-tabs nav-tabs-linetriangle" data-init-reponsive-tabs="dropdownfx">
                     <li class="active">
+                        <a data-toggle="tab" href="#graphList"><span>لیست گراف‌ها</span></a>
+                    </li>
+                    <li>
                         <a data-toggle="tab" href="#addGraph"><span>افزودن گراف</span></a>
                     </li>
                 </ul>
                 <!-- Tab panes -->
                 <div class="tab-content">
-                    <div class="tab-pane active" id="addGraph">
+                    <div class="tab-pane" id="addGraph">
                         <div class="container-fluid container-fixed-lg">
                             <div class="stepwizard col-md-offset-3" style="width: 100%">
                                 <div class="stepwizard-row setup-panel">
@@ -213,6 +220,98 @@
                             </form>
                         </div>
                         </div>
+                    <div class="tab-pane active" id="graphList">
+                        <div class="container-fluid container-fixed-lg">
+                            <table class="table table-hover">
+                                <thead>
+                                <tr>
+                                    <th style="text-align: center; color: darkslategray;">نام
+                                    </th>
+                                    <th style="text-align: center; color: darkslategray;">منبع
+                                    </th>
+
+                                    <th style="text-align: center; color: darkslategray;">نوع گراف
+                                    </th>
+                                    <th style="text-align: center; color: darkslategray;">آستانه گره
+                                    </th>
+                                    <th style="text-align: center; color: darkslategray;">آستانه یال
+                                    </th>
+                                    <th style="text-align: center; color: darkslategray;">آستانه وزن
+                                    </th>
+                                    <th style="text-align: center; color: darkslategray;">بازه‌ی زمانی
+                                    </th>
+                                    <th style="text-align: center; color: darkslategray;">فعال/غیرفعال
+                                    </th>
+                                    <th style="text-align: center; color: darkslategray;">حذف
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for graph in graphList %}
+                                <tr>
+                                    <td style="text-align: center;">{{ graph.name }}</td>
+                                    <td style="text-align: center;">
+                                        {% if graph.source=="tags" %}
+                                        پست‌ها
+                                        {% endif %}
+                                        {% if graph.source=="responses"%}
+                                        پاسخ‌‌ها
+                                        {% endif %}
+                                    </td>
+                                    {% if graph.isDirected %}
+                                    <td style="text-align: center;">جهت‌دار</td>
+                                    {% else %}
+                                    <td style="text-align: center;">غیرجهت‌دار</td>
+                                    {% endif %}
+                                    <td style="text-align: center;">{{ graph.minUserOnNode }}</td>
+                                    <td style="text-align: center;">{{ graph.minUserOnEdge }}</td>
+                                    <td style="text-align: center;">{{ graph.minEdgeWeight }}</td>
+                                    <td style="text-align: center;">
+                                        {% if graph.startTime %}
+                                        {{ graph.startTime }} - {{ graph.finishTime }}
+                                        {% else %}
+                                        {% if graph.source=="tags" %}
+                                        {% if graph.newPostsCount!=0 %}
+                                        <button class="btn" onclick="updateGraph('{{ graph.id }}')">به روز رسانی<br>({{
+                                            graph.newPostsCount }} پست جدید)
+                                        </button>
+                                        {% else %}
+                                        نامحدود
+                                        {% endif %}
+                                        {% endif %}
+                                        {% if graph.source=="responses" %}
+                                        {% if graph.newResponsesCount!=0 %}
+                                        <button class="btn" onclick="updateGraph('{{ graph.id }}')">به روز رسانی<br>({{
+                                            graph.newResponsesCount }} پاسخ جدید)
+                                        </button>
+                                        {% else %}
+                                        نامحدود
+                                        {% endif %}
+                                        {% endif %}
+                                        {% endif %}
+                                        <img id="{{ graph.id }}" class="image-responsive-height demo-mw-50"
+                                             src="../static/assets/img/demo/progress.svg" style="visibility:hidden;"
+                                             alt="Progress">
+                                    </td>
+                                    <td>
+                                        {% if graph.isActive %}
+                                        <input type="checkbox" data-init-plugin="switchery" data-size="small" checked
+                                               onchange="changeGraphActivationStatus('{{ graph.id }}')"/>
+                                        {% else %}
+                                    <td><input type="checkbox" data-init-plugin="switchery" data-size="small"
+                                               onchange="changeGraphActivationStatus('{{ graph.id }}')"/>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a style="color: darkred;" onclick="deleteGraph('{{ graph.id }}')"><i
+                                                class="fa fa-remove"></i></a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                     </div>
                 </div>
             </div>
@@ -227,6 +326,67 @@
 
     var start, end;
     var timeLimitation = false;
+
+    $(document).ready(function () {
+        $('.container table').dataTable({
+            "bLengthChange": false,
+            "bFilter": true,
+            "bInfo": false,
+            "bAutoWidth": false,
+            "bPaginate": false,
+            "language": {
+                "paginate": {
+                    "previous": "صفحه قبل",
+                    "next": "صفحه بعد"
+                },
+                "emptyTable": "داده‌ای برای نمایش وجود ندارد."
+            }
+        });
+    });
+
+    function changeGraphActivationStatus(graphId) {
+        $.ajax({
+            type: "POST",
+            url: '/changeGraphActivationStatus',
+            data: JSON.stringify({
+                graphId: graphId
+            }),
+            contentType: 'application/json;charset=UTF-8',
+            success: function (result) {
+            }
+        });
+    }
+    function deleteGraph(graphId) {
+        $.ajax({
+            type: "POST",
+            url: '/deleteGraph',
+            data: JSON.stringify({
+                graphId: graphId
+            }),
+            contentType: 'application/json;charset=UTF-8',
+            success: function (result) {
+                window.location.href = window.location.href;
+            }
+        });
+    }
+    function updateGraph(graphId) {
+
+        document.getElementById(graphId).style.visibility = 'visible';
+        $.ajax({
+            type: "POST",
+            url: '/updateGraph',
+            data: JSON.stringify({
+                graphId: graphId
+            }),
+            contentType: 'application/json;charset=UTF-8',
+            success: function (result) {
+
+                window.location.href = window.location.href;
+            }
+        });
+    }
+
+
 
     /////////////////////////////////manage steps///////////////////////////////////
     $(document).ready(function () {

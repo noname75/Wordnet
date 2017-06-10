@@ -15,8 +15,32 @@ graphManagement_page = Blueprint('graphManagement', __name__, template_folder='t
 @app.route('/graphManagement', methods=['GET', 'POST'])
 @admin.require(http_exception=403)
 def graphManagement():
+    graphList = Graph().getGraphList()
+    for graph in graphList:
+        graph.newPostsCount = Post().getCountOfPosts_byStartTime(graph.creationTime)
+        graph.newResponsesCount = ResponseInPack().getAcceptedResponseCount_byStartTime(graph.creationTime)
 
-    return render_template('graphManagement.html')
+    return render_template('graphManagement.html', graphList=graphList)
+
+
+@app.route("/changeGraphActivationStatus", methods=['POST'])
+@admin.require(http_exception=403)
+def changeGraphActivationStatus():
+    graphId = int(request.json['graphId'])
+    Graph(id=graphId).getGraph().changeActivationStatus()
+
+    return ''
+
+
+@app.route("/deleteGraph", methods=['POST'])
+@admin.require(http_exception=403)
+def deleteGraph():
+    graphId = int(request.json['graphId'])
+    EdgeInGraph().removeEdges_byGraphId(graphId)
+    NodeInGraph().removeNodes_byGraphId(graphId)
+    Graph().removeGraph(graphId)
+
+    return ''
 
 
 @app.route('/getDataCount', methods=['POST'])
@@ -59,7 +83,8 @@ def makeGraph():
         minEdgeWeight=float(request.json['minEdgeWeight']),
         name=request.json['name'],
         moreInfo=request.json['moreInfo'],
-        creationTime=time.strftime('%Y-%m-%d %H:%M:%S'))
+        creationTime=time.strftime('%Y-%m-%d %H:%M:%S'),
+        isActive=False)
 
     if graph.source == 'tags':
         posts = getTagsData(graph)
@@ -69,8 +94,31 @@ def makeGraph():
         g = constructResponsesGraph(responses, graph)
 
     if request.json['saveGraph']:
-        saveGraph(g, graph)
+        graph = graph.addGraph()
+        saveGraphNodeAndEdges(g, graph)
     return jsonify({'nodeCount': g.number_of_nodes(), 'edgeCount': g.number_of_edges()})
+
+
+@app.route('/updateGraph', methods=['POST'])
+@admin.require(http_exception=403)
+def updateGraph():
+    graphId = request.json['graphId']
+    graph = Graph(id=graphId).getGraph()
+    graph.updateCreationTime(time.strftime('%Y-%m-%d %H:%M:%S'))
+
+    EdgeInGraph().removeEdges_byGraphId(graphId)
+    NodeInGraph().removeNodes_byGraphId(graphId)
+
+    if graph.source == 'tags':
+        posts = getTagsData(graph)
+        g = constructTagGraph(posts, graph)
+    elif graph.source == 'responses':
+        responses = getResponsesData(graph)
+        g = constructResponsesGraph(responses, graph)
+
+    saveGraphNodeAndEdges(g, graph)
+    return ''
+
 
 
 def getResponsesData(graph):
@@ -147,7 +195,6 @@ def getTagsData(graph):
         posts = Post().getPosts()
     else:
         posts = Post().getPosts_byStartTimeAndFinishTime(graph.startTime, graph.finishTime)
-
     return posts
 
 
@@ -269,18 +316,17 @@ def printInfo(info):
         print("%30s: %d" % (i, info[i]))
     print("_________________________________________________\n")
 
-def saveGraph(g, graph):
-    print('saving graph')
-    graph_id = graph.addGraph().id
+
+def saveGraphNodeAndEdges(g, graph):
+
     for node in g.nodes():
         weight = g.node[node]['distUserList'].__len__()
         if graph.source == 'tags':
             phrase_id = Phrase(content=node).addIfNotExists().id
         else:
             phrase_id = node
-        NodeInGraph(weight=weight, phrase_id=phrase_id, graph_id=graph_id).addNodeInGraph()
+        NodeInGraph(weight=weight, phrase_id=phrase_id, graph_id=graph.id).addNodeInGraph()
 
-    print('nodes saved')
     for source, target in g.edges():
         weight = g.edge[source][target]['weight']
         if graph.source == 'tags':
@@ -289,6 +335,4 @@ def saveGraph(g, graph):
         else:
             phrase1_id = source
             phrase2_id = target
-        EdgeInGraph(weight=weight, phrase1_id=phrase1_id, phrase2_id=phrase2_id, graph_id=graph_id).addEdgeInGraph()
-
-    print('edges saved')
+        EdgeInGraph(weight=weight, phrase1_id=phrase1_id, phrase2_id=phrase2_id, graph_id=graph.id).addEdgeInGraph()

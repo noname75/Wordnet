@@ -46,6 +46,10 @@ class ResponseInPack(db.Model):
                                                                               ResponseInPack.creationTime <= finishTime,
                                                                               ResponseInPack.status == 'accepted').scalar()
 
+    def getAcceptedResponseCount_byStartTime(self, startTime):
+        return db.session.query(func.count(ResponseInPack.phrase2_id)).filter(ResponseInPack.creationTime >= startTime,
+                                                                              ResponseInPack.status == 'accepted').scalar()
+
     def __init__(self, pack_id=None, phrase1_id=None, phrase2_id=None, duration=None, creationTime=None, status=None):
         self.pack_id = pack_id
         self.phrase1_id = phrase1_id
@@ -65,7 +69,7 @@ class ResponseInPack(db.Model):
             else:
                 self.number = lastSamePhrase1_id.number + 1
                 if not db.session.query(ResponseInPack).filter_by(pack_id=self.pack_id, phrase1_id=self.phrase1_id,
-                                                                  phrase2_id=self.phrase2_id).first():
+                                                                  phrase2_id=self.phrase2_id):
                     db.session.add(self)
         else:
             db.session.add(self)

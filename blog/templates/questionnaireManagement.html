@@ -1,0 +1,429 @@
+{% extends "layout.html" %}
+
+
+{% macro render_field(field) %}
+<div> {{ field.label }}<br><br>
+
+    <div>{{ field(class="form-control") }}</div>
+</div>
+{% if field.errors %}
+<ul class="errors">{% for error in field.errors %}
+    <li>{{ error }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endmacro %}
+
+{% block header %}
+<style>
+    .disabledPicture {
+        pointer-events: none;
+        opacity: 0.4;
+    }
+
+    .uploader {
+        position: relative;
+        overflow: hidden;
+        width: 300px;
+        height: 350px;
+        background: #f3f3f3;
+        border: 2px dashed #e8e8e8;
+    }
+
+    #filePhoto {
+        position: absolute;
+        width: 300px;
+        height: 400px;
+        top: -50px;
+        left: 0;
+        z-index: 2;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    .uploader img {
+        position: absolute;
+        width: 302px;
+        height: 352px;
+        top: -1px;
+        left: -1px;
+        z-index: 1;
+        border: none;
+    }
+</style>
+{% endblock %}
+
+{% macro render_field(field) %}
+<div> {{ field.label }}<br><br>
+
+    <div>{{ field(class="form-control") }}</div>
+</div>
+{% if field.errors %}
+<ul class="errors">{% for error in field.errors %}
+    <li>{{ error }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endmacro %}
+
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-sm-8">
+            <div class="panel panel-transparent">
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs nav-tabs-linetriangle" data-init-reponsive-tabs="dropdownfx">
+                    <li class="active">
+                        <a data-toggle="tab" href="#questionnaireList"><span>لیست پرسش‌نامه‌ها</span></a>
+                    </li>
+                    <li>
+                        <a data-toggle="tab" href="#addQuestionnaire"><span>افزودن پرسش‌نامه</span></a>
+                    </li>
+                    <li>
+                        <a data-toggle="tab" href="#editQuestionnaire"><span>ویرایش تصاویر پرسش‌نامه‌ها</span></a>
+                    </li>
+                </ul>
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div class="tab-pane active" id="questionnaireList">
+                        <div class="col-md-12">
+                            <div class="panel panel-transparent">
+                                <div class="panel-body">
+                                    <div class="table-responsive">
+                                        <!-- Modal -->
+                                        <div class="modal fade" id="questionnaieInfoModal" role="dialog">
+                                            <div class="modal-dialog">
+                                                <!-- Modal content-->
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close"
+                                                                data-dismiss="modal">&times;</button>
+                                                        <h4 class="modal-title" id="modalTitle"></h4>
+                                                    </div>
+                                                    <div id="modalStimuliList" class="modal-body"
+                                                         style="color: darkslategray;">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <table class="table table-hover">
+                                            <thead>
+                                            <tr>
+                                                <th><p style="text-align: center; color: darkslategray;">عنوان
+                                                    پرسش‌نامه</p></th>
+                                                <th><p style="text-align: center; color: darkslategray;">توضیحات</p>
+                                                </th>
+                                                <th><p style="text-align: center; color: darkslategray;">تعداد
+                                                    واژه‌ها</p></th>
+                                                <th></th>
+                                            </tr>
+                                            </thead>
+                                            {% for questionnaire in questionnaireList %}
+                                            <tbody>
+                                            <tr data-toggle="modal"
+                                                onclick="setQuestionnaieInfoOnModal('{{ questionnaire.id }}')"
+                                                data-target="#questionnaieInfoModal">
+                                                <td class="v-align-middle bold">{{ questionnaire.subject }}</td>
+                                                <td style="text-align: center;">{{ questionnaire.moreInfo }}</td>
+                                                <td style="text-align: center;">{{ questionnaire.stimulusCount }}</td>
+                                                {% if questionnaire.isActive %}
+                                                <td><input type="checkbox" data-init-plugin="switchery"
+                                                           data-size="small" checked
+                                                           onchange="changeActivationStatus('{{ questionnaire.id }}')"/>
+                                                </td>
+                                                {% else %}
+                                                <td><input type="checkbox" data-init-plugin="switchery"
+                                                           data-size="small"
+                                                           onchange="changeActivationStatus('{{ questionnaire.id }}')"/>
+                                                </td>
+                                                {% endif %}
+                                            </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="addQuestionnaire">
+                        <div class="row">
+                            <div class="col-md-10 col-md-push-1">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h5 style="text-align: center;">
+                                            <strong>پرسش‌نامه جدید</strong>
+                                        </h5>
+                                        <br><br>
+                                    </div>
+                                    <div class="panel-body">
+                                        <form class="" role="form">
+                                            <div class="row">
+                                                <div class="form-group form-group-default">
+                                                    <label>موضوع</label>
+                                                    <input onkeyup="checkButtonAbility() " id="subject" type="text"
+                                                           class="form-control">
+                                                </div>
+                                                <div class="form-group form-group-default">
+                                                    <label>توضیحات</label>
+                                                    <input onkeyup="checkButtonAbility()" id="moreInfo" type="text"
+                                                           class="form-control">
+                                                </div>
+                                                <div class="form-group">
+                                                    <textarea onkeyup="checkButtonAbility()" id="stimuli"
+                                                              class="form-control" placeholder="واژه‌ها"
+                                                              rows="5"></textarea>
+                                                </div>
+                                            </div>
+                                        </form>
+                                        <br>
+
+                                        <div style="text-align: center;">
+                                            <button onclick="addQuestionnaire()" id="questionnaireSubmit"
+                                                    class="btn btn-success" disabled>ثبت پرسش‌نامه
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="editQuestionnaire">
+                        <div class="row">
+                            <div class="col-md-10 col-md-push-1">
+                                <div class="panel panel-default">
+                                    <br>
+
+                                    <div class="form-group form-group-default form-group-default-select2">
+                                        <label>انتخاب پرسش‌نامه</label>
+                                        <select id="questionnaireIdList" class="full-width"
+                                                data-init-plugin="select2" onchange="setPhraseList()" required>
+                                            <option style="display:none">
+                                                {% for questionnaire in questionnaireList %}
+                                            <option value="{{ questionnaire.id }}">{{ questionnaire.subject }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="form-group form-group-default form-group-default-select2">
+                                        <label>انتخاب واژه</label>
+                                        <select onchange="enablePicture()" id="phraseIdList" class="full-width"
+                                                data-init-plugin="select2" required disabled>
+                                        </select>
+                                    </div>
+                                    <div class="panel-body" style="color:#083C32;">
+                                        <div class="row">
+                                            <div class="col-md-3 col-md-push-2">
+                                                <button onclick="setPicture()" id="submitPictureButton"
+                                                        class="btn btn-success" disabled>ثبت تصویر
+                                                </button>
+                                            </div>
+                                            <div class="col-md-6 col-md-push-3">
+                                                <div class="uploader disabledPicture" id="pictureInput"
+                                                     onclick="$('#filePhoto').click()">
+                                                    برای بارگذاری تصویر اینجا کلیک کنید یا تصویر را در این قسمت قرار
+                                                    دهید.
+                                                    <img id="picture" src=""/>
+                                                    <input onchange="enableSubmitPictureButton()" type="file"
+                                                           id="filePhoto" accept="image/*"/>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block js %}
+<script type="text/javascript">
+
+    var lastEventWich = 13;
+
+    $(document).ready(function () {
+        $("#stimuli").keypress(function (event) {
+            var inputValue = String.fromCharCode(event.keyCode);
+            if (lastEventWich == 13) {
+                if (!(inputValue >= "آ" && inputValue <= "ی") && (inputValue != "_" && inputValue != ' ')) {
+                    event.preventDefault();
+                }
+            } else {
+                if (!(inputValue >= "آ" && inputValue <= "ی") && (inputValue != "_" && event.which != 13)) {
+                    event.preventDefault();
+                }
+            }
+            lastEventWich = event.which;
+        });
+    });
+    $(document).ready(function () {
+        $("#subject").keypress(function (event) {
+            var inputValue = String.fromCharCode(event.keyCode);
+            if (!(inputValue >= "آ" && inputValue <= "ی") && (inputValue != " ")) {
+                event.preventDefault();
+            }
+        });
+    });
+
+    function checkButtonAbility() {
+        var subject = document.getElementById('subject').value;
+        var moreInfo = document.getElementById('moreInfo').value;
+        var stimuli = document.getElementById('stimuli').value;
+        if (subject != "" && moreInfo != "" && stimuli != "") {
+            document.getElementById('questionnaireSubmit').disabled = false;
+        }
+        else {
+            document.getElementById('questionnaireSubmit').disabled = true;
+        }
+    }
+
+    function addQuestionnaire() {
+        $.ajax({
+            type: "POST",
+            url: '/addQuestionnaire',
+            data: JSON.stringify(
+                    {
+                        subject: document.getElementById('subject').value,
+                        moreInfo: document.getElementById('moreInfo').value,
+                        stimuli: document.getElementById('stimuli').value
+                    }
+            ),
+            contentType: 'application/json;charset=UTF-8',
+            success: function (result) {
+                window.location.href = window.location.href;
+            }
+        });
+    }
+    function enablePicture() {
+        $("#pictureInput").removeClass('disabledPicture');
+    }
+    function enableSubmitPictureButton() {
+        document.getElementById('submitPictureButton').disabled = false;
+    }
+
+    var imageLoader = document.getElementById('filePhoto');
+    imageLoader.addEventListener('change', handleImage, false);
+
+    function changeActivationStatus(questionnaireId) {
+        $.ajax({
+            type: "POST",
+            url: '/changeActivationStatus',
+            data: JSON.stringify({
+                questionnaireId: questionnaireId
+            }),
+            contentType: 'application/json;charset=UTF-8',
+            success: function (result) {
+            }
+        });
+    }
+    function setQuestionnaieInfoOnModal(questionnaireId) {
+        $.ajax({
+            type: "POST",
+            url: '/getModalContent',
+            data: JSON.stringify({
+                questionnaireId: questionnaireId
+            }),
+            contentType: 'application/json;charset=UTF-8',
+            success: function (result) {
+                var title = result['title'];
+                var stimuliList = result['stimuliList'];
+
+                document.getElementById("modalTitle").innerHTML = title;
+                document.getElementById("modalStimuliList").innerHTML = '<br><br>';
+                for (i = 0; i < stimuliList.length; i++) {
+                    var content = stimuliList[i]['content'];
+                    var picture = stimuliList[i]['picture'];
+                    if (picture == null) {
+                        var html =
+
+                                '<div style="text-align: center">' +
+                                '<h5>' + content + '</h5>' +
+                                '</div>';
+
+                        document.getElementById("modalStimuliList").innerHTML = document.getElementById("modalStimuliList").innerHTML + html;
+                    }
+                }
+                for (i = 0; i < stimuliList.length; i++) {
+                    var content = stimuliList[i]['content'];
+                    var picture = stimuliList[i]['picture'];
+                    if (picture != null) {
+                        var html =
+
+                                '<div style="text-align: center">' +
+                                '<img style="width: 200px; height: 200px; margin: 3px" src=' + picture + '>' +
+                                '<h5>' + content + '</h5>' +
+                                '</div>';
+
+                        document.getElementById("modalStimuliList").innerHTML = document.getElementById("modalStimuliList").innerHTML + html;
+                    }
+                }
+            }
+        });
+    }
+
+    function handleImage(e) {
+        var reader = new FileReader();
+        reader.onload = function (event) {
+            $('#picture').attr('src', event.target.result);
+        };
+        reader.readAsDataURL(e.target.files[0]);
+    }
+
+    function setPhraseList() {
+        document.getElementById('phraseIdList').disabled = false;
+        var phraseIdListElement = document.getElementById("phraseIdList");
+        for (i = phraseIdListElement.options.length - 1; i >= 0; i--) {
+            phraseIdListElement.options[i].selected = false;
+            phraseIdListElement.options[i] = null;
+        }
+        $.ajax({
+            type: "POST",
+            url: '/getPhrases',
+            data: JSON.stringify(
+                    {
+                        questionnaire_id: document.getElementById("questionnaireIdList").value
+                    }
+            ),
+            contentType: 'application/json;charset=UTF-8',
+            success: function (result) {
+
+                var phraseList = result['phraseList'];
+                $("#phraseIdList").append(new Option());
+                for (i = 0; i < phraseList.length; i++) {
+                    $("#phraseIdList").append(new Option(phraseList[i]['content'], phraseList[i]['id']));
+                }
+            }
+        });
+    }
+    function setPicture() {
+        var phraseId = $('#phraseIdList').val();
+        var picture = document.getElementById('picture').src;
+        var questionnaireId = document.getElementById("questionnaireIdList").value;
+
+        $.ajax({
+            type: "POST",
+            url: '/setPicture',
+            data: JSON.stringify({
+                questionnaire_id: questionnaireId,
+                phrase_id: phraseId,
+                picture: picture
+            }),
+            contentType: 'application/json;charset=UTF-8',
+            success: function (result) {
+                document.getElementById('picture').removeAttribute('src');
+                $("#phraseIdList").select2("val", "");
+                setPhraseList();
+                $("#pictureInput").addClass('disabledPicture');
+                document.getElementById('submitPictureButton').disabled = true;
+            }
+        });
+    }
+</script>
+{% endblock %}

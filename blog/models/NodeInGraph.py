@@ -22,3 +22,6 @@ class NodeInGraph(db.Model):
 
     def addNodeInGraph(self):
         engine.execute(NodeInGraph.__table__.insert(), self.__dict__)
+
+    def removeNodes_byGraphId(self, graphId):
+        engine.execute(NodeInGraph.__table__.delete().where(NodeInGraph.graph_id == graphId))

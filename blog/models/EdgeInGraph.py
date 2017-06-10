@@ -35,3 +35,7 @@ class EdgeInGraph(db.Model):
 
     def addEdgeInGraph(self):
         engine.execute(EdgeInGraph.__table__.insert(), self.__dict__)
+
+
+    def removeEdges_byGraphId(self, graphId):
+        engine.execute(EdgeInGraph.__table__.delete().where(EdgeInGraph.graph_id == graphId))
