@@ -11,7 +11,8 @@ class User(db.Model):
     email = db.Column(db.Unicode(200))
     moreinfo = db.Column(db.Unicode(1000))
     bdate = db.Column(db.Date())
-    gender = db.Column(db.Enum('زن', 'مرد'))
+    birthyear = db.Column(db.Integer)
+    gender = db.Column(db.Enum('مرد', 'زن'))
     degree = db.Column(db.Enum('کارشناسی ارشد و دکتری', 'کارشناسی', 'فوق دیپلم', 'دیپلم', 'زیر دیپلم'))
     nativeLanguage = db.Column(db.Enum('فارسی', 'سایر زبان‌ها'))
     major = db.Column(db.Unicode(100))
@@ -25,7 +26,7 @@ class User(db.Model):
             username=None,
             password=None,
             firstname=None,
-            lastname=None,
+            birthyear=None,
             email=None,
             registerationTime=None,
             role='user'):
@@ -34,14 +35,16 @@ class User(db.Model):
         self.username = username
         self.password = password
         self.firstname = firstname
-        self.lastname = lastname
+        self.birthyear = birthyear
         self.email = email
         self.role = role
         self.registerationTime = registerationTime
 
     def addUser(self):
         db.session.add(self)
+        db.session.flush()
         db.session.commit()
+        return self
 
     def getUser(self):
         if self.username:

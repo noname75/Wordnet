@@ -74,15 +74,6 @@
         })
     });
 
-    $(document).ready(function () {
-        $("#Response").keypress(function (event) {
-            var inputValue = String.fromCharCode(event.keyCode);
-            if (!(inputValue >= "آ" && inputValue <= "ی") && (inputValue != "_" && inputValue != '-')) {
-                event.preventDefault();
-            }
-        });
-    });
-
     function addResponse(responseListStr) {
         var packId = '{{ packId }}';
         var responseList = responseListStr.split('-');

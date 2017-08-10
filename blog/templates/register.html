@@ -6,7 +6,10 @@
     <div>{{ field(class="form-control") }}</div>
 </div>
     {% if field.errors %}
-        <ul class="errors">{% for error in field.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+<ul class="errors" style="color: darkred">{% for error in field.errors %}
+    <li>{{ error }}</li>
+    {% endfor %}
+</ul>
     {% endif %}
 {% endmacro %}
 
@@ -17,10 +20,15 @@
     .container {
         width: 1300px;
     }
+
+    .gbs3 .form-horizontal .control-label {
+        text-align: right !important;
+    }
 </style>
 <br><br>
     <div class="container">
         <div class="row">
+            <br>
             <div class="col-xs-6 col-md-4"></div>
             <div class="col-xs-6 col-md-4">
 				<div class="panel panel-default">
@@ -29,18 +37,34 @@
 						<strong> ثبت نام</strong>
                         </h4>
 					</div>
-					<div class="panel-body" div style="color:#083C32">
+                    <div class="panel-body" div style="color:#083C32" id="removeBr">
                         <form method=post action="/register">
                             <dl>
+                                <div style="padding: 10px">
                                 {{ render_field(form.firstname) }}
-                                {{ render_field(form.lastname) }}
+                                </div>
+                                <div style="padding: 10px">
+                                    {{ render_field(form.birthyear) }}
+                                </div>
+                                <div style="padding: 10px">
                                 {{ render_field(form.username) }}
+                                </div>
+                                <div style="padding: 10px">
                                 {{ render_field(form.email) }}
+                                </div>
+                                <div style="padding: 10px">
                                 {{ render_field(form.password) }}
+                                </div>
+                                <div style="padding: 10px">
                                 {{ render_field(form.confirm) }}
+                                </div>
                             </dl>
-                            <p><input type=submit class="btn btn-success btn-block"
-                                      style="background-color: #954121;font-family: BYekan;border: 0px" value=تایید>
+                            <div class="col-md-4">
+
+                            </div>
+                            <div class="col-md-4">
+                                <input type=submit class="btn btn-success btn-block" value=تایید>
+                            </div>
                         </form>
 					</div>
                 </div>
@@ -49,3 +73,11 @@
 	</div>
 {% endblock %}
 
+
+{% block js %}
+<script type="text/javascript">
+
+    $('#removeBr').find('br').remove();
+
+</script>
+{% endblock %}
